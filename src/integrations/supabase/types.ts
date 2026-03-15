@@ -14,16 +14,288 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      body_regions: {
+        Row: {
+          a11y_description: string | null
+          id: string
+          label: string
+        }
+        Insert: {
+          a11y_description?: string | null
+          id: string
+          label: string
+        }
+        Update: {
+          a11y_description?: string | null
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
+      event_regions: {
+        Row: {
+          event_id: string
+          id: string
+          region_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          region_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          region_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_regions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_regions_region_id_fkey"
+            columns: ["region_id"]
+            isOneToOne: false
+            referencedRelation: "body_regions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          date_end: string | null
+          date_start: string
+          description: string | null
+          event_type: Database["public"]["Enums"]["event_type"]
+          id: string
+          impact_level: Database["public"]["Enums"]["impact_level"]
+          is_archived: boolean
+          is_ongoing: boolean
+          notes: string | null
+          profile_id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date_end?: string | null
+          date_start: string
+          description?: string | null
+          event_type: Database["public"]["Enums"]["event_type"]
+          id?: string
+          impact_level?: Database["public"]["Enums"]["impact_level"]
+          is_archived?: boolean
+          is_ongoing?: boolean
+          notes?: string | null
+          profile_id: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date_end?: string | null
+          date_start?: string
+          description?: string | null
+          event_type?: Database["public"]["Enums"]["event_type"]
+          id?: string
+          impact_level?: Database["public"]["Enums"]["impact_level"]
+          is_archived?: boolean
+          is_ongoing?: boolean
+          notes?: string | null
+          profile_id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insights: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          insight_type: Database["public"]["Enums"]["insight_type"]
+          is_dismissed: boolean
+          is_premium: boolean
+          is_saved: boolean
+          profile_id: string
+          related_event_ids: string[] | null
+          related_regions: string[] | null
+          title: string
+          tone: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          insight_type: Database["public"]["Enums"]["insight_type"]
+          is_dismissed?: boolean
+          is_premium?: boolean
+          is_saved?: boolean
+          profile_id: string
+          related_event_ids?: string[] | null
+          related_regions?: string[] | null
+          title: string
+          tone?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          insight_type?: Database["public"]["Enums"]["insight_type"]
+          is_dismissed?: boolean
+          is_premium?: boolean
+          is_saved?: boolean
+          profile_id?: string
+          related_event_ids?: string[] | null
+          related_regions?: string[] | null
+          title?: string
+          tone?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insights_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar: string
+          birth_year: number | null
+          created_at: string
+          handover_age: number | null
+          id: string
+          is_default: boolean
+          name: string
+          type: Database["public"]["Enums"]["profile_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar?: string
+          birth_year?: number | null
+          created_at?: string
+          handover_age?: number | null
+          id?: string
+          is_default?: boolean
+          name: string
+          type?: Database["public"]["Enums"]["profile_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar?: string
+          birth_year?: number | null
+          created_at?: string
+          handover_age?: number | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          type?: Database["public"]["Enums"]["profile_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      treatments: {
+        Row: {
+          approach: string | null
+          created_at: string
+          date_logged: string
+          event_id: string
+          id: string
+          is_ongoing: boolean
+          notes: string | null
+          outcome: string | null
+          provider: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approach?: string | null
+          created_at?: string
+          date_logged?: string
+          event_id: string
+          id?: string
+          is_ongoing?: boolean
+          notes?: string | null
+          outcome?: string | null
+          provider?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approach?: string | null
+          created_at?: string
+          date_logged?: string
+          event_id?: string
+          id?: string
+          is_ongoing?: boolean
+          notes?: string | null
+          outcome?: string | null
+          provider?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatments_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      owns_event: { Args: { _event_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      event_type:
+        | "injury"
+        | "symptom"
+        | "stress_period"
+        | "treatment"
+        | "life_transition"
+        | "recovery"
+      impact_level: "mild" | "moderate" | "significant"
+      insight_type:
+        | "recurring_region"
+        | "stress_correlation"
+        | "treatment_outcome"
+        | "life_transition_link"
+        | "body_echo"
+        | "general"
+      profile_type: "adult" | "child"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +422,25 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      event_type: [
+        "injury",
+        "symptom",
+        "stress_period",
+        "treatment",
+        "life_transition",
+        "recovery",
+      ],
+      impact_level: ["mild", "moderate", "significant"],
+      insight_type: [
+        "recurring_region",
+        "stress_correlation",
+        "treatment_outcome",
+        "life_transition_link",
+        "body_echo",
+        "general",
+      ],
+      profile_type: ["adult", "child"],
+    },
   },
 } as const
