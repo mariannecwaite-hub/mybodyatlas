@@ -1,30 +1,28 @@
 import { useApp, EventType } from "@/context/AppContext";
 
-const layers: { type: EventType | "all"; label: string; color: string }[] = [
-  { type: "all", label: "All layers", color: "bg-muted" },
-  { type: "injury", label: "Injuries", color: "bg-body-pain" },
-  { type: "symptom", label: "Symptoms", color: "bg-body-tension" },
-  { type: "stress", label: "Stress", color: "bg-body-tension" },
-  { type: "treatment", label: "Treatments", color: "bg-body-healing" },
-  { type: "life-event", label: "Life events", color: "bg-body-neutral" },
+const layers: { type: EventType | "all"; label: string; dot: string }[] = [
+  { type: "all", label: "All", dot: "bg-muted-foreground/40" },
+  { type: "injury", label: "Injuries", dot: "bg-body-pain" },
+  { type: "symptom", label: "Symptoms", dot: "bg-body-tension" },
+  { type: "stress", label: "Stress", dot: "bg-body-tension" },
+  { type: "treatment", label: "Treatments", dot: "bg-body-healing" },
+  { type: "life-event", label: "Life", dot: "bg-body-neutral" },
 ];
 
 const LayerToggles = () => {
   const { state, setActiveLayer } = useApp();
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap justify-center gap-1.5">
       {layers.map((layer) => (
         <button
           key={layer.type}
           onClick={() => setActiveLayer(layer.type)}
-          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-            state.activeLayer === layer.type
-              ? "bg-primary text-primary-foreground shadow-soft"
-              : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+          className={`chip ${
+            state.activeLayer === layer.type ? "chip-active" : "chip-inactive"
           }`}
         >
-          <span className={`w-2 h-2 rounded-full ${layer.color}`} />
+          <span className={`w-1.5 h-1.5 rounded-full ${layer.dot}`} />
           {layer.label}
         </button>
       ))}

@@ -27,23 +27,19 @@ const Onboarding = () => {
   const { completeOnboarding } = useApp();
 
   const next = () => {
-    if (step < 2) {
-      setStep(step + 1);
-    } else {
-      completeOnboarding();
-      navigate("/atlas");
-    }
+    if (step < 2) setStep(step + 1);
+    else { completeOnboarding(); navigate("/atlas"); }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-between bg-background px-6 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-between bg-background px-6 py-14">
       {/* Progress */}
-      <div className="flex gap-2 w-full max-w-xs">
+      <div className="flex gap-2.5 w-full max-w-[200px]">
         {steps.map((_, i) => (
           <div
             key={i}
-            className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-              i <= step ? "bg-primary" : "bg-border"
+            className={`h-[3px] flex-1 rounded-full transition-all duration-700 ${
+              i <= step ? "bg-primary/70" : "bg-border"
             }`}
           />
         ))}
@@ -53,32 +49,29 @@ const Onboarding = () => {
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
-          className="max-w-sm w-full text-center space-y-6 flex-1 flex flex-col items-center justify-center"
-          initial={{ opacity: 0, x: 30 }}
+          className="max-w-xs w-full text-center space-y-5 flex-1 flex flex-col items-center justify-center"
+          initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.35 }}
+          exit={{ opacity: 0, x: -24 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
-          <div className="text-5xl mb-2">{steps[step].icon}</div>
-          <h2 className="text-foreground">{steps[step].title}</h2>
-          <p className="text-muted-foreground leading-relaxed">
+          <div className="text-4xl mb-1">{steps[step].icon}</div>
+          <h2 className="text-foreground text-2xl">{steps[step].title}</h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
             {steps[step].description}
           </p>
         </motion.div>
       </AnimatePresence>
 
       {/* Actions */}
-      <div className="w-full max-w-sm space-y-3">
-        <button
-          onClick={next}
-          className="w-full py-3.5 px-6 bg-primary text-primary-foreground rounded-xl font-medium text-sm transition-all hover:opacity-90 active:scale-[0.98]"
-        >
+      <div className="w-full max-w-xs space-y-3">
+        <button onClick={next} className="btn-primary">
           {step < 2 ? "Continue" : "Start mapping"}
         </button>
         {step < 2 && (
           <button
             onClick={() => { completeOnboarding(); navigate("/atlas"); }}
-            className="w-full py-3 text-muted-foreground text-sm hover:text-foreground transition-colors"
+            className="btn-ghost"
           >
             Skip for now
           </button>

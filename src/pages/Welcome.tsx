@@ -6,61 +6,60 @@ const Welcome = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6">
+      {/* Subtle ambient background */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[480px] h-[480px] rounded-full bg-sage/20 blur-[100px] animate-breathe" />
+      </div>
+
       <motion.div
-        className="max-w-md w-full text-center space-y-8"
-        initial={{ opacity: 0, y: 20 }}
+        className="relative max-w-sm w-full text-center space-y-10"
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        {/* Logo mark */}
+        {/* Logo */}
         <motion.div
-          className="mx-auto w-20 h-20 rounded-full bg-sage flex items-center justify-center"
-          initial={{ scale: 0.8, opacity: 0 }}
+          className="mx-auto w-16 h-16 rounded-full bg-sage/60 flex items-center justify-center"
+          initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
+          transition={{ delay: 0.3, duration: 0.7 }}
         >
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-sage-foreground">
-            <ellipse cx="18" cy="14" rx="6" ry="8" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            <line x1="18" y1="22" x2="18" y2="32" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="18" y1="26" x2="13" y2="23" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="18" y1="26" x2="23" y2="23" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="18" y1="32" x2="14" y2="36" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="18" y1="32" x2="22" y2="36" stroke="currentColor" strokeWidth="1.5" />
+          <svg width="28" height="32" viewBox="0 0 28 32" fill="none" className="text-sage-foreground">
+            <ellipse cx="14" cy="10" rx="5" ry="7" stroke="currentColor" strokeWidth="1.2" fill="none" />
+            <line x1="14" y1="17" x2="14" y2="26" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="14" y1="21" x2="10" y2="18.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="14" y1="21" x2="18" y2="18.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="14" y1="26" x2="11" y2="30" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <line x1="14" y1="26" x2="17" y2="30" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
         </motion.div>
 
         <div className="space-y-3">
           <h1 className="text-foreground">Body Atlas</h1>
-          <p className="text-muted-foreground text-lg leading-relaxed">
+          <p className="text-muted-foreground text-base leading-relaxed">
             A lifetime map of your body and health
           </p>
         </div>
 
         <motion.p
-          className="text-muted-foreground/80 text-sm leading-relaxed max-w-xs mx-auto"
+          className="text-muted-foreground/70 text-[13px] leading-relaxed max-w-[280px] mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
         >
-          Understand your body's story. Track injuries, symptoms, and treatments across time — gently and privately.
+          Track injuries, symptoms, and treatments across time — gently and privately.
         </motion.p>
 
         <motion.div
-          className="pt-4 space-y-3"
+          className="pt-2 space-y-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
+          transition={{ delay: 0.9, duration: 0.6 }}
         >
-          <button
-            onClick={() => navigate("/onboarding")}
-            className="w-full py-3.5 px-6 bg-primary text-primary-foreground rounded-xl font-medium text-sm transition-all hover:opacity-90 active:scale-[0.98]"
-          >
+          <button onClick={() => navigate("/onboarding")} className="btn-primary">
             Get started
           </button>
-          <button
-            onClick={() => navigate("/atlas")}
-            className="w-full py-3 px-6 text-muted-foreground text-sm hover:text-foreground transition-colors"
-          >
+          <button onClick={() => navigate("/atlas")} className="btn-ghost">
             I've been here before
           </button>
         </motion.div>
