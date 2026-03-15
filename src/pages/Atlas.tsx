@@ -26,6 +26,7 @@ const Atlas = () => {
   const [showLegacy, setShowLegacy] = useState(false);
   const [showCustomise, setShowCustomise] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [showBodyStory, setShowBodyStory] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
 
   const handleRegionSelect = (region: BodyRegion) => {
