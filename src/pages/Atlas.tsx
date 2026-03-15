@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, MoreHorizontal, ClipboardList, Palette, Share2, BookOpen, Heart, Sparkles } from "lucide-react";
+import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield } from "lucide-react";
 import { useApp, BodyRegion } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
