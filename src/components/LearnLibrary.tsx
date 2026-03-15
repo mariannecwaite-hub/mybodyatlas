@@ -5,9 +5,11 @@ interface LearnLibraryProps { open: boolean; onClose: () => void; }
 
 const articles = [
   { title: "Understanding body patterns", summary: "Our bodies often communicate through repeating patterns. Learning to notice them can be a gentle first step.", category: "Awareness", readTime: "3 min" },
-  { title: "Stress and the body", summary: "Stress doesn't just live in our minds. Here's how it can show up physically — and what that might mean for you.", category: "Connection", readTime: "4 min" },
+  { title: "Stress and the nervous system", summary: "Stress doesn't just live in our minds. Here's how it can show up physically — and what that might mean for you.", category: "Connection", readTime: "4 min" },
+  { title: "Treatment approaches explained", summary: "From physiotherapy to mindfulness — a plain-language guide to the different ways people care for their bodies.", category: "Knowledge", readTime: "5 min" },
   { title: "The value of tracking", summary: "Keeping a record isn't about perfection. It's about giving your future self context and compassion.", category: "Practice", readTime: "2 min" },
   { title: "Talking to your practitioner", summary: "How to share your body history in a way that feels comfortable and helps them help you.", category: "Communication", readTime: "3 min" },
+  { title: "Life stage body changes", summary: "From adolescence through parenthood to later life — how our bodies naturally shift and what to be aware of.", category: "Life stages", readTime: "4 min" },
 ];
 
 const LearnLibrary = ({ open, onClose }: LearnLibraryProps) => {
@@ -23,6 +25,9 @@ const LearnLibrary = ({ open, onClose }: LearnLibraryProps) => {
               <h2 className="text-xl">Learn</h2>
               <button onClick={onClose} className="modal-close"><X className="w-5 h-5 text-muted-foreground" /></button>
             </div>
+            <p className="text-[13px] text-muted-foreground/55 mb-5 leading-relaxed">
+              Plain-language guides to help you understand your body better. No jargon, no judgment.
+            </p>
             <div className="space-y-3">
               {articles.map((article, i) => (
                 <motion.div key={i}

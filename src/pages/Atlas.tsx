@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, MoreHorizontal, ClipboardList, Palette, Share2, BookOpen, Heart } from "lucide-react";
+import { Plus, MoreHorizontal, ClipboardList, Palette, Share2, BookOpen, Heart, Sparkles } from "lucide-react";
 import { useApp, BodyRegion } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
@@ -15,6 +15,7 @@ import ShareFlow from "@/components/ShareFlow";
 import LearnLibrary from "@/components/LearnLibrary";
 import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
+import BodyStorySummary from "@/components/BodyStorySummary";
 
 const Atlas = () => {
   const { state, setState, currentProfile, selectRegion } = useApp();
