@@ -122,7 +122,7 @@
   }
 
   .section-label {
-    @apply text-[11px] font-medium text-muted-foreground uppercase tracking-widest;
+    @apply text-[11px] font-medium text-muted-foreground/60 uppercase tracking-[0.15em];
   }
 
   .field-input {
