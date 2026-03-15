@@ -1,18 +1,56 @@
 import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { motion } from "framer-motion";
 
+const MAX_INSIGHTS = 3;
+
 const InsightCards = () => {
-  const { state } = useApp();
+  const { state, visibleEvents, revealInsights } = useApp();
+
+  // ── Consent gate ──
+  if (!state.insightsRevealed) {
+    return (
+      <div className="space-y-5">
+        <div>
+          <h2 className="text-[22px] font-serif text-foreground/90 leading-tight">Reflections</h2>
+          <p className="text-[11px] text-muted-foreground/40 mt-1 tracking-wide">
+            Patterns we've gently noticed
+          </p>
+        </div>
+
+        <motion.div
+          className="rounded-2xl p-7 border border-sage/20 bg-sage/10 text-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <p className="text-[14px] font-serif text-foreground/80 mb-2">
+            We've noticed some patterns
+          </p>
+          <p className="text-[13px] text-muted-foreground/55 leading-[1.8] mb-5">
+            Based on what you've recorded, there are a few gentle observations we can share. Only when you're ready.
+          </p>
+          <button
+            onClick={revealInsights}
+            className="inline-flex items-center px-5 py-2.5 rounded-full bg-primary/85 text-primary-foreground text-[12px] font-medium transition-all duration-300 hover:bg-primary active:scale-[0.97]"
+            style={{ boxShadow: "var(--shadow-sm)" }}
+          >
+            I'd like to explore them
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
+
   const insights = generateInsights();
 
   function generateInsights() {
     const cards: { title: string; body: string; tone: string }[] = [];
 
     const scopedEvents = state.selectedRegion
-      ? state.events.filter((e) => e.regions.includes(state.selectedRegion!))
-      : state.events;
+      ? visibleEvents.filter((e) => e.regions.includes(state.selectedRegion!))
+      : visibleEvents;
 
-    const allEvents = state.events;
+    const allEvents = visibleEvents;
     const ongoingCount = scopedEvents.filter((e) => e.ongoing).length;
     const stressEvents = allEvents.filter((e) => e.type === "stress");
     const symptomEvents = allEvents.filter((e) => e.type === "symptom");
@@ -38,7 +76,7 @@ const InsightCards = () => {
       if (uniqueYears.length >= 3) {
         cards.push({
           title: "A recurring area",
-          body: `Your ${regionLabel.toLowerCase()} has come up across ${uniqueYears.length} different years. Patterns like this can be worth sharing with a practitioner — not as a diagnosis, but as context.`,
+          body: `Your ${regionLabel.toLowerCase()} has come up across ${uniqueYears.length} different years. Patterns like this can be worth sharing with someone you trust — not as a diagnosis, but as context.`,
           tone: "lavender",
         });
       }
@@ -46,8 +84,8 @@ const InsightCards = () => {
       const regionStress = stressEvents.filter((e) => e.regions.some((r) => state.selectedRegion === r));
       if (regionStress.length > 0) {
         cards.push({
-          title: "Stress lives here too",
-          body: `You've logged stress that shows up in your ${regionLabel.toLowerCase()}. Many people carry tension in familiar places — your body is consistent, not broken.`,
+          title: "Stress tends to settle here",
+          body: `You've noticed stress showing up in your ${regionLabel.toLowerCase()}. Many people carry tension in familiar places — your body is consistent, not broken.`,
           tone: "lavender",
         });
       }
@@ -62,13 +100,13 @@ const InsightCards = () => {
         const regionNames = overlappingRegions.slice(0, 2).map((r) => REGION_LABELS[r]?.toLowerCase() || r.replace(/_/g, " ")).join(" and ");
         cards.push({
           title: "Stress and your body",
-          body: `You've logged stress periods and physical symptoms in your ${regionNames}. Many people notice tension follows stress — it's a common pattern, not something wrong with you.`,
+          body: `You've noticed stress periods and physical sensations in your ${regionNames}. Many people find tension follows stress — it's a common pattern, not something wrong with you.`,
           tone: "lavender",
         });
       } else if (stressEvents.length > 0 && symptomEvents.length > 0) {
         cards.push({
           title: "A thread worth noticing",
-          body: "You've logged both stress periods and physical symptoms. Many people find these are connected — something worth reflecting on gently.",
+          body: "You've recorded both stress periods and physical sensations. Many people find these are connected — something worth reflecting on gently.",
           tone: "lavender",
         });
       }
@@ -94,7 +132,7 @@ const InsightCards = () => {
     if (echoFound && !state.selectedRegion) {
       cards.push({
         title: "Your body remembers",
-        body: "An earlier injury may have quietly changed how you move. Later symptoms in nearby areas can sometimes trace back. This is your body adapting — not failing.",
+        body: "An earlier injury may have quietly changed how you move. Later sensations in nearby areas can sometimes trace back. This is your body adapting — not failing.",
         tone: "sage",
       });
     }
@@ -112,7 +150,7 @@ const InsightCards = () => {
       if (postpartumSymptoms.length > 0) {
         cards.push({
           title: "After a big change",
-          body: "New symptoms appeared in the months after a significant life event. Your body was adapting to a lot — physically and emotionally. That takes time.",
+          body: "New sensations appeared in the months after a significant life event. Your body was adapting to a lot — physically and emotionally. That takes time.",
           tone: "warm",
         });
       }
@@ -129,7 +167,7 @@ const InsightCards = () => {
       } else {
         cards.push({
           title: "Active threads",
-          body: `${ongoingCount} ongoing ${ongoingCount === 1 ? "entry" : "entries"}. Tracking them is a gentle first step.`,
+          body: `${ongoingCount} ongoing ${ongoingCount === 1 ? "entry" : "entries"}. Noticing them is a gentle first step.`,
           tone: "sage",
         });
       }
@@ -155,7 +193,8 @@ const InsightCards = () => {
       });
     }
 
-    return cards;
+    // Emotional pacing: limit to MAX_INSIGHTS to prevent overwhelm
+    return cards.slice(0, MAX_INSIGHTS);
   }
 
   const toneStyles: Record<string, string> = {
@@ -165,7 +204,7 @@ const InsightCards = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" role="region" aria-label="Reflections — gentle observations about patterns you've recorded">
       <div>
         <h2 className="text-[22px] font-serif text-foreground/90 leading-tight">Reflections</h2>
         {state.selectedRegion && (
@@ -175,14 +214,16 @@ const InsightCards = () => {
         )}
       </div>
 
-      <div className="space-y-3.5">
+      <div className="space-y-4">
         {insights.map((insight, i) => (
           <motion.div
             key={`${insight.title}-${i}`}
             className={`rounded-2xl p-6 border transition-all duration-600 ${toneStyles[insight.tone] || ""}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 + i * 0.1, duration: 0.55, ease: "easeOut" }}
+            transition={{ delay: 0.35 + i * 0.15, duration: 0.55, ease: "easeOut" }}
+            role="article"
+            aria-label={insight.title}
           >
             <p className="text-[15px] font-serif text-foreground/85 mb-2">{insight.title}</p>
             <p className="text-[13px] text-muted-foreground/60 leading-[1.8]">{insight.body}</p>
