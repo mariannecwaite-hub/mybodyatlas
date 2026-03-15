@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, EventType, BodyRegion, EventSeverity } from "@/context/AppContext";
+import { useApp, EventType, BodyRegion, EventSeverity, REGION_LABELS } from "@/context/AppContext";
 import { X } from "lucide-react";
 
 const eventTypes: { type: EventType; label: string; icon: string }[] = [
@@ -11,16 +11,13 @@ const eventTypes: { type: EventType; label: string; icon: string }[] = [
   { type: "life-event", label: "Life event", icon: "⭐" },
 ];
 
-const bodyRegions: { id: BodyRegion; label: string }[] = [
-  { id: "head", label: "Head" }, { id: "neck", label: "Neck" },
-  { id: "left-shoulder", label: "L. Shoulder" }, { id: "right-shoulder", label: "R. Shoulder" },
-  { id: "chest", label: "Chest" }, { id: "upper-back", label: "Upper back" },
-  { id: "left-arm", label: "L. Arm" }, { id: "right-arm", label: "R. Arm" },
-  { id: "abdomen", label: "Abdomen" }, { id: "lower-back", label: "Lower back" },
-  { id: "left-hip", label: "L. Hip" }, { id: "right-hip", label: "R. Hip" },
-  { id: "left-leg", label: "L. Leg" }, { id: "right-leg", label: "R. Leg" },
-  { id: "left-knee", label: "L. Knee" }, { id: "right-knee", label: "R. Knee" },
-  { id: "left-foot", label: "L. Foot" }, { id: "right-foot", label: "R. Foot" },
+const allRegions: BodyRegion[] = [
+  "head_jaw", "neck", "shoulder_left", "shoulder_right",
+  "chest", "upper_back", "abdomen", "lower_back",
+  "wrist_hand_left", "wrist_hand_right",
+  "hip_left", "hip_right",
+  "knee_left", "knee_right",
+  "ankle_foot_left", "ankle_foot_right",
 ];
 
 interface AddEventFlowProps {
@@ -70,7 +67,6 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
             </div>
 
             <div className="space-y-6">
-              {/* Type */}
               <div>
                 <label className="section-label mb-2.5 block">What kind?</label>
                 <div className="flex flex-wrap gap-2">
@@ -83,36 +79,30 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                 </div>
               </div>
 
-              {/* Title */}
               <div>
                 <label className="section-label mb-2 block">What happened?</label>
                 <input value={title} onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., Lower back tension"
-                  className="field-input" />
+                  placeholder="e.g., Lower back tension" className="field-input" />
               </div>
 
-              {/* Description */}
               <div>
                 <label className="section-label mb-2 block">More detail <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Any details you'd like to remember..."
-                  rows={2} className="field-input resize-none" />
+                  placeholder="Any details you'd like to remember..." rows={2} className="field-input resize-none" />
               </div>
 
-              {/* Body areas */}
               <div>
                 <label className="section-label mb-2.5 block">Where on your body?</label>
                 <div className="flex flex-wrap gap-1.5">
-                  {bodyRegions.map((r) => (
-                    <button key={r.id} onClick={() => toggleRegion(r.id)}
-                      className={`chip text-[11px] ${regions.includes(r.id) ? "chip-active" : "chip-inactive"}`}>
-                      {r.label}
+                  {allRegions.map((r) => (
+                    <button key={r} onClick={() => toggleRegion(r)}
+                      className={`chip text-[11px] ${regions.includes(r) ? "chip-active" : "chip-inactive"}`}>
+                      {REGION_LABELS[r]}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Date + Severity */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="section-label mb-2 block">When</label>
@@ -125,15 +115,12 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                       <button key={s} onClick={() => setSeverity(s)}
                         className={`flex-1 py-2.5 rounded-xl text-[11px] font-medium capitalize transition-all duration-200 ${
                           severity === s ? "bg-primary text-primary-foreground" : "bg-secondary/70 text-muted-foreground hover:bg-secondary"
-                        }`}>
-                        {s}
-                      </button>
+                        }`}>{s}</button>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Ongoing */}
               <label className="flex items-center gap-3 cursor-pointer py-1">
                 <div onClick={() => setOngoing(!ongoing)}
                   className={`w-11 h-[26px] rounded-full transition-all duration-300 relative ${ongoing ? "bg-primary" : "bg-border"}`}>
@@ -143,7 +130,6 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                 <span className="text-[13px] text-foreground/80">Still ongoing</span>
               </label>
 
-              {/* Treatment details */}
               {type === "treatment" && (
                 <div>
                   <label className="section-label mb-2 block">Treatment details</label>
@@ -152,12 +138,10 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                 </div>
               )}
 
-              {/* Notes */}
               <div>
                 <label className="section-label mb-2 block">Personal notes <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
                 <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Anything else you'd like to note..."
-                  rows={2} className="field-input resize-none" />
+                  placeholder="Anything else you'd like to note..." rows={2} className="field-input resize-none" />
               </div>
 
               <button onClick={handleSubmit} disabled={!title.trim()} className="btn-primary">

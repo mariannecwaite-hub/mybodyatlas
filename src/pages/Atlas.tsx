@@ -4,6 +4,7 @@ import { Plus, Users, Share2, BookOpen, Heart, Palette, ClipboardList, MoreHoriz
 import { useApp, BodyRegion } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
+import RegionSummary from "@/components/RegionSummary";
 import Timeline from "@/components/Timeline";
 import InsightCards from "@/components/InsightCards";
 import AddEventFlow from "@/components/AddEventFlow";
@@ -16,7 +17,7 @@ import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
 
 const Atlas = () => {
-  const { state, setState, currentProfile } = useApp();
+  const { state, setState, currentProfile, selectRegion } = useApp();
   const [showTreatment, setShowTreatment] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showShare, setShowShare] = useState(false);
@@ -26,7 +27,16 @@ const Atlas = () => {
   const [showMore, setShowMore] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
 
-  const handleRegionClick = (region: BodyRegion) => {
+  const handleRegionSelect = (region: BodyRegion) => {
+    // Toggle: if same region, deselect; otherwise select
+    if (state.selectedRegion === region) {
+      selectRegion(null);
+    } else {
+      selectRegion(region);
+    }
+  };
+
+  const handleAddEventFromRegion = (region: BodyRegion) => {
     setPreselectedRegion(region);
     setState((s) => ({ ...s, showAddEvent: true }));
   };
@@ -94,18 +104,25 @@ const Atlas = () => {
 
       <main className="max-w-6xl mx-auto px-5 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
-          {/* Left: Body Map — the visual centre */}
+          {/* Left: Body Map + Region Summary */}
           <motion.div
-            className="flex flex-col items-center gap-4 lg:sticky lg:top-20 lg:self-start lg:py-4"
+            className="flex flex-col items-center gap-4 lg:sticky lg:top-16 lg:self-start lg:py-2"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
           >
-            <BodyMap onRegionClick={handleRegionClick} />
+            <BodyMap onRegionSelect={handleRegionSelect} />
             <LayerToggles />
+
+            {/* Region summary card — appears when a region is selected */}
+            {state.selectedRegion && (
+              <div className="w-full max-w-[280px]">
+                <RegionSummary onAddEvent={handleAddEventFromRegion} />
+              </div>
+            )}
           </motion.div>
 
-          {/* Right: Supporting context */}
+          {/* Right: Timeline + Insights */}
           <motion.div
-            className="space-y-10 lg:py-4"
+            className="space-y-10 lg:py-2"
             initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
           >
             <Timeline />

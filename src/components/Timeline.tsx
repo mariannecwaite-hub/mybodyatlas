@@ -2,45 +2,50 @@ import { useApp, EventType } from "@/context/AppContext";
 import { motion } from "framer-motion";
 
 const typeIcons: Record<EventType, string> = {
-  injury: "🩹",
-  symptom: "💭",
-  stress: "🌊",
-  treatment: "🌿",
-  "life-event": "⭐",
+  injury: "🩹", symptom: "💭", stress: "🌊", treatment: "🌿", "life-event": "⭐",
 };
 
 const typeDotColors: Record<EventType, string> = {
-  injury: "bg-body-pain",
-  symptom: "bg-body-tension",
-  stress: "bg-body-tension",
-  treatment: "bg-body-healing",
-  "life-event": "bg-body-neutral",
+  injury: "bg-body-pain", symptom: "bg-body-tension", stress: "bg-body-tension",
+  treatment: "bg-body-healing", "life-event": "bg-body-neutral",
 };
 
 const Timeline = () => {
   const { state, setState } = useApp();
 
+  // Filter by active layer AND selected region
   const filteredEvents = state.events
     .filter((e) => state.activeLayer === "all" || e.type === state.activeLayer)
+    .filter((e) => !state.selectedRegion || e.regions.includes(state.selectedRegion))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const years = [...new Set(filteredEvents.map((e) => new Date(e.date).getFullYear()))].sort((a, b) => b - a);
 
+  // Auto-select first available year if current year has no events
+  const effectiveYear = years.includes(state.timelineYear) ? state.timelineYear : (years[0] || state.timelineYear);
+
   const visibleEvents = filteredEvents.filter(
-    (e) => new Date(e.date).getFullYear() === state.timelineYear
+    (e) => new Date(e.date).getFullYear() === effectiveYear
   );
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <span className="section-label">Timeline</span>
-        <div className="flex gap-0.5">
+        <span className="section-label">
+          Timeline
+          {state.selectedRegion && (
+            <span className="ml-1 normal-case font-normal text-muted-foreground/40">
+              · filtered
+            </span>
+          )}
+        </span>
+        <div className="flex gap-0.5 flex-wrap justify-end">
           {years.map((year) => (
             <button
               key={year}
               onClick={() => setState((s) => ({ ...s, timelineYear: year }))}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-300 ${
-                state.timelineYear === year
+                effectiveYear === year
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground/60 hover:text-muted-foreground"
               }`}
@@ -51,9 +56,7 @@ const Timeline = () => {
         </div>
       </div>
 
-      {/* Timeline entries with left line */}
       <div className="relative pl-4">
-        {/* Vertical line */}
         <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
 
         <div className="space-y-0.5">
@@ -66,9 +69,7 @@ const Timeline = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05, duration: 0.3 }}
             >
-              {/* Timeline dot */}
               <div className={`absolute left-0 top-[18px] w-[9px] h-[9px] rounded-full border-2 border-card ${typeDotColors[event.type]} z-10`} />
-
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground/90 truncate leading-snug">{event.title}</p>
                 <p className="text-xs text-muted-foreground/70 mt-0.5">
@@ -87,7 +88,7 @@ const Timeline = () => {
 
           {visibleEvents.length === 0 && (
             <p className="text-sm text-muted-foreground/50 py-6 text-center">
-              No events for this year
+              {state.selectedRegion ? "No events for this region in this year" : "No events for this year"}
             </p>
           )}
         </div>
