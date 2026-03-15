@@ -1,10 +1,14 @@
+import { useState } from "react";
 import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { motion } from "framer-motion";
+import { Bookmark, X as XIcon, BookOpen, Sparkles } from "lucide-react";
 
 const MAX_INSIGHTS = 3;
 
 const InsightCards = () => {
   const { state, visibleEvents, revealInsights } = useApp();
+  const [savedInsights, setSavedInsights] = useState<string[]>([]);
+  const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
 
   // ── Consent gate ──
   if (!state.insightsRevealed) {
@@ -44,7 +48,7 @@ const InsightCards = () => {
   const insights = generateInsights();
 
   function generateInsights() {
-    const cards: { title: string; body: string; tone: string }[] = [];
+    const cards: { id: string; title: string; body: string; tone: string; premium?: boolean }[] = [];
 
     const scopedEvents = state.selectedRegion
       ? visibleEvents.filter((e) => e.regions.includes(state.selectedRegion!))
@@ -64,6 +68,7 @@ const InsightCards = () => {
 
       if (regionEvents.length === 0) {
         cards.push({
+          id: "quiet-area",
           title: "A quiet area",
           body: `Nothing recorded in your ${regionLabel.toLowerCase()} yet. That's perfectly fine — not every area needs a story.`,
           tone: "sage",
@@ -75,18 +80,22 @@ const InsightCards = () => {
       const uniqueYears = [...new Set(dates)];
       if (uniqueYears.length >= 3) {
         cards.push({
+          id: "recurring-area",
           title: "A recurring area",
           body: `Your ${regionLabel.toLowerCase()} has come up across ${uniqueYears.length} different years. Patterns like this can be worth sharing with someone you trust — not as a diagnosis, but as context.`,
           tone: "lavender",
+          premium: true,
         });
       }
 
       const regionStress = stressEvents.filter((e) => e.regions.some((r) => state.selectedRegion === r));
       if (regionStress.length > 0) {
         cards.push({
+          id: "stress-settles",
           title: "Stress tends to settle here",
           body: `You've noticed stress showing up in your ${regionLabel.toLowerCase()}. Many people carry tension in familiar places — your body is consistent, not broken.`,
           tone: "lavender",
+          premium: true,
         });
       }
     }
@@ -99,15 +108,19 @@ const InsightCards = () => {
       if (overlappingRegions.length > 0) {
         const regionNames = overlappingRegions.slice(0, 2).map((r) => REGION_LABELS[r]?.toLowerCase() || r.replace(/_/g, " ")).join(" and ");
         cards.push({
+          id: "stress-body",
           title: "Stress and your body",
           body: `You've noticed stress periods and physical sensations in your ${regionNames}. Many people find tension follows stress — it's a common pattern, not something wrong with you.`,
           tone: "lavender",
+          premium: true,
         });
       } else if (stressEvents.length > 0 && symptomEvents.length > 0) {
         cards.push({
+          id: "thread-worth",
           title: "A thread worth noticing",
           body: "You've recorded both stress periods and physical sensations. Many people find these are connected — something worth reflecting on gently.",
           tone: "lavender",
+          premium: true,
         });
       }
     }
@@ -131,9 +144,11 @@ const InsightCards = () => {
 
     if (echoFound && !state.selectedRegion) {
       cards.push({
+        id: "body-remembers",
         title: "Your body remembers",
         body: "An earlier injury may have quietly changed how you move. Later sensations in nearby areas can sometimes trace back. This is your body adapting — not failing.",
         tone: "sage",
+        premium: true,
       });
     }
 
@@ -149,9 +164,11 @@ const InsightCards = () => {
       });
       if (postpartumSymptoms.length > 0) {
         cards.push({
+          id: "after-change",
           title: "After a big change",
           body: "New sensations appeared in the months after a significant life event. Your body was adapting to a lot — physically and emotionally. That takes time.",
           tone: "warm",
+          premium: true,
         });
       }
     }
@@ -160,12 +177,14 @@ const InsightCards = () => {
       const ongoingTreatments = treatmentEvents.filter((e) => e.ongoing).length;
       if (ongoingTreatments > 0) {
         cards.push({
+          id: "showing-up",
           title: "You're showing up",
           body: `${ongoingCount} ongoing ${ongoingCount === 1 ? "thread" : "threads"}, including ${ongoingTreatments} active ${ongoingTreatments === 1 ? "treatment" : "treatments"}. Staying with the process is itself a form of care.`,
           tone: "sage",
         });
       } else {
         cards.push({
+          id: "active-threads",
           title: "Active threads",
           body: `${ongoingCount} ongoing ${ongoingCount === 1 ? "entry" : "entries"}. Noticing them is a gentle first step.`,
           tone: "sage",
@@ -178,6 +197,7 @@ const InsightCards = () => {
       const span = Math.max(...dates) - Math.min(...dates);
       if (span >= 5) {
         cards.push({
+          id: "years-story",
           title: `${span} years of your story`,
           body: "Your body map spans over a decade. Looking back can reveal how much you've navigated — and how much your body has carried for you.",
           tone: "warm",
@@ -187,20 +207,28 @@ const InsightCards = () => {
 
     if (cards.length === 0) {
       cards.push({
+        id: "map-growing",
         title: "Your map is growing",
         body: "As you add events, My Body Atlas will gently surface patterns. There's no rush.",
         tone: "sage",
       });
     }
 
-    // Emotional pacing: limit to MAX_INSIGHTS to prevent overwhelm
-    return cards.slice(0, MAX_INSIGHTS);
+    return cards.filter((c) => !dismissedInsights.includes(c.id)).slice(0, MAX_INSIGHTS);
   }
 
   const toneStyles: Record<string, string> = {
     sage: "bg-sage/15 border-sage/20",
     lavender: "bg-lavender/15 border-lavender/20",
     warm: "bg-warm/18 border-warm/20",
+  };
+
+  const toggleSave = (id: string) => {
+    setSavedInsights((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+  };
+
+  const dismiss = (id: string) => {
+    setDismissedInsights((prev) => [...prev, id]);
   };
 
   return (
@@ -217,19 +245,61 @@ const InsightCards = () => {
       <div className="space-y-4">
         {insights.map((insight, i) => (
           <motion.div
-            key={`${insight.title}-${i}`}
-            className={`rounded-2xl p-6 border transition-all duration-600 ${toneStyles[insight.tone] || ""}`}
+            key={`${insight.id}-${i}`}
+            className={`rounded-2xl p-6 border transition-all duration-600 ${toneStyles[insight.tone] || ""} relative`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35 + i * 0.15, duration: 0.55, ease: "easeOut" }}
             role="article"
             aria-label={insight.title}
           >
+            {/* Premium badge */}
+            {insight.premium && (
+              <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/8 border border-primary/10">
+                <Sparkles className="w-2.5 h-2.5 text-primary/40" />
+                <span className="text-[9px] font-medium text-primary/40 tracking-wider uppercase">Premium</span>
+              </div>
+            )}
+
             <p className="text-[15px] font-serif text-foreground/85 mb-2">{insight.title}</p>
-            <p className="text-[13px] text-muted-foreground/60 leading-[1.8]">{insight.body}</p>
+            <p className="text-[13px] text-muted-foreground/60 leading-[1.8] mb-4">{insight.body}</p>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => toggleSave(insight.id)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 ${
+                  savedInsights.includes(insight.id)
+                    ? "bg-primary/10 text-primary/70"
+                    : "bg-secondary/50 text-muted-foreground/50 hover:text-muted-foreground/70"
+                }`}
+              >
+                <Bookmark className="w-3 h-3" />
+                {savedInsights.includes(insight.id) ? "Saved" : "Save"}
+              </button>
+              <button
+                onClick={() => dismiss(insight.id)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-secondary/50 text-muted-foreground/50 hover:text-muted-foreground/70 transition-all duration-200"
+              >
+                <XIcon className="w-3 h-3" />
+                Not relevant
+              </button>
+              <button
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-secondary/50 text-muted-foreground/50 hover:text-muted-foreground/70 transition-all duration-200"
+              >
+                <BookOpen className="w-3 h-3" />
+                Learn more
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>
+
+      {/* Educational disclaimer footer */}
+      <p className="text-[10px] text-muted-foreground/30 text-center leading-relaxed pt-2">
+        These reflections are for educational context only — not medical advice.
+        Always consult a qualified practitioner for health decisions.
+      </p>
     </div>
   );
 };

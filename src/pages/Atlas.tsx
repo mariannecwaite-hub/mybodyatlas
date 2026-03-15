@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus, MoreHorizontal, ClipboardList, Palette, Share2, BookOpen, Heart } from "lucide-react";
+import { Plus, MoreHorizontal, ClipboardList, Palette, Share2, BookOpen, Heart, Sparkles } from "lucide-react";
 import { useApp, BodyRegion } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
@@ -15,6 +15,7 @@ import ShareFlow from "@/components/ShareFlow";
 import LearnLibrary from "@/components/LearnLibrary";
 import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
+import BodyStorySummary from "@/components/BodyStorySummary";
 
 const Atlas = () => {
   const { state, setState, currentProfile, selectRegion } = useApp();
@@ -25,6 +26,7 @@ const Atlas = () => {
   const [showLegacy, setShowLegacy] = useState(false);
   const [showCustomise, setShowCustomise] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const [showBodyStory, setShowBodyStory] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
 
   const handleRegionSelect = (region: BodyRegion) => {
@@ -41,6 +43,7 @@ const Atlas = () => {
   };
 
   const secondaryActions = [
+    { icon: Sparkles, label: "Your body story", action: () => setShowBodyStory(true) },
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
     { icon: Share2, label: "Share with practitioner", action: () => setShowShare(true) },
@@ -156,6 +159,7 @@ const Atlas = () => {
       <LearnLibrary open={showLearn} onClose={() => setShowLearn(false)} />
       <LegacySettings open={showLegacy} onClose={() => setShowLegacy(false)} />
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
+      <BodyStorySummary open={showBodyStory} onClose={() => setShowBodyStory(false)} />
     </div>
   );
 };

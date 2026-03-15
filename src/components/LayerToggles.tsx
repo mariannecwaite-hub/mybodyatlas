@@ -4,9 +4,9 @@ const layers: { type: EventType | "all"; label: string; dot: string }[] = [
   { type: "all", label: "All", dot: "bg-muted-foreground/25" },
   { type: "injury", label: "Injuries", dot: "bg-body-pain" },
   { type: "symptom", label: "Sensations", dot: "bg-body-tension" },
-  { type: "stress", label: "Stress", dot: "bg-body-tension" },
-  { type: "treatment", label: "Care", dot: "bg-body-healing" },
-  { type: "life-event", label: "Life", dot: "bg-body-neutral" },
+  { type: "stress", label: "Stress & nervous system", dot: "bg-body-tension" },
+  { type: "treatment", label: "What helped", dot: "bg-body-healing" },
+  { type: "life-event", label: "Life transitions", dot: "bg-body-neutral" },
 ];
 
 const LayerToggles = () => {
