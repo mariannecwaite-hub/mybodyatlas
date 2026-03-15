@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, BodyRegion, REGION_LABELS, EventType } from "@/context/AppContext";
+import { useApp, BodyRegion, REGION_LABELS, EventType, REGION_A11Y } from "@/context/AppContext";
 import { X, Plus } from "lucide-react";
 
 const typeIcons: Record<EventType, string> = {
@@ -11,12 +11,12 @@ interface RegionSummaryProps {
 }
 
 const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
-  const { state, selectRegion, setState } = useApp();
+  const { state, selectRegion, setState, visibleEvents } = useApp();
   const region = state.selectedRegion;
 
   if (!region) return null;
 
-  const regionEvents = state.events
+  const regionEvents = visibleEvents
     .filter((e) => e.regions.includes(region) && (state.activeLayer === "all" || e.type === state.activeLayer))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
@@ -35,24 +35,24 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        role="region"
+        aria-label={REGION_A11Y[region]}
       >
-        {/* Close */}
         <button
           onClick={() => selectRegion(null)}
           className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-secondary/50 transition-colors duration-300"
+          aria-label="Close this area summary"
         >
           <X className="w-3.5 h-3.5 text-muted-foreground/30" />
         </button>
 
-        {/* Region name */}
         <h3 className="text-[18px] font-serif text-foreground/85 mb-1.5 leading-tight">
           {REGION_LABELS[region]}
         </h3>
 
-        {/* Summary */}
         {regionEvents.length === 0 ? (
           <p className="text-[13px] text-muted-foreground/40 mb-6 leading-relaxed">
-            Nothing recorded here yet.
+            Nothing recorded here yet. That's perfectly fine.
           </p>
         ) : (
           <p className="text-[12px] text-muted-foreground/45 mb-6 tracking-wide">
@@ -62,7 +62,6 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
           </p>
         )}
 
-        {/* Recent events */}
         {regionEvents.length > 0 && (
           <div className="space-y-1 mb-6">
             {regionEvents.slice(0, 3).map((event) => (
@@ -70,8 +69,9 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
                 key={event.id}
                 onClick={() => setState((s) => ({ ...s, selectedEvent: event.id }))}
                 className="w-full flex items-center gap-3 p-3 rounded-xl text-left hover:bg-secondary/25 transition-all duration-300 group"
+                aria-label={`${event.title}, ${new Date(event.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}${event.ongoing ? ", still ongoing" : ""}`}
               >
-                <span className="text-[12px]">{typeIcons[event.type]}</span>
+                <span className="text-[12px]" aria-hidden="true">{typeIcons[event.type]}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-medium text-foreground/75 truncate">{event.title}</p>
                   <p className="text-[11px] text-muted-foreground/35 mt-0.5">
@@ -79,7 +79,7 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
                     {event.ongoing && <span className="ml-1.5 text-sage-foreground/50">· ongoing</span>}
                   </p>
                 </div>
-                <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]">→</span>
+                <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]" aria-hidden="true">→</span>
               </button>
             ))}
             {regionEvents.length > 3 && (
@@ -90,12 +90,11 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
           </div>
         )}
 
-        {/* Add event */}
         <button
           onClick={() => onAddEvent(region)}
           className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl border border-dashed border-border/35 text-[11px] text-muted-foreground/40 hover:text-muted-foreground/60 hover:border-border/50 transition-all duration-300"
         >
-          <Plus className="w-3.5 h-3.5" /> Add event here
+          <Plus className="w-3.5 h-3.5" aria-hidden="true" /> Add event here
         </button>
       </motion.div>
     </AnimatePresence>

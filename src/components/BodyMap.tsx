@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
+import { useApp, BodyRegion, EventType, REGION_LABELS, REGION_A11Y } from "@/context/AppContext";
 
 type BodyView = "front" | "back";
 
@@ -44,42 +44,21 @@ const regions: RegionDef[] = [
 ];
 
 const bodySilhouetteFront = `
-  M100,6
-  C80,6 66,20 66,36 C66,52 78,64 90,66
-  L90,80
-  Q74,80 60,88 Q46,98 44,112
+  M100,6 C80,6 66,20 66,36 C66,52 78,64 90,66
+  L90,80 Q74,80 60,88 Q46,98 44,112
   Q38,132 34,164 Q32,192 32,220 Q30,248 30,268
-  L40,270
-  Q40,248 42,220 Q44,192 48,164 Q50,136 56,114
-  L64,108
-  Q62,132 64,160 L64,200
-  Q66,228 72,244
-  L78,272
-  L78,330 Q74,346 76,362
-  L76,398
-  L74,424 Q72,438 70,448
-  L86,448 Q92,438 92,424
-  L92,398
-  L94,362 Q96,346 94,330
-  L96,270
-  L100,260
-  L104,270
-  L106,330 Q104,346 106,362
-  L108,398
-  L108,424 Q108,438 114,448
-  L130,448 Q128,438 126,424
-  L122,398
-  L124,362 Q126,346 124,330
-  L122,272
-  L128,244
-  Q134,228 136,200
-  L136,160 Q138,132 136,108
-  L144,114
+  L40,270 Q40,248 42,220 Q44,192 48,164 Q50,136 56,114
+  L64,108 Q62,132 64,160 L64,200 Q66,228 72,244
+  L78,272 L78,330 Q74,346 76,362 L76,398
+  L74,424 Q72,438 70,448 L86,448 Q92,438 92,424
+  L92,398 L94,362 Q96,346 94,330 L96,270 L100,260
+  L104,270 L106,330 Q104,346 106,362 L108,398
+  L108,424 Q108,438 114,448 L130,448 Q128,438 126,424
+  L122,398 L124,362 Q126,346 124,330 L122,272 L128,244
+  Q134,228 136,200 L136,160 Q138,132 136,108 L144,114
   Q150,136 152,164 Q156,192 158,220 Q160,248 160,270
-  L170,268
-  Q170,248 168,220 Q166,192 166,164 Q162,132 156,112
-  Q154,98 140,88 Q126,80 110,80
-  L110,66
+  L170,268 Q170,248 168,220 Q166,192 166,164 Q162,132 156,112
+  Q154,98 140,88 Q126,80 110,80 L110,66
   C122,64 134,52 134,36 C134,20 120,6 100,6 Z
 `;
 
@@ -89,7 +68,7 @@ const shinLeft   = "M76,362 L94,362 L92,398 L78,398 Z";
 const shinRight  = "M106,362 L124,362 L122,398 L108,398 Z";
 
 const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
-  const { state } = useApp();
+  const { state, visibleEvents } = useApp();
   const [view, setView] = useState<BodyView>("front");
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
 
@@ -97,7 +76,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const visibleRegions = regions.filter((r) => r.views.includes(view));
 
   const getRegionColor = (regionId: BodyRegion): string | null => {
-    const events = state.events.filter(
+    const events = visibleEvents.filter(
       (e) => e.regions.includes(regionId) && (state.activeLayer === "all" || e.type === state.activeLayer)
     );
     if (events.length === 0) return null;
@@ -109,17 +88,23 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   };
 
   const getRegionEventCount = (regionId: BodyRegion): number =>
-    state.events.filter(
+    visibleEvents.filter(
       (e) => e.regions.includes(regionId) && (state.activeLayer === "all" || e.type === state.activeLayer)
     ).length;
 
   return (
-    <div className="relative flex flex-col items-center w-full select-none">
-      {/* View toggle — quiet, understated */}
-      <div className="flex items-center gap-0.5 mb-6 p-1 rounded-full bg-secondary/40 border border-border/20">
+    <div
+      className="relative flex flex-col items-center w-full select-none"
+      role="img"
+      aria-label="Your body map. Tap any area to explore what you've noticed there."
+    >
+      {/* View toggle */}
+      <div className="flex items-center gap-0.5 mb-6 p-1 rounded-full bg-secondary/40 border border-border/20" role="tablist" aria-label="Body view">
         {(["front", "back"] as BodyView[]).map((v) => (
           <button
             key={v}
+            role="tab"
+            aria-selected={view === v}
             onClick={() => setView(v)}
             className={`px-5 py-2 rounded-full text-[11px] font-medium tracking-wide capitalize transition-all duration-400 ${
               view === v
@@ -132,8 +117,8 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         ))}
       </div>
 
-      {/* Floating region label — appears on hover */}
-      <div className="h-7 mb-3 flex items-center justify-center">
+      {/* Floating region label */}
+      <div className="h-7 mb-3 flex items-center justify-center" aria-live="polite">
         <AnimatePresence mode="wait">
           {hoveredRegion && (
             <motion.div
@@ -158,15 +143,16 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </AnimatePresence>
       </div>
 
-      {/* SVG Body — large, centred, dominant */}
+      {/* SVG Body */}
       <div className="relative w-full max-w-[300px] sm:max-w-[320px] mx-auto">
-        {/* Ambient glow — soft, expansive */}
         <div className="absolute -inset-10 body-ambient rounded-full pointer-events-none opacity-60" />
 
         <svg
           viewBox="20 -2 160 460"
           className="relative z-10 w-full"
           style={{ filter: "drop-shadow(0 8px 32px hsl(158 16% 88% / 0.15))" }}
+          role="group"
+          aria-label={`Body map — ${view} view`}
         >
           <defs>
             <linearGradient id="bodyFill2" x1="0.5" y1="0" x2="0.5" y2="1">
@@ -187,21 +173,12 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             </filter>
           </defs>
 
-          {/* Silhouette */}
-          <path
-            d={bodySilhouetteFront}
-            fill="url(#bodyFill2)"
-            stroke="hsl(var(--body-stroke))"
-            strokeWidth="0.4"
-            strokeLinejoin="round"
-          />
+          <path d={bodySilhouetteFront} fill="url(#bodyFill2)" stroke="hsl(var(--body-stroke))" strokeWidth="0.4" strokeLinejoin="round" />
 
-          {/* Connectors */}
           {[thighLeft, thighRight, shinLeft, shinRight].map((d, i) => (
             <path key={i} d={d} fill="url(#bodyFill2)" stroke="none" />
           ))}
 
-          {/* Subtle anatomical hints */}
           {view === "front" && (
             <>
               <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.18" />
@@ -218,7 +195,6 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
           <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.1" />
 
-          {/* Interactive region overlays */}
           {visibleRegions.map((region) => {
             const color = getRegionColor(region.id);
             const isHovered = hoveredRegion === region.id;
@@ -226,9 +202,12 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             const hasEvents = !!color;
             const count = getRegionEventCount(region.id);
 
+            const a11yLabel = REGION_A11Y[region.id] + (count > 0 ? `. ${count} ${count === 1 ? "event" : "events"} recorded.` : ". Nothing recorded yet.");
+
             return (
-              <g key={`${view}-${region.id}`} id={`region-${region.id}`}>
-                {/* Soft colour underlay for regions with data */}
+              <g key={`${view}-${region.id}`} id={`region-${region.id}`} role="button" aria-label={a11yLabel} tabIndex={0}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onRegionSelect(region.id); } }}
+              >
                 {hasEvents && (
                   <path
                     d={region.d}
@@ -238,7 +217,6 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                   />
                 )}
 
-                {/* Interactive surface */}
                 <path
                   d={region.d}
                   fill={
@@ -261,26 +239,14 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                   onMouseLeave={() => setHoveredRegion(null)}
                 />
 
-                {/* Quiet breathing indicator */}
                 {hasEvents && !isHovered && !isSelected && (
-                  <circle
-                    cx={region.cx} cy={region.cy} r="1.8"
-                    fill={`hsl(${color})`}
-                    opacity="0.45"
-                    className="pointer-events-none animate-breathe"
-                  />
+                  <circle cx={region.cx} cy={region.cy} r="1.8" fill={`hsl(${color})`} opacity="0.45" className="pointer-events-none animate-breathe" />
                 )}
 
-                {/* Count badge on selection */}
                 {isSelected && count > 0 && (
                   <g className="pointer-events-none">
                     <circle cx={region.cx + 14} cy={region.cy - 10} r="7" fill="hsl(var(--primary))" opacity="0.75" />
-                    <text
-                      x={region.cx + 14} y={region.cy - 6.5}
-                      textAnchor="middle"
-                      fill="hsl(var(--primary-foreground))"
-                      fontSize="7" fontWeight="500" fontFamily="DM Sans, sans-serif"
-                    >
+                    <text x={region.cx + 14} y={region.cy - 6.5} textAnchor="middle" fill="hsl(var(--primary-foreground))" fontSize="7" fontWeight="500" fontFamily="DM Sans, sans-serif">
                       {count}
                     </text>
                   </g>
@@ -291,8 +257,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </svg>
       </div>
 
-      {/* Whisper hint */}
-      <p className="text-[10px] text-muted-foreground/30 mt-5 tracking-[0.2em] uppercase">
+      <p className="text-[10px] text-muted-foreground/30 mt-5 tracking-[0.2em] uppercase" aria-hidden="true">
         {activeRegion ? "Tap to deselect" : "Tap to explore"}
       </p>
     </div>
