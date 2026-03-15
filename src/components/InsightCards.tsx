@@ -150,7 +150,7 @@ const InsightCards = () => {
     if (cards.length === 0) {
       cards.push({
         title: "Your map is growing",
-        body: "As you add events, Body Atlas will gently surface patterns. There's no rush.",
+        body: "As you add events, My Body Atlas will gently surface patterns. There's no rush.",
         tone: "sage",
       });
     }

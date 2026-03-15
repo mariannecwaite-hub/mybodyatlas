@@ -59,7 +59,7 @@ const Atlas = () => {
             </div>
             <div className="text-left">
               <p className="text-[13px] font-medium text-foreground/80 leading-tight">{currentProfile?.name}</p>
-              <p className="text-[10px] text-muted-foreground/40 tracking-widest uppercase mt-0.5">Body Atlas</p>
+              <p className="text-[10px] text-muted-foreground/40 tracking-widest uppercase mt-0.5">My Body Atlas</p>
             </div>
           </button>
 

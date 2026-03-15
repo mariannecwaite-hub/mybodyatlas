@@ -6,7 +6,7 @@ import { useApp } from "@/context/AppContext";
 const steps = [
   {
     title: "Your body has a story",
-    description: "Body Atlas helps you map what's happened — injuries, symptoms, stress, treatments — so you can see the bigger picture over time.",
+    description: "My Body Atlas helps you map what's happened — injuries, symptoms, stress, treatments — so you can see the bigger picture over time.",
     icon: "🗺️",
   },
   {
