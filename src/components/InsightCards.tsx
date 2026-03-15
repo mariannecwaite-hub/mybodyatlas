@@ -3,8 +3,6 @@ import { motion } from "framer-motion";
 
 const InsightCards = () => {
   const { state } = useApp();
-
-  // Generate gentle, non-diagnostic insights from data
   const insights = generateInsights();
 
   function generateInsights() {
@@ -16,7 +14,7 @@ const InsightCards = () => {
     if (ongoingCount > 0) {
       cards.push({
         title: "Active threads",
-        body: `You have ${ongoingCount} ongoing ${ongoingCount === 1 ? "entry" : "entries"}. It's okay to have things in progress — tracking them is a gentle first step.`,
+        body: `You have ${ongoingCount} ongoing ${ongoingCount === 1 ? "entry" : "entries"}. Tracking them is a gentle first step.`,
         tone: "sage",
       });
     }
@@ -24,7 +22,7 @@ const InsightCards = () => {
     if (stressEvents.length > 0 && state.events.some((e) => e.type === "symptom")) {
       cards.push({
         title: "A possible pattern",
-        body: "You've logged both stress periods and physical symptoms. Many people notice these are connected. This isn't a diagnosis — just something worth reflecting on.",
+        body: "You've logged both stress periods and physical symptoms. Many people notice these are connected — something worth reflecting on.",
         tone: "lavender",
       });
     }
@@ -40,7 +38,7 @@ const InsightCards = () => {
     if (cards.length === 0) {
       cards.push({
         title: "Your map is growing",
-        body: "As you add events over time, Body Atlas will gently surface patterns. There's no rush.",
+        body: "As you add events, Body Atlas will gently surface patterns. There's no rush.",
         tone: "sage",
       });
     }
@@ -49,26 +47,28 @@ const InsightCards = () => {
   }
 
   const toneStyles: Record<string, string> = {
-    sage: "border-l-4 border-l-sage",
-    lavender: "border-l-4 border-l-lavender",
-    warm: "border-l-4 border-l-warm",
+    sage: "bg-sage/30 border-sage/40",
+    lavender: "bg-lavender/30 border-lavender/40",
+    warm: "bg-warm/40 border-warm/40",
   };
 
   return (
     <div className="space-y-3">
-      <h3 className="text-lg font-serif text-foreground">Gentle insights</h3>
-      {insights.map((insight, i) => (
-        <motion.div
-          key={i}
-          className={`insight-card ${toneStyles[insight.tone] || ""}`}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.15, duration: 0.4 }}
-        >
-          <p className="text-sm font-medium text-foreground mb-1">{insight.title}</p>
-          <p className="text-sm text-muted-foreground leading-relaxed">{insight.body}</p>
-        </motion.div>
-      ))}
+      <span className="section-label">Reflections</span>
+      <div className="space-y-2.5">
+        {insights.map((insight, i) => (
+          <motion.div
+            key={i}
+            className={`rounded-2xl p-4 border transition-all duration-500 ${toneStyles[insight.tone] || ""}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 + i * 0.12, duration: 0.5 }}
+          >
+            <p className="text-[13px] font-medium text-foreground/85 mb-0.5">{insight.title}</p>
+            <p className="text-[13px] text-muted-foreground leading-relaxed">{insight.body}</p>
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };
