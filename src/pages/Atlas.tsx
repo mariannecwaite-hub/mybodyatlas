@@ -43,6 +43,7 @@ const Atlas = () => {
   };
 
   const secondaryActions = [
+    { icon: Sparkles, label: "Your body story", action: () => setShowBodyStory(true) },
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
     { icon: Share2, label: "Share with practitioner", action: () => setShowShare(true) },
