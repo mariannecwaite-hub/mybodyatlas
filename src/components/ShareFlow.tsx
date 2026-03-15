@@ -116,9 +116,9 @@ const ShareFlow = ({ open, onClose }: ShareFlowProps) => {
             </div>
 
             <p className="text-[11px] text-muted-foreground/40 text-center mt-4 leading-relaxed">
-              User-reported context only. Not a diagnosis.
+              Your body story belongs to you. Nothing is shared unless you choose to share it.
               <br />
-              In a full version, these create secure, time-limited links.
+              In a full version, export and temporary links would be fully functional.
             </p>
           </motion.div>
         </motion.div>

@@ -43,10 +43,10 @@ const Atlas = () => {
   };
 
   const secondaryActions = [
-    { icon: Sparkles, label: "Your body story", action: () => setShowBodyStory(true) },
+    { icon: Shield, label: "Your body story", action: () => setShowBodyStory(true) },
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
-    { icon: Share2, label: "Share with practitioner", action: () => setShowShare(true) },
+    { icon: FileText, label: "Create summary for practitioner", action: () => setShowShare(true) },
     { icon: BookOpen, label: "Learn library", action: () => setShowLearn(true) },
     { icon: Heart, label: "Body legacy", action: () => setShowLegacy(true) },
   ];
