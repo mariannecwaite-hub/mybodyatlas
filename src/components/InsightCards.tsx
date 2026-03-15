@@ -8,12 +8,11 @@ const InsightCards = () => {
   function generateInsights() {
     const cards: { title: string; body: string; tone: string }[] = [];
 
-    // Scope events to selected region if one is active
     const scopedEvents = state.selectedRegion
       ? state.events.filter((e) => e.regions.includes(state.selectedRegion!))
       : state.events;
 
-    const allEvents = state.events; // for cross-region insights
+    const allEvents = state.events;
     const ongoingCount = scopedEvents.filter((e) => e.ongoing).length;
     const stressEvents = allEvents.filter((e) => e.type === "stress");
     const symptomEvents = allEvents.filter((e) => e.type === "symptom");
@@ -21,7 +20,6 @@ const InsightCards = () => {
     const injuryEvents = allEvents.filter((e) => e.type === "injury");
     const lifeEvents = allEvents.filter((e) => e.type === "life-event");
 
-    // ── Region-specific insights ──
     if (state.selectedRegion) {
       const regionLabel = REGION_LABELS[state.selectedRegion];
       const regionEvents = scopedEvents;
@@ -35,7 +33,6 @@ const InsightCards = () => {
         return cards;
       }
 
-      // Check for recurring patterns in this region
       const dates = regionEvents.map((e) => new Date(e.date).getFullYear());
       const uniqueYears = [...new Set(dates)];
       if (uniqueYears.length >= 3) {
@@ -46,24 +43,16 @@ const InsightCards = () => {
         });
       }
 
-      // Check if stress overlaps with this region
       const regionStress = stressEvents.filter((e) => e.regions.some((r) => state.selectedRegion === r));
-      const regionSymptoms = symptomEvents.filter((e) => e.regions.includes(state.selectedRegion!));
-      if (regionStress.length > 0 || (regionSymptoms.length > 0 && stressEvents.length > 0)) {
-        const stressInSameRegion = regionStress.length > 0;
-        if (stressInSameRegion) {
-          cards.push({
-            title: "Stress lives here too",
-            body: `You've logged stress that shows up in your ${regionLabel.toLowerCase()}. Many people carry tension in familiar places — your body is consistent, not broken.`,
-            tone: "lavender",
-          });
-        }
+      if (regionStress.length > 0) {
+        cards.push({
+          title: "Stress lives here too",
+          body: `You've logged stress that shows up in your ${regionLabel.toLowerCase()}. Many people carry tension in familiar places — your body is consistent, not broken.`,
+          tone: "lavender",
+        });
       }
     }
 
-    // ── Cross-region insights (always shown) ──
-
-    // Stress-symptom overlap
     const stressRegions = new Set(stressEvents.flatMap((e) => e.regions));
     const symptomRegions = new Set(symptomEvents.flatMap((e) => e.regions));
     const overlappingRegions = [...stressRegions].filter((r) => symptomRegions.has(r));
@@ -85,7 +74,6 @@ const InsightCards = () => {
       }
     }
 
-    // Injury echo / compensatory pattern
     const injuryRegions = injuryEvents.flatMap((e) => e.regions);
     const laterSymptomRegions = symptomEvents
       .filter((e) => new Date(e.date) > new Date(Math.min(...injuryEvents.map((i) => new Date(i.date).getTime()))))
@@ -111,7 +99,6 @@ const InsightCards = () => {
       });
     }
 
-    // Postpartum pattern
     const postpartumEvent = lifeEvents.find((e) =>
       e.title.toLowerCase().includes("born") || e.description.toLowerCase().includes("delivery")
     );
@@ -131,7 +118,6 @@ const InsightCards = () => {
       }
     }
 
-    // Ongoing threads
     if (ongoingCount > 0) {
       const ongoingTreatments = treatmentEvents.filter((e) => e.ongoing).length;
       if (ongoingTreatments > 0) {
@@ -149,7 +135,6 @@ const InsightCards = () => {
       }
     }
 
-    // Timeline breadth
     if (!state.selectedRegion) {
       const dates = allEvents.map((e) => new Date(e.date).getFullYear());
       const span = Math.max(...dates) - Math.min(...dates);
@@ -174,33 +159,33 @@ const InsightCards = () => {
   }
 
   const toneStyles: Record<string, string> = {
-    sage: "bg-sage/20 border-sage/25",
-    lavender: "bg-lavender/20 border-lavender/25",
-    warm: "bg-warm/25 border-warm/25",
+    sage: "bg-sage/15 border-sage/20",
+    lavender: "bg-lavender/15 border-lavender/20",
+    warm: "bg-warm/18 border-warm/20",
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-serif text-foreground leading-tight">Reflections</h2>
+        <h2 className="text-[22px] font-serif text-foreground/90 leading-tight">Reflections</h2>
         {state.selectedRegion && (
-          <p className="text-[12px] text-muted-foreground/50 mt-0.5">
+          <p className="text-[11px] text-muted-foreground/40 mt-1 tracking-wide">
             About your {REGION_LABELS[state.selectedRegion].toLowerCase()}
           </p>
         )}
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3.5">
         {insights.map((insight, i) => (
           <motion.div
             key={`${insight.title}-${i}`}
-            className={`rounded-2xl p-5 border transition-all duration-500 ${toneStyles[insight.tone] || ""}`}
-            initial={{ opacity: 0, y: 10 }}
+            className={`rounded-2xl p-6 border transition-all duration-600 ${toneStyles[insight.tone] || ""}`}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
+            transition={{ delay: 0.35 + i * 0.1, duration: 0.55, ease: "easeOut" }}
           >
-            <p className="text-[14px] font-serif text-foreground/90 mb-1.5">{insight.title}</p>
-            <p className="text-[13px] text-muted-foreground/70 leading-[1.7]">{insight.body}</p>
+            <p className="text-[15px] font-serif text-foreground/85 mb-2">{insight.title}</p>
+            <p className="text-[13px] text-muted-foreground/60 leading-[1.8]">{insight.body}</p>
           </motion.div>
         ))}
       </div>
