@@ -44,7 +44,7 @@ const ShareFlow = ({ open, onClose }: ShareFlowProps) => {
               <button onClick={onClose} className="modal-close"><X className="w-5 h-5 text-muted-foreground" /></button>
             </div>
             <p className="text-[13px] text-muted-foreground/70 mb-5 leading-relaxed">
-              Choose what to include. Your practitioner receives a read-only view — you stay in control.
+              Create a summary to save for personal reflection, export as a report, or share with a practitioner you trust. Nothing leaves your device unless you choose.
             </p>
 
             {/* What to include */}
