@@ -40,7 +40,7 @@ const ShareFlow = ({ open, onClose }: ShareFlowProps) => {
             initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 280 }}>
             <div className="modal-header">
-              <h2 className="text-xl">Share with practitioner</h2>
+              <h2 className="text-xl">Create Body Story Summary</h2>
               <button onClick={onClose} className="modal-close"><X className="w-5 h-5 text-muted-foreground" /></button>
             </div>
             <p className="text-[13px] text-muted-foreground/70 mb-5 leading-relaxed">
