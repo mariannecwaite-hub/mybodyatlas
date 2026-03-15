@@ -174,32 +174,33 @@ const InsightCards = () => {
   }
 
   const toneStyles: Record<string, string> = {
-    sage: "bg-sage/30 border-sage/40",
-    lavender: "bg-lavender/30 border-lavender/40",
-    warm: "bg-warm/40 border-warm/40",
+    sage: "bg-sage/20 border-sage/25",
+    lavender: "bg-lavender/20 border-lavender/25",
+    warm: "bg-warm/25 border-warm/25",
   };
 
   return (
-    <div className="space-y-3">
-      <span className="section-label">
-        Reflections
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-xl font-serif text-foreground leading-tight">Reflections</h2>
         {state.selectedRegion && (
-          <span className="ml-1 normal-case font-normal text-muted-foreground/40">
-            · {REGION_LABELS[state.selectedRegion]}
-          </span>
+          <p className="text-[12px] text-muted-foreground/50 mt-0.5">
+            About your {REGION_LABELS[state.selectedRegion].toLowerCase()}
+          </p>
         )}
-      </span>
-      <div className="space-y-2.5">
+      </div>
+
+      <div className="space-y-3">
         {insights.map((insight, i) => (
           <motion.div
             key={`${insight.title}-${i}`}
-            className={`rounded-2xl p-4 border transition-all duration-500 ${toneStyles[insight.tone] || ""}`}
-            initial={{ opacity: 0, y: 8 }}
+            className={`rounded-2xl p-5 border transition-all duration-500 ${toneStyles[insight.tone] || ""}`}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.12, duration: 0.5 }}
+            transition={{ delay: 0.3 + i * 0.1, duration: 0.5 }}
           >
-            <p className="text-[13px] font-medium text-foreground/85 mb-0.5">{insight.title}</p>
-            <p className="text-[13px] text-muted-foreground leading-relaxed">{insight.body}</p>
+            <p className="text-[14px] font-serif text-foreground/90 mb-1.5">{insight.title}</p>
+            <p className="text-[13px] text-muted-foreground/70 leading-[1.7]">{insight.body}</p>
           </motion.div>
         ))}
       </div>

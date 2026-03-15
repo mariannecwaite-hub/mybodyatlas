@@ -2,22 +2,20 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
 
-// ─── Types ──────────────────────────────────────────────
 type BodyView = "front" | "back";
 
 interface RegionDef {
   id: BodyRegion;
-  d: string;         // SVG path data
-  cx: number;        // Label anchor X
-  cy: number;        // Label anchor Y
-  views: BodyView[]; // Which views this region appears in
+  d: string;
+  cx: number;
+  cy: number;
+  views: BodyView[];
 }
 
 interface BodyMapProps {
   onRegionSelect: (regionId: BodyRegion) => void;
 }
 
-// ─── Event type → highlight color (HSL) ─────────────────
 const typeHSL: Record<EventType, string> = {
   injury:       "4 30% 72%",
   symptom:      "32 32% 72%",
@@ -26,128 +24,26 @@ const typeHSL: Record<EventType, string> = {
   "life-event": "220 10% 78%",
 };
 
-// ─── Region definitions ─────────────────────────────────
 // viewBox = "0 0 200 460"
-// Body is centred at x = 100
-// Paths use soft curves; regions have small gaps between them
-// for a "territory on a map" aesthetic.
 const regions: RegionDef[] = [
-  // ── Head & Jaw ────────────────────────────────────────
-  {
-    id: "head_jaw",
-    d: "M100,6 C80,6 66,20 66,36 C66,52 78,62 88,64 L112,64 C122,62 134,52 134,36 C134,20 120,6 100,6 Z",
-    cx: 100, cy: 34,
-    views: ["front", "back"],
-  },
-  // ── Neck ──────────────────────────────────────────────
-  {
-    id: "neck",
-    d: "M90,66 L110,66 Q112,72 110,80 L90,80 Q88,72 90,66 Z",
-    cx: 100, cy: 73,
-    views: ["front", "back"],
-  },
-  // ── Left Shoulder ─────────────────────────────────────
-  {
-    id: "shoulder_left",
-    d: "M88,82 Q74,82 62,88 Q50,96 46,108 L54,110 Q56,100 64,92 Q72,86 88,84 Z",
-    cx: 66, cy: 96,
-    views: ["front", "back"],
-  },
-  // ── Right Shoulder ────────────────────────────────────
-  {
-    id: "shoulder_right",
-    d: "M112,82 Q126,82 138,88 Q150,96 154,108 L146,110 Q144,100 136,92 Q128,86 112,84 Z",
-    cx: 134, cy: 96,
-    views: ["front", "back"],
-  },
-  // ── Chest (front only) ────────────────────────────────
-  {
-    id: "chest",
-    d: "M72,86 L128,86 Q134,94 136,108 L136,158 L64,158 Q62,130 64,108 Q66,94 72,86 Z",
-    cx: 100, cy: 122,
-    views: ["front"],
-  },
-  // ── Upper Back (back only) ────────────────────────────
-  {
-    id: "upper_back",
-    d: "M72,86 L128,86 Q134,94 136,108 L136,158 L64,158 Q62,130 64,108 Q66,94 72,86 Z",
-    cx: 100, cy: 122,
-    views: ["back"],
-  },
-  // ── Abdomen (front only) ──────────────────────────────
-  {
-    id: "abdomen",
-    d: "M64,160 L136,160 L134,200 Q132,224 128,240 L72,240 Q68,224 66,200 Z",
-    cx: 100, cy: 200,
-    views: ["front"],
-  },
-  // ── Lower Back (back only) ────────────────────────────
-  {
-    id: "lower_back",
-    d: "M64,160 L136,160 L134,200 Q132,224 128,240 L72,240 Q68,224 66,200 Z",
-    cx: 100, cy: 200,
-    views: ["back"],
-  },
-  // ── Left Wrist & Hand ────────────────────────────────
-  {
-    id: "wrist_hand_left",
-    d: "M46,110 Q40,130 36,160 Q34,180 34,200 Q32,224 30,244 Q28,260 32,270 L40,268 Q38,258 38,244 Q38,224 40,200 Q42,180 42,160 Q44,130 54,112 Z",
-    cx: 38, cy: 190,
-    views: ["front", "back"],
-  },
-  // ── Right Wrist & Hand ───────────────────────────────
-  {
-    id: "wrist_hand_right",
-    d: "M154,110 Q160,130 164,160 Q166,180 166,200 Q168,224 170,244 Q172,260 168,270 L160,268 Q162,258 162,244 Q162,224 160,200 Q158,180 158,160 Q156,130 146,112 Z",
-    cx: 162, cy: 190,
-    views: ["front", "back"],
-  },
-  // ── Left Hip ──────────────────────────────────────────
-  {
-    id: "hip_left",
-    d: "M72,242 L98,242 L96,268 L78,270 Q72,260 70,248 Z",
-    cx: 84, cy: 256,
-    views: ["front", "back"],
-  },
-  // ── Right Hip ─────────────────────────────────────────
-  {
-    id: "hip_right",
-    d: "M102,242 L128,242 Q130,260 122,270 L104,268 Z",
-    cx: 116, cy: 256,
-    views: ["front", "back"],
-  },
-  // ── Left Knee ─────────────────────────────────────────
-  {
-    id: "knee_left",
-    d: "M76,330 L94,330 L94,362 L76,362 Q74,346 76,330 Z",
-    cx: 85, cy: 346,
-    views: ["front", "back"],
-  },
-  // ── Right Knee ────────────────────────────────────────
-  {
-    id: "knee_right",
-    d: "M106,330 L124,330 Q126,346 124,362 L106,362 Z",
-    cx: 115, cy: 346,
-    views: ["front", "back"],
-  },
-  // ── Left Ankle & Foot ─────────────────────────────────
-  {
-    id: "ankle_foot_left",
-    d: "M78,398 L92,398 L92,424 Q92,438 86,446 L70,446 Q72,438 74,424 Z",
-    cx: 83, cy: 422,
-    views: ["front", "back"],
-  },
-  // ── Right Ankle & Foot ────────────────────────────────
-  {
-    id: "ankle_foot_right",
-    d: "M108,398 L122,398 L126,424 Q128,438 130,446 L114,446 Q108,438 108,424 Z",
-    cx: 117, cy: 422,
-    views: ["front", "back"],
-  },
+  { id: "head_jaw", d: "M100,6 C80,6 66,20 66,36 C66,52 78,62 88,64 L112,64 C122,62 134,52 134,36 C134,20 120,6 100,6 Z", cx: 100, cy: 34, views: ["front", "back"] },
+  { id: "neck", d: "M90,66 L110,66 Q112,72 110,80 L90,80 Q88,72 90,66 Z", cx: 100, cy: 73, views: ["front", "back"] },
+  { id: "shoulder_left", d: "M88,82 Q74,82 62,88 Q50,96 46,108 L54,110 Q56,100 64,92 Q72,86 88,84 Z", cx: 66, cy: 96, views: ["front", "back"] },
+  { id: "shoulder_right", d: "M112,82 Q126,82 138,88 Q150,96 154,108 L146,110 Q144,100 136,92 Q128,86 112,84 Z", cx: 134, cy: 96, views: ["front", "back"] },
+  { id: "chest", d: "M72,86 L128,86 Q134,94 136,108 L136,158 L64,158 Q62,130 64,108 Q66,94 72,86 Z", cx: 100, cy: 122, views: ["front"] },
+  { id: "upper_back", d: "M72,86 L128,86 Q134,94 136,108 L136,158 L64,158 Q62,130 64,108 Q66,94 72,86 Z", cx: 100, cy: 122, views: ["back"] },
+  { id: "abdomen", d: "M64,160 L136,160 L134,200 Q132,224 128,240 L72,240 Q68,224 66,200 Z", cx: 100, cy: 200, views: ["front"] },
+  { id: "lower_back", d: "M64,160 L136,160 L134,200 Q132,224 128,240 L72,240 Q68,224 66,200 Z", cx: 100, cy: 200, views: ["back"] },
+  { id: "wrist_hand_left", d: "M46,110 Q40,130 36,160 Q34,180 34,200 Q32,224 30,244 Q28,260 32,270 L40,268 Q38,258 38,244 Q38,224 40,200 Q42,180 42,160 Q44,130 54,112 Z", cx: 38, cy: 190, views: ["front", "back"] },
+  { id: "wrist_hand_right", d: "M154,110 Q160,130 164,160 Q166,180 166,200 Q168,224 170,244 Q172,260 168,270 L160,268 Q162,258 162,244 Q162,224 160,200 Q158,180 158,160 Q156,130 146,112 Z", cx: 162, cy: 190, views: ["front", "back"] },
+  { id: "hip_left", d: "M72,242 L98,242 L96,268 L78,270 Q72,260 70,248 Z", cx: 84, cy: 256, views: ["front", "back"] },
+  { id: "hip_right", d: "M102,242 L128,242 Q130,260 122,270 L104,268 Z", cx: 116, cy: 256, views: ["front", "back"] },
+  { id: "knee_left", d: "M76,330 L94,330 L94,362 L76,362 Q74,346 76,330 Z", cx: 85, cy: 346, views: ["front", "back"] },
+  { id: "knee_right", d: "M106,330 L124,330 Q126,346 124,362 L106,362 Z", cx: 115, cy: 346, views: ["front", "back"] },
+  { id: "ankle_foot_left", d: "M78,398 L92,398 L92,424 Q92,438 86,446 L70,446 Q72,438 74,424 Z", cx: 83, cy: 422, views: ["front", "back"] },
+  { id: "ankle_foot_right", d: "M108,398 L122,398 L126,424 Q128,438 130,446 L114,446 Q108,438 108,424 Z", cx: 117, cy: 422, views: ["front", "back"] },
 ];
 
-// ─── Body silhouette (decorative background) ────────────
-// Single path for a neutral, non-gendered human form.
 const bodySilhouetteFront = `
   M100,6
   C80,6 66,20 66,36 C66,52 78,64 90,66
@@ -188,13 +84,11 @@ const bodySilhouetteFront = `
   C122,64 134,52 134,36 C134,20 120,6 100,6 Z
 `;
 
-// Thigh connectors (visual only, not interactive regions)
 const thighLeft  = "M78,272 L96,270 L94,330 L76,330 Z";
 const thighRight = "M104,270 L122,272 L124,330 L106,330 Z";
 const shinLeft   = "M76,362 L94,362 L92,398 L78,398 Z";
 const shinRight  = "M106,362 L124,362 L122,398 L108,398 Z";
 
-// ─── Component ──────────────────────────────────────────
 const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const { state } = useApp();
   const [view, setView] = useState<BodyView>("front");
@@ -203,11 +97,9 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const activeRegion = state.selectedRegion;
   const visibleRegions = regions.filter((r) => r.views.includes(view));
 
-  // Get the dominant event type colour for a region
   const getRegionColor = (regionId: BodyRegion): string | null => {
     const events = state.events.filter(
-      (e) => e.regions.includes(regionId) &&
-        (state.activeLayer === "all" || e.type === state.activeLayer)
+      (e) => e.regions.includes(regionId) && (state.activeLayer === "all" || e.type === state.activeLayer)
     );
     if (events.length === 0) return null;
     const priority: EventType[] = ["injury", "symptom", "stress", "treatment", "life-event"];
@@ -219,51 +111,46 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
   const getRegionEventCount = (regionId: BodyRegion): number =>
     state.events.filter(
-      (e) => e.regions.includes(regionId) &&
-        (state.activeLayer === "all" || e.type === state.activeLayer)
+      (e) => e.regions.includes(regionId) && (state.activeLayer === "all" || e.type === state.activeLayer)
     ).length;
-
-  const handleRegionSelect = (regionId: BodyRegion) => {
-    onRegionSelect(regionId);
-  };
 
   return (
     <div className="relative flex flex-col items-center w-full select-none">
-      {/* ── View toggle ───────────────────────────────── */}
-      <div className="flex items-center gap-1 mb-3 p-0.5 rounded-full bg-secondary/60">
+      {/* View toggle — pill style */}
+      <div className="flex items-center gap-0.5 mb-5 p-1 rounded-full bg-secondary/50 border border-border/30">
         {(["front", "back"] as BodyView[]).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
-            className={`px-4 py-1.5 rounded-full text-[11px] font-medium capitalize transition-all duration-300 ${
+            className={`px-5 py-2 rounded-full text-[12px] font-medium capitalize transition-all duration-300 ${
               view === v
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "bg-card text-foreground shadow-xs"
+                : "text-muted-foreground/60 hover:text-muted-foreground"
             }`}
           >
-            {v}
+            {v} view
           </button>
         ))}
       </div>
 
-      {/* ── Floating region label ─────────────────────── */}
-      <div className="h-7 mb-1 flex items-center justify-center">
+      {/* Floating region label */}
+      <div className="h-8 mb-2 flex items-center justify-center">
         <AnimatePresence mode="wait">
           {hoveredRegion && (
             <motion.div
               key={hoveredRegion}
-              className="flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border/50"
+              className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-card/90 backdrop-blur-sm border border-border/30"
               style={{ boxShadow: "var(--shadow-sm)" }}
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.12 }}
             >
-              <span className="text-[12px] font-medium text-foreground/80">
+              <span className="text-[13px] font-medium text-foreground/80">
                 {REGION_LABELS[hoveredRegion]}
               </span>
               {getRegionEventCount(hoveredRegion) > 0 && (
-                <span className="text-[11px] text-muted-foreground/60">
+                <span className="text-[11px] text-muted-foreground/50">
                   {getRegionEventCount(hoveredRegion)} {getRegionEventCount(hoveredRegion) === 1 ? "event" : "events"}
                 </span>
               )}
@@ -272,73 +159,66 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </AnimatePresence>
       </div>
 
-      {/* ── SVG Body ──────────────────────────────────── */}
-      <div className="relative w-full max-w-[260px] mx-auto">
-        {/* Ambient glow */}
-        <div className="absolute inset-0 -inset-x-6 -inset-y-4 body-ambient rounded-[40px] pointer-events-none" />
+      {/* SVG Body — large and centred */}
+      <div className="relative w-full max-w-[280px] sm:max-w-[300px] mx-auto">
+        <div className="absolute inset-0 -inset-x-8 -inset-y-6 body-ambient rounded-[48px] pointer-events-none opacity-70" />
 
         <svg
           viewBox="20 -2 160 460"
           className="relative z-10 w-full"
-          style={{ filter: "drop-shadow(0 4px 20px hsl(158 20% 85% / 0.25))" }}
+          style={{ filter: "drop-shadow(0 6px 24px hsl(158 20% 85% / 0.2))" }}
         >
           <defs>
             <linearGradient id="bodyFill2" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(38 14% 91%)" />
-              <stop offset="100%" stopColor="hsl(38 10% 86%)" />
+              <stop offset="0%" stopColor="hsl(38 14% 92%)" />
+              <stop offset="100%" stopColor="hsl(38 10% 87%)" />
             </linearGradient>
             <linearGradient id="regionHover" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(38 12% 84%)" />
-              <stop offset="100%" stopColor="hsl(38 10% 80%)" />
+              <stop offset="0%" stopColor="hsl(38 12% 86%)" />
+              <stop offset="100%" stopColor="hsl(38 10% 82%)" />
             </linearGradient>
             <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="5" result="b" />
+              <feGaussianBlur stdDeviation="6" result="b" />
               <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <filter id="selectedGlow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="8" result="b" />
+              <feGaussianBlur stdDeviation="10" result="b" />
               <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
           </defs>
 
-          {/* ── Body silhouette background ─────────── */}
+          {/* Silhouette */}
           <path
             d={bodySilhouetteFront}
             fill="url(#bodyFill2)"
             stroke="hsl(var(--body-stroke))"
-            strokeWidth="0.6"
+            strokeWidth="0.5"
             strokeLinejoin="round"
           />
 
-          {/* ── Non-interactive connectors ─────────── */}
+          {/* Connectors */}
           {[thighLeft, thighRight, shinLeft, shinRight].map((d, i) => (
             <path key={i} d={d} fill="url(#bodyFill2)" stroke="none" />
           ))}
 
-          {/* ── Subtle detail lines ────────────────── */}
+          {/* Detail lines */}
           {view === "front" && (
             <>
-              {/* Collarbone hint */}
-              <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" opacity="0.35" />
-              {/* Center line */}
-              <line x1="100" y1="92" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.2" />
+              <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.25" />
+              <line x1="100" y1="92" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
             </>
           )}
           {view === "back" && (
             <>
-              {/* Spine */}
-              <line x1="100" y1="80" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.35" opacity="0.3" />
-              {/* Scapula hints */}
-              <path d="M76,104 Q84,114 80,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" opacity="0.25" />
-              <path d="M124,104 Q116,114 120,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" opacity="0.25" />
+              <line x1="100" y1="80" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" opacity="0.2" />
+              <path d="M76,104 Q84,114 80,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.18" />
+              <path d="M124,104 Q116,114 120,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.18" />
             </>
           )}
 
-          {/* ── Region separator lines ─────────────── */}
-          {/* Horizontal separators to visually divide torso */}
-          <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" opacity="0.25" />
+          <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.15" />
 
-          {/* ── Interactive region overlays ─────────── */}
+          {/* Regions */}
           {visibleRegions.map((region) => {
             const color = getRegionColor(region.id);
             const isHovered = hoveredRegion === region.id;
@@ -348,69 +228,54 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
             return (
               <g key={`${view}-${region.id}`} id={`region-${region.id}`}>
-                {/* Event colour underlay */}
                 {hasEvents && (
                   <path
                     d={region.d}
-                    fill={`hsl(${color} / ${isSelected ? 0.5 : 0.3})`}
+                    fill={`hsl(${color} / ${isSelected ? 0.45 : 0.25})`}
                     filter={isSelected ? "url(#selectedGlow)" : "url(#glow2)"}
                     className="pointer-events-none"
                   />
                 )}
 
-                {/* Interactive hit area */}
                 <path
                   d={region.d}
                   fill={
                     isSelected
-                      ? hasEvents
-                        ? `hsl(${color} / 0.55)`
-                        : "hsl(var(--primary) / 0.12)"
+                      ? hasEvents ? `hsl(${color} / 0.5)` : "hsl(var(--primary) / 0.1)"
                       : isHovered
-                        ? hasEvents
-                          ? `hsl(${color} / 0.45)`
-                          : "url(#regionHover)"
+                        ? hasEvents ? `hsl(${color} / 0.4)` : "url(#regionHover)"
                         : "transparent"
                   }
                   stroke={
                     isSelected
-                      ? "hsl(var(--foreground) / 0.18)"
-                      : isHovered
-                        ? "hsl(var(--foreground) / 0.1)"
-                        : "transparent"
+                      ? "hsl(var(--foreground) / 0.15)"
+                      : isHovered ? "hsl(var(--foreground) / 0.08)" : "transparent"
                   }
-                  strokeWidth={isSelected ? "1" : "0.6"}
+                  strokeWidth={isSelected ? "0.8" : "0.5"}
                   className="cursor-pointer"
-                  style={{ transition: "fill 0.3s ease, stroke 0.3s ease" }}
-                  onClick={() => handleRegionSelect(region.id)}
+                  style={{ transition: "fill 0.35s ease, stroke 0.35s ease" }}
+                  onClick={() => onRegionSelect(region.id)}
                   onMouseEnter={() => setHoveredRegion(region.id)}
                   onMouseLeave={() => setHoveredRegion(null)}
                 />
 
-                {/* Breathing dot for regions with events (when not hovered/selected) */}
                 {hasEvents && !isHovered && !isSelected && (
                   <circle
-                    cx={region.cx}
-                    cy={region.cy}
-                    r="2.5"
+                    cx={region.cx} cy={region.cy} r="2"
                     fill={`hsl(${color})`}
-                    opacity="0.65"
+                    opacity="0.55"
                     className="pointer-events-none animate-breathe"
                   />
                 )}
 
-                {/* Event count badge when selected */}
                 {isSelected && count > 0 && (
                   <g className="pointer-events-none">
-                    <circle cx={region.cx + 14} cy={region.cy - 10} r="8" fill="hsl(var(--primary))" />
+                    <circle cx={region.cx + 14} cy={region.cy - 10} r="7.5" fill="hsl(var(--primary))" opacity="0.85" />
                     <text
-                      x={region.cx + 14}
-                      y={region.cy - 6}
+                      x={region.cx + 14} y={region.cy - 6.5}
                       textAnchor="middle"
                       fill="hsl(var(--primary-foreground))"
-                      fontSize="8"
-                      fontWeight="600"
-                      fontFamily="DM Sans, sans-serif"
+                      fontSize="7.5" fontWeight="600" fontFamily="DM Sans, sans-serif"
                     >
                       {count}
                     </text>
@@ -422,9 +287,9 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </svg>
       </div>
 
-      {/* ── Explore hint ──────────────────────────────── */}
-      <p className="text-[10px] text-muted-foreground/40 mt-3 tracking-widest uppercase">
-        {activeRegion ? "Tap again or another area" : "Explore your body map"}
+      {/* Subtle hint */}
+      <p className="text-[11px] text-muted-foreground/35 mt-4 tracking-wider">
+        {activeRegion ? "Tap again to deselect" : "Tap a region to explore"}
       </p>
     </div>
   );
