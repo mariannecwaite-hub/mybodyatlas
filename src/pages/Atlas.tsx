@@ -41,13 +41,10 @@ const Atlas = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header — minimal, airy */}
+      {/* Header */}
       <header className="sticky top-0 z-30 glass">
-        <div className="max-w-5xl mx-auto px-5 py-3.5 flex items-center justify-between">
-          <button
-            onClick={() => setShowProfiles(true)}
-            className="flex items-center gap-2.5 group"
-          >
+        <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+          <button onClick={() => setShowProfiles(true)} className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 rounded-full bg-sage/50 flex items-center justify-center text-sm group-hover:bg-sage transition-colors duration-300">
               {currentProfile?.avatar}
             </div>
@@ -58,13 +55,10 @@ const Atlas = () => {
           </button>
 
           <div className="flex items-center gap-2">
-            {/* More menu */}
             <div className="relative">
-              <button
-                onClick={() => setShowMore(!showMore)}
-                className="p-2 rounded-xl hover:bg-secondary/80 transition-colors duration-200"
-              >
-                <MoreHorizontal className="w-4.5 h-4.5 text-muted-foreground" />
+              <button onClick={() => setShowMore(!showMore)}
+                className="p-2 rounded-xl hover:bg-secondary/80 transition-colors duration-200">
+                <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
               </button>
               {showMore && (
                 <>
@@ -77,11 +71,8 @@ const Atlas = () => {
                     transition={{ duration: 0.15 }}
                   >
                     {secondaryActions.map((action) => (
-                      <button
-                        key={action.label}
-                        onClick={() => { action.action(); setShowMore(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:bg-secondary/60 transition-colors duration-200"
-                      >
+                      <button key={action.label} onClick={() => { action.action(); setShowMore(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-foreground/80 hover:bg-secondary/60 transition-colors duration-200">
                         <action.icon className="w-4 h-4 text-muted-foreground/70" />
                         {action.label}
                       </button>
@@ -90,7 +81,6 @@ const Atlas = () => {
                 </>
               )}
             </div>
-
             <button
               onClick={() => { setPreselectedRegion(undefined); setState((s) => ({ ...s, showAddEvent: true })); }}
               className="flex items-center gap-1.5 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-[13px] font-medium transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
@@ -102,21 +92,21 @@ const Atlas = () => {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-5 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Left: Body Map — focal point */}
+      <main className="max-w-6xl mx-auto px-5 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
+          {/* Left: Body Map — the visual centre */}
           <motion.div
-            className="lg:col-span-5 flex flex-col items-center gap-5 lg:sticky lg:top-24 lg:self-start"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7 }}
+            className="flex flex-col items-center gap-4 lg:sticky lg:top-20 lg:self-start lg:py-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
           >
             <BodyMap onRegionClick={handleRegionClick} />
             <LayerToggles />
           </motion.div>
 
-          {/* Right: Timeline + Insights — scrollable content */}
+          {/* Right: Supporting context */}
           <motion.div
-            className="lg:col-span-7 space-y-10"
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.15 }}
+            className="space-y-10 lg:py-4"
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
           >
             <Timeline />
             <InsightCards />
