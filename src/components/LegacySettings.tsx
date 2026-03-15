@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "@/context/AppContext";
-import { X, Lock, Heart } from "lucide-react";
+import { X, Lock } from "lucide-react";
 
-interface LegacySettingsProps {
-  open: boolean;
-  onClose: () => void;
-}
+interface LegacySettingsProps { open: boolean; onClose: () => void; }
 
 const LegacySettings = ({ open, onClose }: LegacySettingsProps) => {
   const { currentProfile } = useApp();
@@ -15,56 +12,52 @@ const LegacySettings = ({ open, onClose }: LegacySettingsProps) => {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-          <div className="absolute inset-0 bg-foreground/20 backdrop-blur-sm" onClick={onClose} />
-          <motion.div className="relative bg-card w-full max-w-md rounded-t-2xl sm:rounded-2xl p-6 shadow-elevated z-10"
-            initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl flex items-center gap-2"><Heart className="w-5 h-5" /> Body Legacy</h2>
-              <button onClick={onClose} className="p-1.5 rounded-full hover:bg-secondary transition-colors">
-                <X className="w-5 h-5 text-muted-foreground" />
-              </button>
+        <motion.div className="modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div className="modal-overlay" onClick={onClose} />
+          <motion.div className="modal-content max-w-md"
+            initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 60, opacity: 0 }}
+            transition={{ type: "spring", damping: 28, stiffness: 280 }}>
+            <div className="modal-header">
+              <h2 className="text-xl">Body Legacy</h2>
+              <button onClick={onClose} className="modal-close"><X className="w-5 h-5 text-muted-foreground" /></button>
             </div>
 
-            <div className="p-4 rounded-xl bg-warm/40 mb-5">
-              <p className="text-sm text-foreground leading-relaxed">
-                Your body map tells a story. Legacy settings let you decide what happens to this record over time — whether it's passed to a child when they're ready, or kept as your own private archive.
+            <div className="p-4 rounded-2xl bg-warm/25 border border-warm/30 mb-6">
+              <p className="text-[13px] text-foreground/75 leading-relaxed">
+                Your body map tells a story. Legacy settings let you decide what happens to this record over time.
               </p>
             </div>
 
             <div className="space-y-4">
-              <label className="flex items-center justify-between p-4 rounded-xl bg-secondary cursor-pointer">
+              <label className="flex items-center justify-between p-4 rounded-2xl bg-secondary/50 cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-muted-foreground" />
+                  <Lock className="w-4 h-4 text-muted-foreground/60" />
                   <div>
-                    <p className="text-sm font-medium text-foreground">Enable body legacy</p>
-                    <p className="text-xs text-muted-foreground">Allow this record to be preserved or transferred</p>
+                    <p className="text-[13px] font-medium text-foreground">Enable body legacy</p>
+                    <p className="text-[11px] text-muted-foreground/60">Preserve or transfer this record</p>
                   </div>
                 </div>
-                <div
-                  onClick={() => setLegacyEnabled(!legacyEnabled)}
-                  className={`w-10 h-6 rounded-full transition-all relative cursor-pointer ${legacyEnabled ? "bg-primary" : "bg-border"}`}
-                >
-                  <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-card shadow-sm transition-transform ${legacyEnabled ? "translate-x-[18px]" : "translate-x-0.5"}`} />
+                <div onClick={() => setLegacyEnabled(!legacyEnabled)}
+                  className={`w-11 h-[26px] rounded-full transition-all duration-300 relative cursor-pointer ${legacyEnabled ? "bg-primary" : "bg-border"}`}>
+                  <div className={`absolute top-[3px] w-5 h-5 rounded-full bg-card transition-transform duration-300 ${legacyEnabled ? "translate-x-[22px]" : "translate-x-[3px]"}`}
+                    style={{ boxShadow: "var(--shadow-xs)" }} />
                 </div>
               </label>
 
               {legacyEnabled && (
                 <motion.div className="space-y-3" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }}>
                   {currentProfile?.type === "child" && (
-                    <div className="p-4 rounded-xl bg-lavender/40">
-                      <p className="text-sm font-medium text-foreground mb-1">Child handover</p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        When {currentProfile.name} reaches {currentProfile.handoverAge || 16}, they'll be invited to take ownership of their body map. You'll be able to review what's included before the handover.
+                    <div className="p-4 rounded-2xl bg-lavender/25 border border-lavender/30">
+                      <p className="text-[13px] font-medium text-foreground/85 mb-1">Child handover</p>
+                      <p className="text-[12px] text-muted-foreground/60 leading-relaxed">
+                        When {currentProfile.name} reaches {currentProfile.handoverAge || 16}, they'll be invited to take ownership of their body map.
                       </p>
                     </div>
                   )}
-
-                  <div className="p-4 rounded-xl bg-sage/40">
-                    <p className="text-sm font-medium text-foreground mb-1">Data preservation</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      In a full version, you could designate a trusted person to receive access to your body map records.
+                  <div className="p-4 rounded-2xl bg-sage/25 border border-sage/30">
+                    <p className="text-[13px] font-medium text-foreground/85 mb-1">Data preservation</p>
+                    <p className="text-[12px] text-muted-foreground/60 leading-relaxed">
+                      Designate a trusted person to receive access to your body map records.
                     </p>
                   </div>
                 </motion.div>
