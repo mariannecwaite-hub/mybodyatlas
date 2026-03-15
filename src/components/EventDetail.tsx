@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp } from "@/context/AppContext";
+import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { X, Trash2 } from "lucide-react";
 
 const typeLabels = {
@@ -51,8 +51,8 @@ const EventDetail = () => {
                   <p className="section-label mb-2">Body areas</p>
                   <div className="flex flex-wrap gap-1.5">
                     {event.regions.map((r) => (
-                      <span key={r} className="chip chip-inactive capitalize text-[11px]">
-                        {r.replace("-", " ")}
+                      <span key={r} className="chip chip-inactive text-[11px]">
+                        {REGION_LABELS[r]}
                       </span>
                     ))}
                   </div>
@@ -67,7 +67,7 @@ const EventDetail = () => {
               {event.treatment && (
                 <div>
                   <p className="section-label mb-1.5">Treatment</p>
-                  <p className="text-[13px] text-foreground/75 leading-relaxed">{event.treatment}</p>
+                  <p className="text-[13px] text-foreground/75 leading-relaxed whitespace-pre-line">{event.treatment}</p>
                 </div>
               )}
 
