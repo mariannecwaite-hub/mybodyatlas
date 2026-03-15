@@ -166,7 +166,8 @@
   }
 
   .modal-overlay {
-    @apply absolute inset-0 bg-foreground/12 backdrop-blur-md;
+    @apply absolute inset-0 backdrop-blur-md;
+    background: hsl(var(--foreground) / 0.12);
   }
 
   .modal-content {
