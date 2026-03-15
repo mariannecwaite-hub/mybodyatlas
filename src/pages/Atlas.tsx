@@ -159,6 +159,7 @@ const Atlas = () => {
       <LearnLibrary open={showLearn} onClose={() => setShowLearn(false)} />
       <LegacySettings open={showLegacy} onClose={() => setShowLegacy(false)} />
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
+      <BodyStorySummary open={showBodyStory} onClose={() => setShowBodyStory(false)} />
     </div>
   );
 };
