@@ -29,71 +29,71 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
     <AnimatePresence>
       <motion.div
         key={region}
-        className="rounded-2xl border border-border/30 bg-card/80 backdrop-blur-sm p-6 relative overflow-hidden"
+        className="rounded-2xl border border-border/20 bg-card/70 backdrop-blur-md p-7 relative overflow-hidden"
         style={{ boxShadow: "var(--shadow-md)" }}
-        initial={{ opacity: 0, y: 10, scale: 0.98 }}
+        initial={{ opacity: 0, y: 12, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         {/* Close */}
         <button
           onClick={() => selectRegion(null)}
-          className="absolute top-4 right-4 p-1.5 rounded-full hover:bg-secondary/60 transition-colors"
+          className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-secondary/50 transition-colors duration-300"
         >
-          <X className="w-4 h-4 text-muted-foreground/40" />
+          <X className="w-3.5 h-3.5 text-muted-foreground/30" />
         </button>
 
         {/* Region name */}
-        <h3 className="text-lg font-serif text-foreground mb-1.5">
+        <h3 className="text-[18px] font-serif text-foreground/85 mb-1.5 leading-tight">
           {REGION_LABELS[region]}
         </h3>
 
-        {/* Summary line */}
+        {/* Summary */}
         {regionEvents.length === 0 ? (
-          <p className="text-[13px] text-muted-foreground/50 mb-5 leading-relaxed">
+          <p className="text-[13px] text-muted-foreground/40 mb-6 leading-relaxed">
             Nothing recorded here yet.
           </p>
         ) : (
-          <p className="text-[13px] text-muted-foreground/55 mb-5">
+          <p className="text-[12px] text-muted-foreground/45 mb-6 tracking-wide">
             {regionEvents.length} {regionEvents.length === 1 ? "event" : "events"}
             {firstDate && <span> · since {firstDate}</span>}
             {ongoingCount > 0 && <span> · {ongoingCount} ongoing</span>}
           </p>
         )}
 
-        {/* Recent events (max 3) */}
+        {/* Recent events */}
         {regionEvents.length > 0 && (
-          <div className="space-y-0.5 mb-5">
+          <div className="space-y-1 mb-6">
             {regionEvents.slice(0, 3).map((event) => (
               <button
                 key={event.id}
                 onClick={() => setState((s) => ({ ...s, selectedEvent: event.id }))}
-                className="w-full flex items-center gap-3 p-3 rounded-xl text-left hover:bg-secondary/40 transition-all duration-200 group"
+                className="w-full flex items-center gap-3 p-3 rounded-xl text-left hover:bg-secondary/25 transition-all duration-300 group"
               >
-                <span className="text-[13px]">{typeIcons[event.type]}</span>
+                <span className="text-[12px]">{typeIcons[event.type]}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium text-foreground/80 truncate">{event.title}</p>
-                  <p className="text-[11px] text-muted-foreground/45 mt-0.5">
+                  <p className="text-[13px] font-medium text-foreground/75 truncate">{event.title}</p>
+                  <p className="text-[11px] text-muted-foreground/35 mt-0.5">
                     {new Date(event.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                    {event.ongoing && <span className="ml-1 text-sage-foreground/60">· ongoing</span>}
+                    {event.ongoing && <span className="ml-1.5 text-sage-foreground/50">· ongoing</span>}
                   </p>
                 </div>
-                <span className="opacity-0 group-hover:opacity-40 text-muted-foreground text-xs">→</span>
+                <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]">→</span>
               </button>
             ))}
             {regionEvents.length > 3 && (
-              <p className="text-[11px] text-muted-foreground/35 text-center pt-2">
+              <p className="text-[10px] text-muted-foreground/28 text-center pt-2 tracking-wide">
                 + {regionEvents.length - 3} more
               </p>
             )}
           </div>
         )}
 
-        {/* Add event button */}
+        {/* Add event */}
         <button
           onClick={() => onAddEvent(region)}
-          className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl border border-dashed border-border/50 text-[12px] text-muted-foreground/50 hover:text-muted-foreground/70 hover:border-border transition-all duration-200"
+          className="w-full flex items-center justify-center gap-1.5 py-3 rounded-xl border border-dashed border-border/35 text-[11px] text-muted-foreground/40 hover:text-muted-foreground/60 hover:border-border/50 transition-all duration-300"
         >
           <Plus className="w-3.5 h-3.5" /> Add event here
         </button>

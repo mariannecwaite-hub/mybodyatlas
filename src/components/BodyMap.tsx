@@ -17,14 +17,13 @@ interface BodyMapProps {
 }
 
 const typeHSL: Record<EventType, string> = {
-  injury:       "4 30% 72%",
-  symptom:      "32 32% 72%",
-  stress:       "32 32% 72%",
-  treatment:    "158 25% 72%",
-  "life-event": "220 10% 78%",
+  injury:       "8 24% 74%",
+  symptom:      "34 28% 74%",
+  stress:       "34 28% 74%",
+  treatment:    "158 20% 74%",
+  "life-event": "220 8% 80%",
 };
 
-// viewBox = "0 0 200 460"
 const regions: RegionDef[] = [
   { id: "head_jaw", d: "M100,6 C80,6 66,20 66,36 C66,52 78,62 88,64 L112,64 C122,62 134,52 134,36 C134,20 120,6 100,6 Z", cx: 100, cy: 34, views: ["front", "back"] },
   { id: "neck", d: "M90,66 L110,66 Q112,72 110,80 L90,80 Q88,72 90,66 Z", cx: 100, cy: 73, views: ["front", "back"] },
@@ -116,41 +115,41 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
   return (
     <div className="relative flex flex-col items-center w-full select-none">
-      {/* View toggle — pill style */}
-      <div className="flex items-center gap-0.5 mb-5 p-1 rounded-full bg-secondary/50 border border-border/30">
+      {/* View toggle — quiet, understated */}
+      <div className="flex items-center gap-0.5 mb-6 p-1 rounded-full bg-secondary/40 border border-border/20">
         {(["front", "back"] as BodyView[]).map((v) => (
           <button
             key={v}
             onClick={() => setView(v)}
-            className={`px-5 py-2 rounded-full text-[12px] font-medium capitalize transition-all duration-300 ${
+            className={`px-5 py-2 rounded-full text-[11px] font-medium tracking-wide capitalize transition-all duration-400 ${
               view === v
-                ? "bg-card text-foreground shadow-xs"
-                : "text-muted-foreground/60 hover:text-muted-foreground"
+                ? "bg-card text-foreground/80 shadow-xs"
+                : "text-muted-foreground/40 hover:text-muted-foreground/60"
             }`}
           >
-            {v} view
+            {v}
           </button>
         ))}
       </div>
 
-      {/* Floating region label */}
-      <div className="h-8 mb-2 flex items-center justify-center">
+      {/* Floating region label — appears on hover */}
+      <div className="h-7 mb-3 flex items-center justify-center">
         <AnimatePresence mode="wait">
           {hoveredRegion && (
             <motion.div
               key={hoveredRegion}
-              className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-card/90 backdrop-blur-sm border border-border/30"
+              className="flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-card/90 backdrop-blur-sm border border-border/20"
               style={{ boxShadow: "var(--shadow-sm)" }}
-              initial={{ opacity: 0, y: 4 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.12 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
             >
-              <span className="text-[13px] font-medium text-foreground/80">
+              <span className="text-[12px] font-medium text-foreground/70">
                 {REGION_LABELS[hoveredRegion]}
               </span>
               {getRegionEventCount(hoveredRegion) > 0 && (
-                <span className="text-[11px] text-muted-foreground/50">
+                <span className="text-[10px] text-muted-foreground/40">
                   {getRegionEventCount(hoveredRegion)} {getRegionEventCount(hoveredRegion) === 1 ? "event" : "events"}
                 </span>
               )}
@@ -159,30 +158,31 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </AnimatePresence>
       </div>
 
-      {/* SVG Body — large and centred */}
-      <div className="relative w-full max-w-[280px] sm:max-w-[300px] mx-auto">
-        <div className="absolute inset-0 -inset-x-8 -inset-y-6 body-ambient rounded-[48px] pointer-events-none opacity-70" />
+      {/* SVG Body — large, centred, dominant */}
+      <div className="relative w-full max-w-[300px] sm:max-w-[320px] mx-auto">
+        {/* Ambient glow — soft, expansive */}
+        <div className="absolute -inset-10 body-ambient rounded-full pointer-events-none opacity-60" />
 
         <svg
           viewBox="20 -2 160 460"
           className="relative z-10 w-full"
-          style={{ filter: "drop-shadow(0 6px 24px hsl(158 20% 85% / 0.2))" }}
+          style={{ filter: "drop-shadow(0 8px 32px hsl(158 16% 88% / 0.15))" }}
         >
           <defs>
             <linearGradient id="bodyFill2" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(38 14% 92%)" />
-              <stop offset="100%" stopColor="hsl(38 10% 87%)" />
+              <stop offset="0%" stopColor="hsl(40 10% 93%)" />
+              <stop offset="100%" stopColor="hsl(40 8% 88%)" />
             </linearGradient>
             <linearGradient id="regionHover" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(38 12% 86%)" />
-              <stop offset="100%" stopColor="hsl(38 10% 82%)" />
+              <stop offset="0%" stopColor="hsl(40 10% 88%)" />
+              <stop offset="100%" stopColor="hsl(40 8% 84%)" />
             </linearGradient>
             <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="6" result="b" />
+              <feGaussianBlur stdDeviation="7" result="b" />
               <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <filter id="selectedGlow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="10" result="b" />
+              <feGaussianBlur stdDeviation="12" result="b" />
               <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
           </defs>
@@ -192,7 +192,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             d={bodySilhouetteFront}
             fill="url(#bodyFill2)"
             stroke="hsl(var(--body-stroke))"
-            strokeWidth="0.5"
+            strokeWidth="0.4"
             strokeLinejoin="round"
           />
 
@@ -201,24 +201,24 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             <path key={i} d={d} fill="url(#bodyFill2)" stroke="none" />
           ))}
 
-          {/* Detail lines */}
+          {/* Subtle anatomical hints */}
           {view === "front" && (
             <>
-              <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.25" />
-              <line x1="100" y1="92" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
+              <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.18" />
+              <line x1="100" y1="92" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.08" />
             </>
           )}
           {view === "back" && (
             <>
-              <line x1="100" y1="80" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" opacity="0.2" />
-              <path d="M76,104 Q84,114 80,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.18" />
-              <path d="M124,104 Q116,114 120,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.18" />
+              <line x1="100" y1="80" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.14" />
+              <path d="M76,104 Q84,114 80,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
+              <path d="M124,104 Q116,114 120,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
             </>
           )}
 
-          <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.15" />
+          <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.1" />
 
-          {/* Regions */}
+          {/* Interactive region overlays */}
           {visibleRegions.map((region) => {
             const color = getRegionColor(region.id);
             const isHovered = hoveredRegion === region.id;
@@ -228,54 +228,58 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
             return (
               <g key={`${view}-${region.id}`} id={`region-${region.id}`}>
+                {/* Soft colour underlay for regions with data */}
                 {hasEvents && (
                   <path
                     d={region.d}
-                    fill={`hsl(${color} / ${isSelected ? 0.45 : 0.25})`}
+                    fill={`hsl(${color} / ${isSelected ? 0.4 : 0.2})`}
                     filter={isSelected ? "url(#selectedGlow)" : "url(#glow2)"}
                     className="pointer-events-none"
                   />
                 )}
 
+                {/* Interactive surface */}
                 <path
                   d={region.d}
                   fill={
                     isSelected
-                      ? hasEvents ? `hsl(${color} / 0.5)` : "hsl(var(--primary) / 0.1)"
+                      ? hasEvents ? `hsl(${color} / 0.45)` : "hsl(var(--primary) / 0.08)"
                       : isHovered
-                        ? hasEvents ? `hsl(${color} / 0.4)` : "url(#regionHover)"
+                        ? hasEvents ? `hsl(${color} / 0.35)` : "url(#regionHover)"
                         : "transparent"
                   }
                   stroke={
                     isSelected
-                      ? "hsl(var(--foreground) / 0.15)"
-                      : isHovered ? "hsl(var(--foreground) / 0.08)" : "transparent"
+                      ? "hsl(var(--foreground) / 0.12)"
+                      : isHovered ? "hsl(var(--foreground) / 0.06)" : "transparent"
                   }
-                  strokeWidth={isSelected ? "0.8" : "0.5"}
+                  strokeWidth={isSelected ? "0.7" : "0.4"}
                   className="cursor-pointer"
-                  style={{ transition: "fill 0.35s ease, stroke 0.35s ease" }}
+                  style={{ transition: "fill 0.4s ease, stroke 0.4s ease" }}
                   onClick={() => onRegionSelect(region.id)}
                   onMouseEnter={() => setHoveredRegion(region.id)}
                   onMouseLeave={() => setHoveredRegion(null)}
                 />
 
+                {/* Quiet breathing indicator */}
                 {hasEvents && !isHovered && !isSelected && (
                   <circle
-                    cx={region.cx} cy={region.cy} r="2"
+                    cx={region.cx} cy={region.cy} r="1.8"
                     fill={`hsl(${color})`}
-                    opacity="0.55"
+                    opacity="0.45"
                     className="pointer-events-none animate-breathe"
                   />
                 )}
 
+                {/* Count badge on selection */}
                 {isSelected && count > 0 && (
                   <g className="pointer-events-none">
-                    <circle cx={region.cx + 14} cy={region.cy - 10} r="7.5" fill="hsl(var(--primary))" opacity="0.85" />
+                    <circle cx={region.cx + 14} cy={region.cy - 10} r="7" fill="hsl(var(--primary))" opacity="0.75" />
                     <text
                       x={region.cx + 14} y={region.cy - 6.5}
                       textAnchor="middle"
                       fill="hsl(var(--primary-foreground))"
-                      fontSize="7.5" fontWeight="600" fontFamily="DM Sans, sans-serif"
+                      fontSize="7" fontWeight="500" fontFamily="DM Sans, sans-serif"
                     >
                       {count}
                     </text>
@@ -287,9 +291,9 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </svg>
       </div>
 
-      {/* Subtle hint */}
-      <p className="text-[11px] text-muted-foreground/35 mt-4 tracking-wider">
-        {activeRegion ? "Tap again to deselect" : "Tap a region to explore"}
+      {/* Whisper hint */}
+      <p className="text-[10px] text-muted-foreground/30 mt-5 tracking-[0.2em] uppercase">
+        {activeRegion ? "Tap to deselect" : "Tap to explore"}
       </p>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useApp, EventType } from "@/context/AppContext";
 
 const layers: { type: EventType | "all"; label: string; dot: string }[] = [
-  { type: "all", label: "All", dot: "bg-muted-foreground/30" },
+  { type: "all", label: "All", dot: "bg-muted-foreground/25" },
   { type: "injury", label: "Injuries", dot: "bg-body-pain" },
   { type: "symptom", label: "Symptoms", dot: "bg-body-tension" },
   { type: "stress", label: "Stress", dot: "bg-body-tension" },
@@ -20,13 +20,13 @@ const LayerToggles = () => {
           <button
             key={layer.type}
             onClick={() => setActiveLayer(layer.type)}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[12px] font-medium transition-all duration-300 ${
+            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-medium tracking-wide transition-all duration-400 ${
               isActive
-                ? "bg-card text-foreground border border-border/40 shadow-xs"
-                : "text-muted-foreground/50 hover:text-muted-foreground hover:bg-secondary/30"
+                ? "bg-card text-foreground/75 border border-border/30 shadow-xs"
+                : "text-muted-foreground/35 hover:text-muted-foreground/55"
             }`}
           >
-            <span className={`w-1.5 h-1.5 rounded-full transition-opacity duration-300 ${layer.dot} ${isActive ? "opacity-100" : "opacity-50"}`} />
+            <span className={`w-1.5 h-1.5 rounded-full transition-opacity duration-400 ${layer.dot} ${isActive ? "opacity-80" : "opacity-35"}`} />
             {layer.label}
           </button>
         );
