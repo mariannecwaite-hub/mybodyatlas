@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, REGION_LABELS } from "@/context/AppContext";
-import { X, Archive, Trash2 } from "lucide-react";
+import { useBodyThreads } from "@/hooks/useBodyThreads";
+import { X, Archive, Trash2, Link2 } from "lucide-react";
 
 const typeLabels = {
   injury: "Injury", symptom: "Something you noticed", stress: "Stress period",
@@ -8,9 +9,13 @@ const typeLabels = {
 };
 
 const EventDetail = () => {
-  const { state, setState, deleteEvent, archiveEvent } = useApp();
+  const { state, setState, deleteEvent, archiveEvent, visibleEvents } = useApp();
   const event = state.events.find((e) => e.id === state.selectedEvent);
+  const threads = useBodyThreads(visibleEvents);
   const close = () => setState((s) => ({ ...s, selectedEvent: null }));
+
+  // Find threads this event belongs to
+  const eventThreads = event ? threads.filter((t) => t.eventIds.includes(event.id)) : [];
 
   return (
     <AnimatePresence>
@@ -96,6 +101,33 @@ const EventDetail = () => {
                 <div className="p-5 rounded-2xl bg-warm/15 border border-warm/20">
                   <p className="section-label mb-1.5 text-warm-foreground/60">Your notes</p>
                   <p className="text-[13px] text-foreground/70 leading-[1.8]">{event.notes}</p>
+                </div>
+              )}
+
+              {/* Body Threads this event belongs to */}
+              {eventThreads.length > 0 && (
+                <div className="p-4 rounded-2xl bg-sage/8 border border-sage/12">
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <Link2 className="w-3.5 h-3.5 text-sage-foreground/40" />
+                    <p className="section-label text-sage-foreground/55">Part of {eventThreads.length} {eventThreads.length === 1 ? "thread" : "threads"}</p>
+                  </div>
+                  <div className="space-y-2">
+                    {eventThreads.map((thread) => (
+                      <div key={thread.id} className="flex items-center gap-3">
+                        <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
+                          <div className="w-1 h-1 rounded-full bg-sage/50" />
+                          <div className="w-px h-2.5 bg-border/25" />
+                          <div className="w-1 h-1 rounded-full bg-sage/35" />
+                        </div>
+                        <div>
+                          <p className="text-[12px] font-medium text-foreground/65">{thread.label}</p>
+                          <p className="text-[10px] text-muted-foreground/35">
+                            {thread.eventCount} events · {thread.yearSpan}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

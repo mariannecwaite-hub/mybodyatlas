@@ -1,9 +1,29 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, BodyRegion, REGION_LABELS, EventType, REGION_A11Y } from "@/context/AppContext";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Link2 } from "lucide-react";
 
 const typeIcons: Record<EventType, string> = {
   injury: "🩹", symptom: "💭", stress: "🌊", treatment: "🌿", "life-event": "⭐",
+};
+
+/** Biomechanical connections between regions */
+const CONNECTED_REGIONS: Record<string, BodyRegion[]> = {
+  ankle_foot_left: ["knee_left", "hip_left", "lower_back"],
+  ankle_foot_right: ["knee_right", "hip_right", "lower_back"],
+  knee_left: ["ankle_foot_left", "hip_left", "lower_back"],
+  knee_right: ["ankle_foot_right", "hip_right", "lower_back"],
+  hip_left: ["knee_left", "lower_back", "ankle_foot_left"],
+  hip_right: ["knee_right", "lower_back", "ankle_foot_right"],
+  lower_back: ["hip_left", "hip_right", "upper_back"],
+  upper_back: ["lower_back", "neck", "shoulder_left", "shoulder_right"],
+  neck: ["head_jaw", "upper_back", "shoulder_left", "shoulder_right"],
+  head_jaw: ["neck"],
+  shoulder_left: ["neck", "upper_back", "wrist_hand_left"],
+  shoulder_right: ["neck", "upper_back", "wrist_hand_right"],
+  chest: ["upper_back", "shoulder_left", "shoulder_right"],
+  abdomen: ["lower_back", "hip_left", "hip_right"],
+  wrist_hand_left: ["shoulder_left"],
+  wrist_hand_right: ["shoulder_right"],
 };
 
 interface RegionSummaryProps {
@@ -24,6 +44,11 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
   const firstDate = regionEvents.length > 0
     ? new Date(regionEvents[regionEvents.length - 1].date).toLocaleDateString("en-US", { month: "short", year: "numeric" })
     : null;
+
+  // Connected regions that also have events
+  const connected = (CONNECTED_REGIONS[region] || []).filter((r) =>
+    visibleEvents.some((e) => e.regions.includes(r))
+  );
 
   return (
     <AnimatePresence>
@@ -63,12 +88,16 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
         )}
 
         {regionEvents.length > 0 && (
-          <div className="space-y-1 mb-6">
-            {regionEvents.slice(0, 3).map((event) => (
+          <div className="space-y-1 mb-4">
+            {regionEvents.slice(0, 4).map((event) => (
               <button
                 key={event.id}
                 onClick={() => setState((s) => ({ ...s, selectedEvent: event.id }))}
-                className="w-full flex items-center gap-3 p-3 rounded-xl text-left hover:bg-secondary/25 transition-all duration-300 group"
+                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all duration-300 group ${
+                  state.highlightedEventIds.includes(event.id)
+                    ? "bg-primary/8 ring-1 ring-primary/15"
+                    : "hover:bg-secondary/25"
+                }`}
                 aria-label={`${event.title}, ${new Date(event.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}${event.ongoing ? ", still ongoing" : ""}`}
               >
                 <span className="text-[12px]" aria-hidden="true">{typeIcons[event.type]}</span>
@@ -82,12 +111,45 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
                 <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]" aria-hidden="true">→</span>
               </button>
             ))}
-            {regionEvents.length > 3 && (
+            {regionEvents.length > 4 && (
               <p className="text-[10px] text-muted-foreground/28 text-center pt-2 tracking-wide">
-                + {regionEvents.length - 3} more
+                + {regionEvents.length - 4} more
               </p>
             )}
           </div>
+        )}
+
+        {/* Connected regions */}
+        {connected.length > 0 && (
+          <motion.div
+            className="mb-4 p-3 rounded-xl bg-sage/8 border border-sage/12"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+          >
+            <div className="flex items-center gap-1.5 mb-2">
+              <Link2 className="w-3 h-3 text-sage-foreground/40" />
+              <p className="text-[10px] font-medium text-sage-foreground/50 uppercase tracking-wider">Connected areas</p>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {connected.map((r) => {
+                const count = visibleEvents.filter((e) => e.regions.includes(r)).length;
+                return (
+                  <button
+                    key={r}
+                    onClick={() => selectRegion(r)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-card/60 border border-border/15 text-[11px] text-foreground/55 hover:text-foreground/75 hover:bg-card transition-all duration-200"
+                  >
+                    {REGION_LABELS[r]}
+                    <span className="text-[9px] text-muted-foreground/30">·{count}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-[10px] text-muted-foreground/30 mt-2 leading-relaxed">
+              Areas that may be biomechanically related to your {REGION_LABELS[region].toLowerCase()}.
+            </p>
+          </motion.div>
         )}
 
         <button
