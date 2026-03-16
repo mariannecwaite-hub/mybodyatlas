@@ -19,7 +19,7 @@ interface SuggestionCard {
 
 /* ─── Pre-built suggestions per life stage ─── */
 const childhoodCards: SuggestionCard[] = [
-  { id: "c1", emoji: "🩹", title: "Broken bone", description: "A fracture during childhood — arm, wrist, collarbone or leg.", type: "injury", regions: ["wrist_hand_left"], defaultYear: 2002, severity: "moderate" },
+  
   { id: "c2", emoji: "🤕", title: "Ankle or knee injury", description: "A sprain, twist or impact from sport or play.", type: "injury", regions: ["ankle_foot_left", "knee_left"], defaultYear: 2004, severity: "moderate" },
   { id: "c3", emoji: "🏥", title: "Childhood surgery", description: "Tonsils, appendix, grommets or another procedure.", type: "treatment", regions: ["abdomen"], defaultYear: 2000, severity: "moderate" },
   { id: "c4", emoji: "🤧", title: "Recurring illness", description: "Frequent ear infections, asthma, allergies or similar.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2001, severity: "mild" },
