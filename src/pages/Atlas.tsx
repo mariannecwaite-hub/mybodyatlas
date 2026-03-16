@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield } from "lucide-react";
+import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield, Lock } from "lucide-react";
 import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
@@ -12,11 +12,12 @@ import AddEventFlow from "@/components/AddEventFlow";
 import EventDetail from "@/components/EventDetail";
 import TreatmentLog from "@/components/TreatmentLog";
 import ProfileSwitcher from "@/components/ProfileSwitcher";
-import ShareFlow from "@/components/ShareFlow";
+import PractitionerSummary from "@/components/PractitionerSummary";
 import LearnLibrary from "@/components/LearnLibrary";
 import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
 import BodyStorySummary from "@/components/BodyStorySummary";
+import DataPrivacySettings from "@/components/DataPrivacySettings";
 
 type ActiveTab = "body" | "timeline" | "story";
 
