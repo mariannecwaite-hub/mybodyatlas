@@ -63,6 +63,7 @@ const Atlas = () => {
   const [showTreatment, setShowTreatment] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showDataPrivacy, setShowDataPrivacy] = useState(false);
   const [showLearn, setShowLearn] = useState(false);
   const [showLegacy, setShowLegacy] = useState(false);
   const [showCustomise, setShowCustomise] = useState(false);
