@@ -73,6 +73,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
 
   const activeRegion = state.selectedRegion;
+  const highlightedRegions = state.highlightedRegions || [];
   const visibleRegions = regions.filter((r) => r.views.includes(view));
 
   const getRegionColor = (regionId: BodyRegion): string | null => {
