@@ -87,8 +87,9 @@ const Atlas = () => {
   const secondaryActions = [
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
-    { icon: FileText, label: "Create summary for practitioner", action: () => setShowShare(true) },
+    { icon: FileText, label: "Create practitioner summary", action: () => setShowShare(true) },
     { icon: BookOpen, label: "Learn library", action: () => setShowLearn(true) },
+    { icon: Lock, label: "Data & Privacy", action: () => setShowDataPrivacy(true) },
     { icon: Heart, label: "Body legacy", action: () => setShowLegacy(true) },
   ];
 
