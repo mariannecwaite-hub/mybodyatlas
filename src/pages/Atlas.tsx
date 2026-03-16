@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield, Lock } from "lucide-react";
+import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield, Lock, Map } from "lucide-react";
 import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
@@ -21,6 +21,7 @@ import BodyStorySummary from "@/components/BodyStorySummary";
 import DataPrivacySettings from "@/components/DataPrivacySettings";
 import TreatmentGuide from "@/components/TreatmentGuide";
 import BodyMemories from "@/components/BodyMemories";
+import BodyPassport from "@/components/BodyPassport";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -73,6 +74,7 @@ const Atlas = () => {
   const [showMore, setShowMore] = useState(false);
   const [showBodyStorySummary, setShowBodyStorySummary] = useState(false);
   const [showTreatmentGuide, setShowTreatmentGuide] = useState(false);
+  const [showPassport, setShowPassport] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
 
   const handleRegionSelect = (region: BodyRegion) => {
@@ -89,6 +91,7 @@ const Atlas = () => {
   };
 
   const secondaryActions = [
+    { icon: Map, label: "Body Passport", action: () => setShowPassport(true) },
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
     { icon: FileText, label: "Create practitioner summary", action: () => setShowShare(true) },
@@ -317,6 +320,7 @@ const Atlas = () => {
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
       <BodyStorySummary open={showBodyStorySummary} onClose={() => setShowBodyStorySummary(false)} />
       <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
+      <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
     </div>
   );
 };
