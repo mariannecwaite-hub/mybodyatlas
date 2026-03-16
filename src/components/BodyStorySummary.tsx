@@ -33,6 +33,7 @@ type Step = "story" | "configure" | "preview";
 
 const BodyStorySummary = ({ open, onClose }: BodyStorySummaryProps) => {
   const { visibleEvents } = useApp();
+  const threads = useBodyThreads(visibleEvents);
   const [step, setStep] = useState<Step>("story");
   const [reflection, setReflection] = useState("");
   const [copied, setCopied] = useState(false);
