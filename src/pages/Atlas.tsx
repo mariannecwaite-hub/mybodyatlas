@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield } from "lucide-react";
+import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield, Lock } from "lucide-react";
 import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
@@ -12,11 +12,12 @@ import AddEventFlow from "@/components/AddEventFlow";
 import EventDetail from "@/components/EventDetail";
 import TreatmentLog from "@/components/TreatmentLog";
 import ProfileSwitcher from "@/components/ProfileSwitcher";
-import ShareFlow from "@/components/ShareFlow";
+import PractitionerSummary from "@/components/PractitionerSummary";
 import LearnLibrary from "@/components/LearnLibrary";
 import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
 import BodyStorySummary from "@/components/BodyStorySummary";
+import DataPrivacySettings from "@/components/DataPrivacySettings";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -62,6 +63,7 @@ const Atlas = () => {
   const [showTreatment, setShowTreatment] = useState(false);
   const [showProfiles, setShowProfiles] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showDataPrivacy, setShowDataPrivacy] = useState(false);
   const [showLearn, setShowLearn] = useState(false);
   const [showLegacy, setShowLegacy] = useState(false);
   const [showCustomise, setShowCustomise] = useState(false);
@@ -85,8 +87,9 @@ const Atlas = () => {
   const secondaryActions = [
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
-    { icon: FileText, label: "Create summary for practitioner", action: () => setShowShare(true) },
+    { icon: FileText, label: "Create practitioner summary", action: () => setShowShare(true) },
     { icon: BookOpen, label: "Learn library", action: () => setShowLearn(true) },
+    { icon: Lock, label: "Data & Privacy", action: () => setShowDataPrivacy(true) },
     { icon: Heart, label: "Body legacy", action: () => setShowLegacy(true) },
   ];
 
@@ -283,7 +286,8 @@ const Atlas = () => {
       <EventDetail />
       <TreatmentLog open={showTreatment} onClose={() => setShowTreatment(false)} />
       <ProfileSwitcher open={showProfiles} onClose={() => setShowProfiles(false)} />
-      <ShareFlow open={showShare} onClose={() => setShowShare(false)} />
+      <PractitionerSummary open={showShare} onClose={() => setShowShare(false)} />
+      <DataPrivacySettings open={showDataPrivacy} onClose={() => setShowDataPrivacy(false)} />
       <LearnLibrary open={showLearn} onClose={() => setShowLearn(false)} />
       <LegacySettings open={showLegacy} onClose={() => setShowLegacy(false)} />
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
