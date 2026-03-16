@@ -58,6 +58,9 @@ export interface AppState {
   currentScreen: string;
   insightsRevealed: boolean;
   showArchived: boolean;
+  highlightedRegions: BodyRegion[];
+  highlightedEventIds: string[];
+  activeInsightId: string | null;
 }
 
 interface AppContextType {
