@@ -305,6 +305,7 @@ const Atlas = () => {
       <LegacySettings open={showLegacy} onClose={() => setShowLegacy(false)} />
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
       <BodyStorySummary open={showBodyStorySummary} onClose={() => setShowBodyStorySummary(false)} />
+      <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
     </div>
   );
 };
