@@ -93,10 +93,17 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const { state, visibleEvents } = useApp();
   const [view, setView] = useState<BodyView>("front");
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
+  const [tappedRegion, setTappedRegion] = useState<BodyRegion | null>(null);
 
   const activeRegion = state.selectedRegion;
   const highlightedRegions = state.highlightedRegions || [];
   const visibleRegions = regions.filter((r) => r.views.includes(view));
+
+  const handleRegionTap = (regionId: BodyRegion) => {
+    setTappedRegion(regionId);
+    setTimeout(() => setTappedRegion(null), 500);
+    onRegionSelect(regionId);
+  };
 
   // Compute which connections to show
   const activeConnections = useMemo(() => {
