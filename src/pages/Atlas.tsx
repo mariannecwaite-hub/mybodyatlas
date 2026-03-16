@@ -20,6 +20,7 @@ import BodyCustomisation from "@/components/BodyCustomisation";
 import BodyStorySummary from "@/components/BodyStorySummary";
 import DataPrivacySettings from "@/components/DataPrivacySettings";
 import TreatmentGuide from "@/components/TreatmentGuide";
+import BodyMemories from "@/components/BodyMemories";
 
 type ActiveTab = "body" | "timeline" | "story";
 
