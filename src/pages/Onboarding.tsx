@@ -398,18 +398,30 @@ const Onboarding = () => {
             {/* ── Intro content ── */}
             {current.phase === "intro" && (
               <div className="flex-1 flex items-center justify-center">
-                <motion.div
-                  className="rounded-2xl p-6 bg-sage/8 border border-sage/12 max-w-sm"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.6 }}
-                >
-                  <p className="text-[13px] text-foreground/70 leading-[1.8]">
-                    {current.id === "intro"
-                      ? "We'll walk through a few life stages together. Just tap the experiences that feel familiar — each one takes a couple of seconds."
-                      : "Your body story remains on your device. No practitioner, platform or third party sees anything unless you explicitly choose to share."}
-                  </p>
-                </motion.div>
+                {current.id === "intro" ? (
+                  <motion.div
+                    className="flex flex-col items-center gap-4"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                  >
+                    <svg viewBox="10 0 80 100" className="w-28 h-40">
+                      <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+                      <circle cx="50" cy="45" r="4" fill="hsl(var(--body-tension) / 0.7)" className="animate-soft-pulse" />
+                    </svg>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    className="rounded-2xl p-6 bg-sage/8 border border-sage/12 max-w-sm"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.6 }}
+                  >
+                    <p className="text-[13px] text-foreground/70 leading-[1.8]">
+                      Your body story remains on your device. No practitioner, platform or third party sees anything unless you explicitly choose to share.
+                    </p>
+                  </motion.div>
+                )}
               </div>
             )}
 
