@@ -1,7 +1,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, REGION_LABELS, EventType } from "@/context/AppContext";
+import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppContext";
+import { useBodyThreads } from "@/hooks/useBodyThreads";
 import { X, Shield, Copy, Check, FileText, Link2, BookOpen, Lock } from "lucide-react";
+
+/** Mini silhouette region positions for summary */
+const summaryRegionPos: Record<string, { cx: number; cy: number }> = {
+  head_jaw: { cx: 50, cy: 10 }, neck: { cx: 50, cy: 18 },
+  shoulder_left: { cx: 35, cy: 24 }, shoulder_right: { cx: 65, cy: 24 },
+  chest: { cx: 50, cy: 32 }, upper_back: { cx: 50, cy: 32 },
+  abdomen: { cx: 50, cy: 45 }, lower_back: { cx: 50, cy: 45 },
+  wrist_hand_left: { cx: 22, cy: 48 }, wrist_hand_right: { cx: 78, cy: 48 },
+  hip_left: { cx: 42, cy: 56 }, hip_right: { cx: 58, cy: 56 },
+  knee_left: { cx: 42, cy: 72 }, knee_right: { cx: 58, cy: 72 },
+  ankle_foot_left: { cx: 42, cy: 88 }, ankle_foot_right: { cx: 58, cy: 88 },
+};
 
 interface BodyStorySummaryProps {
   open: boolean;
