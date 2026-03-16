@@ -41,14 +41,19 @@ const Welcome = () => {
           </p>
         </div>
 
-        <motion.p
-          className="text-muted-foreground/70 text-[13px] leading-relaxed max-w-[280px] mx-auto"
+        <motion.div
+          className="rounded-2xl p-5 bg-sage/10 border border-sage/15 text-left space-y-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.8 }}
         >
-          Track injuries, symptoms, and treatments across time — gently and privately.
-        </motion.p>
+          <p className="text-[13px] text-foreground/75 leading-relaxed">
+            My Body Atlas helps you organise your body experiences across time.
+          </p>
+          <p className="text-[12px] text-muted-foreground/50 leading-relaxed">
+            Your body story remains private and under your control.
+          </p>
+        </motion.div>
 
         <motion.div
           className="pt-2 space-y-3"
