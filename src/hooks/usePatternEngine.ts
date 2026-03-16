@@ -3,7 +3,7 @@ import { BodyEvent, BodyRegion, EventType, REGION_LABELS } from "@/context/AppCo
 
 export interface PatternInsight {
   id: string;
-  type: "repeated_region" | "cross_region" | "stress_overlap" | "treatment_response" | "body_echo" | "life_change" | "ongoing" | "span" | "fallback";
+  type: "repeated_region" | "cross_region" | "stress_overlap" | "treatment_response" | "body_echo" | "life_change" | "ongoing" | "span" | "movement_chain" | "fallback";
   title: string;
   body: string;
   tone: "sage" | "lavender" | "warm";
