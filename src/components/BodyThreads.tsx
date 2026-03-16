@@ -89,6 +89,35 @@ const BodyThreads = () => {
                       {thread.description}
                     </p>
 
+                    {/* Mini year timeline */}
+                    {threadEvents.length > 1 && (() => {
+                      const threadYears = threadEvents.map(e => new Date(e.date).getFullYear());
+                      const minYear = Math.min(...threadYears);
+                      const maxYear = Math.max(...threadYears);
+                      const uniqueYears = [...new Set(threadYears)].sort();
+                      const yearSpan = maxYear - minYear || 1;
+                      return (
+                        <div className="relative h-8 mb-3 mx-1">
+                          <div className="absolute top-1/2 left-4 right-4 h-px bg-border/25 -translate-y-1/2" />
+                          <span className="absolute left-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{minYear}</span>
+                          {maxYear !== minYear && (
+                            <span className="absolute right-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{maxYear}</span>
+                          )}
+                          {uniqueYears.map(year => {
+                            const pct = yearSpan > 0 ? ((year - minYear) / yearSpan) * 100 : 50;
+                            return (
+                              <div
+                                key={year}
+                                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-sage/50 border border-sage/30"
+                                style={{ left: `${Math.max(5, Math.min(95, pct))}%` }}
+                                title={`${year}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
+
                     {/* Thread regions */}
                     <div className="flex flex-wrap gap-1.5 mb-3">
                       {thread.regions.slice(0, 5).map((r) => (

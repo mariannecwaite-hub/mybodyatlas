@@ -322,6 +322,7 @@ const Atlas = () => {
       <BodyStorySummary open={showBodyStorySummary} onClose={() => setShowBodyStorySummary(false)} />
       <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
       <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
+      <ReturnPrompt />
     </div>
   );
 };

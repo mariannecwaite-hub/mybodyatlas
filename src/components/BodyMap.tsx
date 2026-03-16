@@ -353,7 +353,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                 />
 
                 {hasEvents && !isHovered && !isSelected && !isHighlighted && (
-                  <circle cx={region.cx} cy={region.cy} r="1.8" fill={`hsl(${color})`} opacity="0.45" className="pointer-events-none animate-soft-pulse" />
+                  <circle cx={region.cx} cy={region.cy} r="4" fill={`hsl(${color})`} opacity="0.65" className="pointer-events-none animate-soft-pulse" style={{ filter: `drop-shadow(0 0 6px hsl(${color} / 0.4))` }} />
                 )}
 
                 {isSelected && count > 0 && (

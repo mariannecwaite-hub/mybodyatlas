@@ -334,11 +334,19 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
           <div className="rounded-2xl p-5 bg-card border border-border/20" style={{ boxShadow: "var(--shadow-xs)" }}>
             <div className="flex flex-wrap gap-2 mb-4">
               {topRegions.map(([region, count]) => (
-                <span key={region} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-secondary/50 text-[12px] text-foreground/65 border border-border/15">
-                  <span className="w-2 h-2 rounded-full bg-sage/60" />
+                <button
+                  key={region}
+                  onClick={() => setHighlightedStoryRegion(highlightedStoryRegion === region ? null : region)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12px] border transition-all duration-300 ${
+                    highlightedStoryRegion === region
+                      ? "bg-sage/20 border-sage/30 text-foreground/80"
+                      : "bg-secondary/50 text-foreground/65 border-border/15 hover:bg-secondary/70"
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${highlightedStoryRegion === region ? "bg-sage/80" : "bg-sage/60"}`} />
                   {REGION_LABELS[region as keyof typeof REGION_LABELS]}
                   <span className="text-muted-foreground/30 ml-0.5">· {count}</span>
-                </span>
+                </button>
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
