@@ -8,6 +8,7 @@ import RegionSummary from "@/components/RegionSummary";
 import TimelineView from "@/components/TimelineView";
 import BodyStoryView from "@/components/BodyStoryView";
 import InsightCards from "@/components/InsightCards";
+import BodyRecord from "@/components/BodyRecord";
 import AddEventFlow from "@/components/AddEventFlow";
 import EventDetail from "@/components/EventDetail";
 import TreatmentLog from "@/components/TreatmentLog";
