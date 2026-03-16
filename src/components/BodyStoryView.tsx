@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useApp, REGION_LABELS, EventType } from "@/context/AppContext";
+import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
+import { useBodyThreads } from "@/hooks/useBodyThreads";
+import BodyThreads from "@/components/BodyThreads";
 import { Shield, Lock, FileText, Bookmark, X as XIcon, BookOpen } from "lucide-react";
 
 const typeLabels: Record<EventType, string> = {
@@ -21,16 +23,38 @@ const typeDotColors: Record<EventType, string> = {
 };
 
 const MAX_STORY_INSIGHTS = 3;
+const MAGIC_MOMENT_THRESHOLD = 10;
 
 interface BodyStoryViewProps {
   onCreateSummary: () => void;
 }
+
+/** Minimal body silhouette regions for the story overview */
+const storyRegionPositions: Record<string, { cx: number; cy: number }> = {
+  head_jaw: { cx: 50, cy: 10 },
+  neck: { cx: 50, cy: 18 },
+  shoulder_left: { cx: 35, cy: 24 },
+  shoulder_right: { cx: 65, cy: 24 },
+  chest: { cx: 50, cy: 32 },
+  upper_back: { cx: 50, cy: 32 },
+  abdomen: { cx: 50, cy: 45 },
+  lower_back: { cx: 50, cy: 45 },
+  wrist_hand_left: { cx: 22, cy: 48 },
+  wrist_hand_right: { cx: 78, cy: 48 },
+  hip_left: { cx: 42, cy: 56 },
+  hip_right: { cx: 58, cy: 56 },
+  knee_left: { cx: 42, cy: 72 },
+  knee_right: { cx: 58, cy: 72 },
+  ankle_foot_left: { cx: 42, cy: 88 },
+  ankle_foot_right: { cx: 58, cy: 88 },
+};
 
 const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   const { visibleEvents, state, highlightInsight } = useApp();
   const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
   const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
   const [reflection, setReflection] = useState("");
+  const threads = useBodyThreads(visibleEvents);
 
   const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
   const span = years.length > 1 ? `${years[0]}–${years[years.length - 1]}` : years[0]?.toString() || "—";
@@ -50,6 +74,8 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   )
     .sort((a, b) => b[1] - a[1])
     .slice(0, 6);
+
+  const activeRegions = new Set(visibleEvents.flatMap((e) => e.regions));
 
   // Life phase clusters
   const lifeClusters: { label: string; count: number; types: EventType[] }[] = [];
@@ -93,6 +119,8 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     warm: "bg-warm/15 border-warm/18",
   };
 
+  const showMagicMoment = visibleEvents.length >= MAGIC_MOMENT_THRESHOLD;
+
   return (
     <div className="pt-8 pb-12 space-y-8" role="region" aria-label="Your Body Story So Far">
       {/* Header */}
@@ -111,11 +139,88 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
           <div>
             <p className="text-[13px] text-foreground/70 leading-relaxed">Your body story is private.</p>
             <p className="text-[12px] text-muted-foreground/45 leading-relaxed mt-0.5">
-              You can create summaries when it's helpful to share with someone you trust.
+              Nothing is shared unless you choose to share it.
             </p>
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Magic Moment — Visual narrative summary */}
+      {showMagicMoment && (
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.6 }}
+        >
+          <div className="rounded-2xl p-6 bg-lavender/8 border border-lavender/12 overflow-hidden">
+            <p className="text-[10.5px] font-medium text-muted-foreground/50 uppercase tracking-[0.18em] mb-4">
+              Your body at a glance
+            </p>
+
+            {/* Mini body silhouette with active regions */}
+            <div className="flex justify-center mb-5">
+              <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview showing affected regions">
+                {/* Simple silhouette outline */}
+                <ellipse cx="50" cy="10" rx="7" ry="8" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+                <rect x="43" y="18" width="14" height="4" rx="2" fill="hsl(var(--body-fill))" />
+                <rect x="35" y="22" width="30" height="18" rx="4" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                <rect x="38" y="40" width="24" height="18" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                {/* Arms */}
+                <rect x="20" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
+                <rect x="65" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
+                <rect x="16" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
+                <rect x="76" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
+                {/* Legs */}
+                <rect x="38" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                <rect x="52" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                <rect x="38" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
+                <rect x="52" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
+
+                {/* Active region dots */}
+                {Object.entries(storyRegionPositions).map(([region, pos]) => {
+                  if (!activeRegions.has(region as BodyRegion)) return null;
+                  return (
+                    <circle
+                      key={region}
+                      cx={pos.cx}
+                      cy={pos.cy}
+                      r="3"
+                      fill="hsl(var(--primary) / 0.35)"
+                      stroke="hsl(var(--primary) / 0.15)"
+                      strokeWidth="3"
+                      className="animate-breathe"
+                    />
+                  );
+                })}
+              </svg>
+            </div>
+
+            {/* Narrative summary */}
+            <div className="text-center space-y-2">
+              <p className="text-[15px] font-serif text-foreground/80">
+                {visibleEvents.length} experiences across {activeRegions.size} areas of your body
+              </p>
+              <p className="text-[12px] text-muted-foreground/50 leading-relaxed">
+                Spanning {span} · {threads.length > 0 ? `${threads.length} connecting threads` : "patterns emerging"}
+              </p>
+            </div>
+
+            {/* Narrative insight — the magic moment */}
+            {visibleInsights.length > 0 && (
+              <motion.div
+                className="mt-5 pt-4 border-t border-lavender/15"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <p className="text-[13px] text-foreground/65 leading-[1.8] text-center italic font-serif">
+                  "{visibleInsights[0].body}"
+                </p>
+              </motion.div>
+            )}
+          </div>
+        </motion.section>
+      )}
 
       {/* 1. Body Map Overview */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>
@@ -144,7 +249,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
       {/* 2. Timeline Highlights */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
-        <p className="section-label mb-3">Timeline highlights</p>
+        <p className="section-label mb-3">Timeline of experiences</p>
         <div className="rounded-2xl p-5 bg-warm/12 border border-warm/15">
           <div className="flex items-baseline gap-3 mb-4">
             <p className="text-[22px] font-serif text-foreground/85">{span}</p>
@@ -181,7 +286,10 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         </div>
       </motion.section>
 
-      {/* 3. Patterns Worth Noticing */}
+      {/* 3. Body Threads */}
+      <BodyThreads />
+
+      {/* 4. Patterns Worth Noticing */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
         <p className="section-label mb-3">Patterns worth noticing</p>
         {visibleInsights.length > 0 ? (
@@ -203,7 +311,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                   <p className="text-[15px] font-serif text-foreground/80 mb-1.5">{insight.title}</p>
                   <p className="text-[13px] text-muted-foreground/55 leading-[1.8] mb-3">{insight.body}</p>
 
-                  {/* Highlighted regions when active */}
                   {isActive && insight.relatedRegions.length > 0 && (
                     <motion.div
                       className="mb-3 flex flex-wrap gap-1.5"
@@ -261,7 +368,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         )}
       </motion.section>
 
-      {/* 4. Treatments Explored */}
+      {/* 5. Treatments Explored */}
       {treatments.length > 0 && (
         <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
           <p className="section-label mb-3">Treatments explored</p>
@@ -289,7 +396,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         </motion.section>
       )}
 
-      {/* 5. Reflection */}
+      {/* 6. Reflection */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}>
         <p className="section-label mb-2">Personal reflection</p>
         <p className="text-[11px] text-muted-foreground/40 mb-3 leading-relaxed">

@@ -3,7 +3,7 @@ import { BodyEvent, BodyRegion, EventType, REGION_LABELS } from "@/context/AppCo
 
 export interface PatternInsight {
   id: string;
-  type: "repeated_region" | "cross_region" | "stress_overlap" | "treatment_response" | "body_echo" | "life_change" | "ongoing" | "span" | "fallback";
+  type: "repeated_region" | "cross_region" | "stress_overlap" | "treatment_response" | "body_echo" | "life_change" | "ongoing" | "span" | "movement_chain" | "fallback";
   title: string;
   body: string;
   tone: "sage" | "lavender" | "warm";
@@ -230,6 +230,45 @@ export function usePatternEngine(
             relatedEventIds: [postpartumEvent.id, ...postpartumSymptoms.map((e) => e.id)],
           });
         }
+      }
+    }
+
+    // ── 5b. Movement chain patterns ──
+    if (!selectedRegion) {
+      const lowerBodyRegions: BodyRegion[] = ["ankle_foot_left", "ankle_foot_right", "knee_left", "knee_right", "hip_left", "hip_right", "lower_back"];
+      const upperBodyRegions: BodyRegion[] = ["neck", "shoulder_left", "shoulder_right", "upper_back"];
+
+      const lowerBodyEvents = events.filter((e) => e.regions.some((r) => lowerBodyRegions.includes(r)));
+      const upperBodyEvents = events.filter((e) => e.regions.some((r) => upperBodyRegions.includes(r)));
+
+      const lowerTouchedRegions = [...new Set(lowerBodyEvents.flatMap((e) => e.regions.filter((r) => lowerBodyRegions.includes(r))))];
+      const upperTouchedRegions = [...new Set(upperBodyEvents.flatMap((e) => e.regions.filter((r) => upperBodyRegions.includes(r))))];
+
+      if (lowerTouchedRegions.length >= 3 && lowerBodyEvents.length >= 4) {
+        const regionNames = lowerTouchedRegions.slice(0, 3).map((r) => REGION_LABELS[r]?.toLowerCase()).filter(Boolean);
+        insights.push({
+          id: "movement-chain-lower",
+          type: "movement_chain",
+          title: "A lower-body pattern",
+          body: `Several experiences affect your ${regionNames.join(", ")}. These areas work together in movement — what happens in one can influence the others over time.`,
+          tone: "sage",
+          premium: true,
+          relatedRegions: lowerTouchedRegions as BodyRegion[],
+          relatedEventIds: lowerBodyEvents.map((e) => e.id),
+        });
+      }
+
+      if (upperTouchedRegions.length >= 3 && upperBodyEvents.length >= 3) {
+        const regionNames = upperTouchedRegions.slice(0, 3).map((r) => REGION_LABELS[r]?.toLowerCase()).filter(Boolean);
+        insights.push({
+          id: "movement-chain-upper",
+          type: "movement_chain",
+          title: "An upper-body connection",
+          body: `Your ${regionNames.join(", ")} have all appeared in your record. These areas are closely connected — tension in one often shows up in the others.`,
+          tone: "lavender",
+          relatedRegions: upperTouchedRegions as BodyRegion[],
+          relatedEventIds: upperBodyEvents.map((e) => e.id),
+        });
       }
     }
 
