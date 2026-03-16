@@ -286,7 +286,8 @@ const Atlas = () => {
       <EventDetail />
       <TreatmentLog open={showTreatment} onClose={() => setShowTreatment(false)} />
       <ProfileSwitcher open={showProfiles} onClose={() => setShowProfiles(false)} />
-      <ShareFlow open={showShare} onClose={() => setShowShare(false)} />
+      <PractitionerSummary open={showShare} onClose={() => setShowShare(false)} />
+      <DataPrivacySettings open={showDataPrivacy} onClose={() => setShowDataPrivacy(false)} />
       <LearnLibrary open={showLearn} onClose={() => setShowLearn(false)} />
       <LegacySettings open={showLegacy} onClose={() => setShowLegacy(false)} />
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
