@@ -3,6 +3,7 @@ import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { motion } from "framer-motion";
 import { Bookmark, X as XIcon, BookOpen, Sparkles } from "lucide-react";
+import TreatmentGuide from "@/components/TreatmentGuide";
 
 const MAX_INSIGHTS = 2;
 
