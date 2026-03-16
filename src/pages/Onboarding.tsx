@@ -76,9 +76,8 @@ const onboardingSteps: OnboardingStep[] = [
   {
     id: "intro",
     phase: "intro",
-    emoji: "🗺️",
     title: "Your body has a story",
-    subtitle: "Let's map it together. We'll guide you through a few life stages — just tap anything that resonates. It takes about 2–3 minutes.",
+    subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
   },
   {
     id: "privacy",
