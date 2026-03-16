@@ -56,6 +56,10 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   const [reflection, setReflection] = useState("");
   const [animationPhase, setAnimationPhase] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [highlightedStoryRegion, setHighlightedStoryRegion] = useState<string | null>(null);
+  const [privacyDismissed, setPrivacyDismissed] = useState(() => {
+    try { return localStorage.getItem("body-story-privacy-seen") === "true"; } catch { return false; }
+  });
   const threads = useBodyThreads(visibleEvents);
 
   const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
