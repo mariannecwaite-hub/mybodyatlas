@@ -7,6 +7,7 @@ import { MapPin, Calendar, Lightbulb, HeartPulse, Link2 } from "lucide-react";
 const BodyRecord = () => {
   const { visibleEvents } = useApp();
   const insights = usePatternEngine(visibleEvents, { maxResults: 10 });
+  const threads = useBodyThreads(visibleEvents);
 
   const totalEvents = visibleEvents.length;
   const uniqueRegions = [...new Set(visibleEvents.flatMap((e) => e.regions))];
