@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { useApp, REGION_LABELS, EventType } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
-import { MapPin, Calendar, Lightbulb, HeartPulse } from "lucide-react";
+import { useBodyThreads } from "@/hooks/useBodyThreads";
+import { MapPin, Calendar, Lightbulb, HeartPulse, Link2 } from "lucide-react";
 
 const BodyRecord = () => {
   const { visibleEvents } = useApp();
