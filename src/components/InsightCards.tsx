@@ -11,6 +11,7 @@ const InsightCards = () => {
   const { state, visibleEvents, revealInsights, highlightInsight } = useApp();
   const [savedInsights, setSavedInsights] = useState<string[]>([]);
   const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
+  const [showGuide, setShowGuide] = useState(false);
 
   // ── Consent gate ──
   if (!state.insightsRevealed) {
