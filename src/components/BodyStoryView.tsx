@@ -174,26 +174,53 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
   return (
     <div className="pt-8 pb-12 space-y-8" role="region" aria-label="Your Body Story So Far">
-      {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="flex items-center gap-2.5 mb-2">
-          <Shield className="w-5 h-5 text-sage-foreground/50" />
-          <h2 className="text-[26px] font-serif text-foreground/90 leading-tight">Your Body Story So Far</h2>
-        </div>
-        <motion.div
-          className="rounded-2xl p-4 bg-sage/8 border border-sage/12 flex items-start gap-3 mt-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-        >
-          <Lock className="w-4 h-4 text-sage-foreground/40 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="text-[13px] text-foreground/70 leading-relaxed">Your body story is private.</p>
-            <p className="text-[12px] text-muted-foreground/45 leading-relaxed mt-0.5">
-              Nothing is shared unless you choose to share it.
-            </p>
-          </div>
-        </motion.div>
+      {/* Header with hero insight */}
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+        <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story So Far</h2>
+
+        {/* Hero insight — the most important element */}
+        {visibleInsights.length > 0 && (
+          <motion.div
+            className="text-center py-8 px-2 max-w-md mx-auto space-y-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            {visibleInsights.slice(0, 2).map((insight, i) => (
+              <motion.p
+                key={insight.id}
+                className="text-[17px] font-serif text-foreground/65 leading-[1.9] italic"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + i * 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              >
+                &ldquo;{insight.body}&rdquo;
+              </motion.p>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Privacy pill — small, dismissible */}
+        <AnimatePresence>
+          {!privacyDismissed && (
+            <motion.div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sage/8 border border-sage/12 w-fit mx-auto mt-2"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ delay: 1.5, duration: 0.4 }}
+            >
+              <Lock className="w-3 h-3 text-sage-foreground/35" />
+              <span className="text-[10px] text-muted-foreground/45">Your body story is private</span>
+              <button
+                onClick={() => { setPrivacyDismissed(true); try { localStorage.setItem("body-story-privacy-seen", "true"); } catch {} }}
+                className="ml-1 p-0.5 rounded-full hover:bg-secondary/40 transition-colors"
+              >
+                <XIcon className="w-2.5 h-2.5 text-muted-foreground/25" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* ── Magic Moment with Timeline Animation ── */}
