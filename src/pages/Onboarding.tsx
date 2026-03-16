@@ -25,6 +25,7 @@ const childhoodCards: SuggestionCard[] = [
   { id: "c4", emoji: "🤧", title: "Recurring illness", description: "Frequent ear infections, asthma, allergies or similar.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2001, severity: "mild" },
   { id: "c5", emoji: "🪨", title: "A fall or impact", description: "A memorable fall — from a bike, tree, trampoline or stairs.", type: "injury", regions: ["head_jaw", "wrist_hand_right"], defaultYear: 2003, severity: "mild" },
   { id: "c6", emoji: "😰", title: "Childhood stress", description: "A period that felt overwhelming — school, family, moving.", type: "stress", regions: ["chest", "abdomen"], defaultYear: 2005, severity: "mild" },
+  { id: "c7", emoji: "👶", title: "Birth story", description: "Anything notable about your birth — early arrival, complications, or a difficult delivery.", type: "life-event", regions: ["head_jaw", "neck", "abdomen"], defaultYear: 1998, severity: "mild" },
 ];
 
 const adultCards: SuggestionCard[] = [
