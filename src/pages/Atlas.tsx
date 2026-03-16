@@ -22,6 +22,7 @@ import DataPrivacySettings from "@/components/DataPrivacySettings";
 import TreatmentGuide from "@/components/TreatmentGuide";
 import BodyMemories from "@/components/BodyMemories";
 import BodyPassport from "@/components/BodyPassport";
+import ReturnPrompt from "@/components/ReturnPrompt";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -144,8 +145,8 @@ const Atlas = () => {
             </div>
             <button
               onClick={() => { setPreselectedRegion(undefined); setState((s) => ({ ...s, showAddEvent: true })); }}
-              className="flex items-center gap-1.5 px-4 py-2.5 bg-primary/90 text-primary-foreground rounded-full text-[12px] font-medium transition-all duration-300 hover:bg-primary active:scale-[0.97]"
-              style={{ boxShadow: "var(--shadow-sm)" }}
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-warm text-warm-foreground/70 border border-warm-foreground/10 rounded-full text-[12px] font-medium transition-all duration-300 hover:bg-warm/90 active:scale-[0.97]"
+              style={{ boxShadow: "var(--shadow-xs)" }}
             >
               <Plus className="w-3.5 h-3.5" /> Add event
             </button>
@@ -321,6 +322,7 @@ const Atlas = () => {
       <BodyStorySummary open={showBodyStorySummary} onClose={() => setShowBodyStorySummary(false)} />
       <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
       <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
+      <ReturnPrompt />
     </div>
   );
 };

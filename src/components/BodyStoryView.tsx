@@ -56,6 +56,10 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   const [reflection, setReflection] = useState("");
   const [animationPhase, setAnimationPhase] = useState(0);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [highlightedStoryRegion, setHighlightedStoryRegion] = useState<string | null>(null);
+  const [privacyDismissed, setPrivacyDismissed] = useState(() => {
+    try { return localStorage.getItem("body-story-privacy-seen") === "true"; } catch { return false; }
+  });
   const threads = useBodyThreads(visibleEvents);
 
   const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
@@ -170,26 +174,53 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
   return (
     <div className="pt-8 pb-12 space-y-8" role="region" aria-label="Your Body Story So Far">
-      {/* Header */}
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <div className="flex items-center gap-2.5 mb-2">
-          <Shield className="w-5 h-5 text-sage-foreground/50" />
-          <h2 className="text-[26px] font-serif text-foreground/90 leading-tight">Your Body Story So Far</h2>
-        </div>
-        <motion.div
-          className="rounded-2xl p-4 bg-sage/8 border border-sage/12 flex items-start gap-3 mt-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-        >
-          <Lock className="w-4 h-4 text-sage-foreground/40 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="text-[13px] text-foreground/70 leading-relaxed">Your body story is private.</p>
-            <p className="text-[12px] text-muted-foreground/45 leading-relaxed mt-0.5">
-              Nothing is shared unless you choose to share it.
-            </p>
-          </div>
-        </motion.div>
+      {/* Header with hero insight */}
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+        <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story So Far</h2>
+
+        {/* Hero insight — the most important element */}
+        {visibleInsights.length > 0 && (
+          <motion.div
+            className="text-center py-8 px-2 max-w-md mx-auto space-y-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            {visibleInsights.slice(0, 2).map((insight, i) => (
+              <motion.p
+                key={insight.id}
+                className="text-[17px] font-serif text-foreground/65 leading-[1.9] italic"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + i * 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              >
+                &ldquo;{insight.body}&rdquo;
+              </motion.p>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Privacy pill — small, dismissible */}
+        <AnimatePresence>
+          {!privacyDismissed && (
+            <motion.div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sage/8 border border-sage/12 w-fit mx-auto mt-2"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ delay: 1.5, duration: 0.4 }}
+            >
+              <Lock className="w-3 h-3 text-sage-foreground/35" />
+              <span className="text-[10px] text-muted-foreground/45">Your body story is private</span>
+              <button
+                onClick={() => { setPrivacyDismissed(true); try { localStorage.setItem("body-story-privacy-seen", "true"); } catch {} }}
+                className="ml-1 p-0.5 rounded-full hover:bg-secondary/40 transition-colors"
+              >
+                <XIcon className="w-2.5 h-2.5 text-muted-foreground/25" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* ── Magic Moment with Timeline Animation ── */}
@@ -207,33 +238,21 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
             {/* Animated body silhouette */}
             <div className="flex justify-center mb-4">
               <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview — regions illuminate as your story unfolds">
-                {/* Simple silhouette outline */}
-                <ellipse cx="50" cy="10" rx="7" ry="8" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
-                <rect x="43" y="18" width="14" height="4" rx="2" fill="hsl(var(--body-fill))" />
-                <rect x="35" y="22" width="30" height="18" rx="4" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="38" y="40" width="24" height="18" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="20" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
-                <rect x="65" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
-                <rect x="16" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
-                <rect x="76" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
-                <rect x="38" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="52" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="38" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
-                <rect x="52" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
-
-                {/* Animated region dots — appear as animation progresses */}
+                <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+                {/* Animated region dots */}
                 {Object.entries(storyRegionPositions).map(([region, pos]) => {
                   if (!revealedRegions.has(region as BodyRegion)) return null;
                   const isNew = currentAnimPhase?.regions.includes(region as BodyRegion) && !animationComplete;
+                  const isChipHighlighted = highlightedStoryRegion === region;
                   return (
                     <motion.circle
                       key={region}
                       cx={pos.cx}
                       cy={pos.cy}
-                      r={isNew ? 4 : 3}
-                      fill={isNew ? "hsl(var(--primary) / 0.5)" : "hsl(var(--primary) / 0.35)"}
-                      stroke={isNew ? "hsl(var(--primary) / 0.25)" : "hsl(var(--primary) / 0.15)"}
-                      strokeWidth={isNew ? 4 : 3}
+                      r={isChipHighlighted ? 5 : isNew ? 4 : 3}
+                      fill={isChipHighlighted ? "hsl(var(--sage) / 0.7)" : isNew ? "hsl(var(--primary) / 0.5)" : "hsl(var(--primary) / 0.35)"}
+                      stroke={isChipHighlighted ? "hsl(var(--sage) / 0.3)" : isNew ? "hsl(var(--primary) / 0.2)" : "hsl(var(--primary) / 0.12)"}
+                      strokeWidth={isChipHighlighted ? 5 : isNew ? 4 : 3}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -315,11 +334,19 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
           <div className="rounded-2xl p-5 bg-card border border-border/20" style={{ boxShadow: "var(--shadow-xs)" }}>
             <div className="flex flex-wrap gap-2 mb-4">
               {topRegions.map(([region, count]) => (
-                <span key={region} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-secondary/50 text-[12px] text-foreground/65 border border-border/15">
-                  <span className="w-2 h-2 rounded-full bg-sage/60" />
+                <button
+                  key={region}
+                  onClick={() => setHighlightedStoryRegion(highlightedStoryRegion === region ? null : region)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-[12px] border transition-all duration-300 ${
+                    highlightedStoryRegion === region
+                      ? "bg-sage/20 border-sage/30 text-foreground/80"
+                      : "bg-secondary/50 text-foreground/65 border-border/15 hover:bg-secondary/70"
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full transition-colors duration-300 ${highlightedStoryRegion === region ? "bg-sage/80" : "bg-sage/60"}`} />
                   {REGION_LABELS[region as keyof typeof REGION_LABELS]}
                   <span className="text-muted-foreground/30 ml-0.5">· {count}</span>
-                </span>
+                </button>
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground/35 leading-relaxed">

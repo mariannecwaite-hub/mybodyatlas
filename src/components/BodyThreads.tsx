@@ -55,11 +55,7 @@ const BodyThreads = () => {
                 className="w-full flex items-center gap-3 p-4 text-left hover:bg-secondary/20 transition-colors duration-200"
               >
                 {/* Thread indicator */}
-                <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
-                  <div className="w-1.5 h-1.5 rounded-full bg-sage/60" />
-                  <div className="w-px h-4 bg-border/30" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-sage/40" />
-                </div>
+                <div className="w-1 h-5 rounded-full bg-sage/30 flex-shrink-0 mt-0.5" />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
@@ -92,6 +88,35 @@ const BodyThreads = () => {
                     <p className="text-[12px] text-muted-foreground/50 leading-relaxed mb-3">
                       {thread.description}
                     </p>
+
+                    {/* Mini year timeline */}
+                    {threadEvents.length > 1 && (() => {
+                      const threadYears = threadEvents.map(e => new Date(e.date).getFullYear());
+                      const minYear = Math.min(...threadYears);
+                      const maxYear = Math.max(...threadYears);
+                      const uniqueYears = [...new Set(threadYears)].sort();
+                      const yearSpan = maxYear - minYear || 1;
+                      return (
+                        <div className="relative h-8 mb-3 mx-1">
+                          <div className="absolute top-1/2 left-4 right-4 h-px bg-border/25 -translate-y-1/2" />
+                          <span className="absolute left-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{minYear}</span>
+                          {maxYear !== minYear && (
+                            <span className="absolute right-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{maxYear}</span>
+                          )}
+                          {uniqueYears.map(year => {
+                            const pct = yearSpan > 0 ? ((year - minYear) / yearSpan) * 100 : 50;
+                            return (
+                              <div
+                                key={year}
+                                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-sage/50 border border-sage/30"
+                                style={{ left: `${Math.max(5, Math.min(95, pct))}%` }}
+                                title={`${year}`}
+                              />
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
 
                     {/* Thread regions */}
                     <div className="flex flex-wrap gap-1.5 mb-3">

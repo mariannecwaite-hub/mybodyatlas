@@ -18,7 +18,7 @@ const LayerToggles = () => {
       <p className="text-[10px] text-muted-foreground/35 text-center tracking-[0.15em] uppercase mb-1">
         Atlas layers
       </p>
-      <div className="flex flex-wrap justify-center gap-2" role="tablist" aria-label="Atlas layers — filter by type">
+      <div className="flex overflow-x-auto gap-2 pb-1 -mx-2 px-2" role="tablist" aria-label="Atlas layers — filter by type" style={{ scrollbarWidth: "none" }}>
         {layers.map((layer) => {
           const isActive = state.activeLayer === layer.type;
           return (
