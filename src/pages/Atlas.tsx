@@ -22,6 +22,7 @@ import DataPrivacySettings from "@/components/DataPrivacySettings";
 import TreatmentGuide from "@/components/TreatmentGuide";
 import BodyMemories from "@/components/BodyMemories";
 import BodyPassport from "@/components/BodyPassport";
+import ReturnPrompt from "@/components/ReturnPrompt";
 
 type ActiveTab = "body" | "timeline" | "story";
 
