@@ -55,11 +55,7 @@ const BodyThreads = () => {
                 className="w-full flex items-center gap-3 p-4 text-left hover:bg-secondary/20 transition-colors duration-200"
               >
                 {/* Thread indicator */}
-                <div className="flex flex-col items-center gap-0.5 flex-shrink-0">
-                  <div className="w-1.5 h-1.5 rounded-full bg-sage/60" />
-                  <div className="w-px h-4 bg-border/30" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-sage/40" />
-                </div>
+                <div className="w-1 h-5 rounded-full bg-sage/30 flex-shrink-0 mt-0.5" />
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
