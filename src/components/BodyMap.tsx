@@ -149,13 +149,19 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             role="tab"
             aria-selected={view === v}
             onClick={() => setView(v)}
-            className={`px-5 py-2 rounded-full text-[11px] font-medium tracking-wide capitalize transition-all duration-400 ${
-              view === v
-                ? "bg-card text-foreground/80 shadow-xs"
-                : "text-muted-foreground/40 hover:text-muted-foreground/60"
-            }`}
+            className="relative px-5 py-2 rounded-full text-[11px] font-medium tracking-wide capitalize"
           >
-            {v}
+            {view === v && (
+              <motion.div
+                className="absolute inset-0 bg-card rounded-full"
+                layoutId="bodyViewToggle"
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                style={{ boxShadow: "var(--shadow-xs)" }}
+              />
+            )}
+            <span className={`relative z-10 transition-colors duration-400 ${
+              view === v ? "text-foreground/80" : "text-muted-foreground/40 hover:text-muted-foreground/60"
+            }`}>{v}</span>
           </button>
         ))}
       </div>
