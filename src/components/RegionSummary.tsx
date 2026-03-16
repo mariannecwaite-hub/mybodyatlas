@@ -51,15 +51,15 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
   );
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <motion.div
         key={region}
         className="rounded-2xl border border-border/20 bg-card/70 backdrop-blur-md p-7 relative overflow-hidden"
         style={{ boxShadow: "var(--shadow-md)" }}
-        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+        initial={{ opacity: 0, y: 16, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        exit={{ opacity: 0, y: -12, scale: 0.97 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         role="region"
         aria-label={REGION_A11Y[region]}
       >
@@ -89,15 +89,19 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
 
         {regionEvents.length > 0 && (
           <div className="space-y-1 mb-4">
-            {regionEvents.slice(0, 4).map((event) => (
-              <button
+            {regionEvents.slice(0, 4).map((event, i) => (
+              <motion.button
                 key={event.id}
                 onClick={() => setState((s) => ({ ...s, selectedEvent: event.id }))}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all duration-300 group ${
+                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left group ${
                   state.highlightedEventIds.includes(event.id)
                     ? "bg-primary/8 ring-1 ring-primary/15"
                     : "hover:bg-secondary/25"
                 }`}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 + i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ x: 3, transition: { duration: 0.25 } }}
                 aria-label={`${event.title}, ${new Date(event.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}${event.ongoing ? ", still ongoing" : ""}`}
               >
                 <span className="text-[12px]" aria-hidden="true">{typeIcons[event.type]}</span>
@@ -108,8 +112,8 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
                     {event.ongoing && <span className="ml-1.5 text-sage-foreground/50">· ongoing</span>}
                   </p>
                 </div>
-                <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]" aria-hidden="true">→</span>
-              </button>
+              <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]" aria-hidden="true">→</span>
+              </motion.button>
             ))}
             {regionEvents.length > 4 && (
               <p className="text-[10px] text-muted-foreground/28 text-center pt-2 tracking-wide">

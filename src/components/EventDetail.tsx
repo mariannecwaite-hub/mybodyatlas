@@ -25,15 +25,20 @@ const EventDetail = () => {
           <div className="modal-overlay" onClick={close} />
           <motion.div
             className="modal-content max-h-[80vh]"
-            initial={{ y: 60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 60, opacity: 0 }}
-            transition={{ type: "spring", damping: 28, stiffness: 280 }}
+            initial={{ y: 80, opacity: 0, scale: 0.96 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 40, opacity: 0, scale: 0.98 }}
+            transition={{ type: "spring", damping: 32, stiffness: 240, mass: 0.8 }}
             role="dialog"
             aria-label={`Event detail: ${event.title}`}
             aria-modal="true"
           >
-            <div className="modal-header">
+            <motion.div
+              className="modal-header"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
               <span className="section-label">{typeLabels[event.type]}</span>
               <div className="flex gap-1">
                 <button
@@ -59,15 +64,30 @@ const EventDetail = () => {
                   <X className="w-5 h-5 text-muted-foreground/50" />
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            <h2 className="text-2xl mb-1.5">{event.title}</h2>
-            <p className="text-[13px] text-muted-foreground/60 mb-5">
+            <motion.h2
+              className="text-2xl mb-1.5"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >{event.title}</motion.h2>
+            <motion.p
+              className="text-[13px] text-muted-foreground/60 mb-5"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
               {new Date(event.date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
               {event.ongoing && <span className="ml-2 text-sage-foreground/60 font-medium">· ongoing</span>}
-            </p>
+            </motion.p>
 
-            <div className="space-y-5">
+            <motion.div
+              className="space-y-5"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
               {event.description && (
                 <p className="text-[13px] text-foreground/70 leading-[1.8]">{event.description}</p>
               )}
@@ -138,7 +158,7 @@ const EventDetail = () => {
                   </p>
                 </div>
               )}
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       )}
