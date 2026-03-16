@@ -58,6 +58,9 @@ export interface AppState {
   currentScreen: string;
   insightsRevealed: boolean;
   showArchived: boolean;
+  highlightedRegions: BodyRegion[];
+  highlightedEventIds: string[];
+  activeInsightId: string | null;
 }
 
 interface AppContextType {
@@ -73,6 +76,8 @@ interface AppContextType {
   completeOnboarding: () => void;
   selectRegion: (region: BodyRegion | null) => void;
   revealInsights: () => void;
+  highlightInsight: (insightId: string | null, regions: BodyRegion[], eventIds: string[]) => void;
+  clearHighlight: () => void;
   currentProfile: Profile | undefined;
   /** Returns only non-archived events (or all if showArchived) */
   visibleEvents: BodyEvent[];
@@ -235,6 +240,9 @@ const initialState: AppState = {
   currentScreen: "welcome",
   insightsRevealed: false,
   showArchived: false,
+  highlightedRegions: [],
+  highlightedEventIds: [],
+  activeInsightId: null,
 };
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -293,6 +301,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, insightsRevealed: true }));
   };
 
+  const highlightInsight = (insightId: string | null, regions: BodyRegion[], eventIds: string[]) => {
+    setState((s) => ({
+      ...s,
+      activeInsightId: s.activeInsightId === insightId ? null : insightId,
+      highlightedRegions: s.activeInsightId === insightId ? [] : regions,
+      highlightedEventIds: s.activeInsightId === insightId ? [] : eventIds,
+    }));
+  };
+
+  const clearHighlight = () => {
+    setState((s) => ({ ...s, activeInsightId: null, highlightedRegions: [], highlightedEventIds: [] }));
+  };
+
   const currentProfile = state.profiles.find((p) => p.id === state.currentProfile);
 
   const visibleEvents = state.events.filter((e) => state.showArchived || !e.archived);
@@ -301,6 +322,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       state, setState, addEvent, updateEvent, deleteEvent, archiveEvent, restoreEvent,
       setActiveLayer, switchProfile, completeOnboarding, selectRegion, revealInsights,
+      highlightInsight, clearHighlight,
       currentProfile, visibleEvents,
     }}>
       {children}

@@ -73,6 +73,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const [hoveredRegion, setHoveredRegion] = useState<BodyRegion | null>(null);
 
   const activeRegion = state.selectedRegion;
+  const highlightedRegions = state.highlightedRegions || [];
   const visibleRegions = regions.filter((r) => r.views.includes(view));
 
   const getRegionColor = (regionId: BodyRegion): string | null => {
@@ -199,6 +200,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             const color = getRegionColor(region.id);
             const isHovered = hoveredRegion === region.id;
             const isSelected = activeRegion === region.id;
+            const isHighlighted = highlightedRegions.includes(region.id);
             const hasEvents = !!color;
             const count = getRegionEventCount(region.id);
 
@@ -208,7 +210,17 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
               <g key={`${view}-${region.id}`} id={`region-${region.id}`} role="button" aria-label={a11yLabel} tabIndex={0}
                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onRegionSelect(region.id); } }}
               >
-                {hasEvents && (
+                {/* Highlight glow for pattern insights */}
+                {isHighlighted && (
+                  <path
+                    d={region.d}
+                    fill="hsl(var(--primary) / 0.25)"
+                    filter="url(#selectedGlow)"
+                    className="pointer-events-none animate-breathe"
+                  />
+                )}
+
+                {hasEvents && !isHighlighted && (
                   <path
                     d={region.d}
                     fill={`hsl(${color} / ${isSelected ? 0.4 : 0.2})`}
@@ -220,18 +232,22 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                 <path
                   d={region.d}
                   fill={
-                    isSelected
-                      ? hasEvents ? `hsl(${color} / 0.45)` : "hsl(var(--primary) / 0.08)"
-                      : isHovered
-                        ? hasEvents ? `hsl(${color} / 0.35)` : "url(#regionHover)"
-                        : "transparent"
+                    isHighlighted
+                      ? "hsl(var(--primary) / 0.18)"
+                      : isSelected
+                        ? hasEvents ? `hsl(${color} / 0.45)` : "hsl(var(--primary) / 0.08)"
+                        : isHovered
+                          ? hasEvents ? `hsl(${color} / 0.35)` : "url(#regionHover)"
+                          : "transparent"
                   }
                   stroke={
-                    isSelected
-                      ? "hsl(var(--foreground) / 0.12)"
-                      : isHovered ? "hsl(var(--foreground) / 0.06)" : "transparent"
+                    isHighlighted
+                      ? "hsl(var(--primary) / 0.3)"
+                      : isSelected
+                        ? "hsl(var(--foreground) / 0.12)"
+                        : isHovered ? "hsl(var(--foreground) / 0.06)" : "transparent"
                   }
-                  strokeWidth={isSelected ? "0.7" : "0.4"}
+                  strokeWidth={isHighlighted ? "1" : isSelected ? "0.7" : "0.4"}
                   className="cursor-pointer"
                   style={{ transition: "fill 0.4s ease, stroke 0.4s ease" }}
                   onClick={() => onRegionSelect(region.id)}
@@ -239,7 +255,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                   onMouseLeave={() => setHoveredRegion(null)}
                 />
 
-                {hasEvents && !isHovered && !isSelected && (
+                {hasEvents && !isHovered && !isSelected && !isHighlighted && (
                   <circle cx={region.cx} cy={region.cy} r="1.8" fill={`hsl(${color})`} opacity="0.45" className="pointer-events-none animate-breathe" />
                 )}
 
