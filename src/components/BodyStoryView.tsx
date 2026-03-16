@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useApp, REGION_LABELS, EventType } from "@/context/AppContext";
-import { Shield, Lock, FileText, Bookmark, X as XIcon } from "lucide-react";
+import { usePatternEngine } from "@/hooks/usePatternEngine";
+import { Shield, Lock, FileText, Bookmark, X as XIcon, BookOpen } from "lucide-react";
 
 const typeLabels: Record<EventType, string> = {
   injury: "Injuries",
@@ -19,14 +20,16 @@ const typeDotColors: Record<EventType, string> = {
   "life-event": "bg-body-neutral",
 };
 
+const MAX_STORY_INSIGHTS = 3;
+
 interface BodyStoryViewProps {
   onCreateSummary: () => void;
 }
 
 const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
-  const { visibleEvents } = useApp();
-  const [dismissedPatterns, setDismissedPatterns] = useState<number[]>([]);
-  const [savedPatterns, setSavedPatterns] = useState<number[]>([]);
+  const { visibleEvents, state, highlightInsight } = useApp();
+  const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
+  const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
   const [reflection, setReflection] = useState("");
 
   const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
@@ -38,9 +41,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   }, {} as Record<string, number>);
 
   const treatments = visibleEvents.filter((e) => e.type === "treatment");
-  const stressEvents = visibleEvents.filter((e) => e.type === "stress");
-  const symptomEvents = visibleEvents.filter((e) => e.type === "symptom");
-  const ongoingCount = visibleEvents.filter((e) => e.ongoing).length;
 
   const topRegions = Object.entries(
     visibleEvents.flatMap((e) => e.regions).reduce((acc, r) => {
@@ -51,7 +51,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 6);
 
-  // Timeline clusters by life phase
+  // Life phase clusters
   const lifeClusters: { label: string; count: number; types: EventType[] }[] = [];
   if (years.length > 0) {
     let clusterStart = years[0];
@@ -81,61 +81,12 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     }
   }
 
-  // Patterns
-  const patterns: { title: string; body: string; tone: string }[] = [];
-  if (stressEvents.length > 0 && symptomEvents.length > 0) {
-    const stressRegions = new Set(stressEvents.flatMap((e) => e.regions));
-    const symptomRegions = new Set(symptomEvents.flatMap((e) => e.regions));
-    const overlap = [...stressRegions].filter((r) => symptomRegions.has(r));
-    if (overlap.length > 0) {
-      patterns.push({
-        title: "Stress and your body",
-        body: `Stress periods and physical sensations overlap in your ${overlap.slice(0, 2).map((r) => REGION_LABELS[r]?.toLowerCase()).join(" and ")}. Many people notice this connection.`,
-        tone: "lavender",
-      });
-    } else {
-      patterns.push({
-        title: "A thread worth noticing",
-        body: "You've recorded both stress periods and physical sensations. Many people find these are connected — something worth reflecting on gently.",
-        tone: "lavender",
-      });
-    }
-  }
-  if (ongoingCount > 2) {
-    patterns.push({
-      title: "You're navigating a lot",
-      body: `${ongoingCount} ongoing threads. Staying with the process is itself a form of care.`,
-      tone: "sage",
-    });
-  }
-  if (treatments.length > 0) {
-    patterns.push({
-      title: "Care you've explored",
-      body: `You've tried ${treatments.length} different forms of care. That shows commitment to understanding your body.`,
-      tone: "sage",
-    });
-  }
-  const injuryEvents = visibleEvents.filter((e) => e.type === "injury");
-  if (injuryEvents.length > 0) {
-    const injuryRegions = injuryEvents.flatMap((e) => e.regions);
-    const laterSymptomRegions = symptomEvents
-      .filter((e) => new Date(e.date) > new Date(Math.min(...injuryEvents.map((i) => new Date(i.date).getTime()))))
-      .flatMap((e) => e.regions);
-    const relatedPairs: Record<string, string[]> = {
-      ankle_foot_left: ["knee_left", "hip_left", "lower_back"],
-      ankle_foot_right: ["knee_right", "hip_right", "lower_back"],
-    };
-    const echo = injuryRegions.some((ir) => (relatedPairs[ir] || []).some((r) => laterSymptomRegions.includes(r as any)));
-    if (echo) {
-      patterns.push({
-        title: "Your body remembers",
-        body: "An earlier injury may have quietly changed how you move. Later sensations in nearby areas can sometimes trace back — your body adapting, not failing.",
-        tone: "warm",
-      });
-    }
-  }
+  // Pattern engine
+  const allInsights = usePatternEngine(visibleEvents, { maxResults: MAX_STORY_INSIGHTS + dismissedPatterns.length + 2 });
+  const visibleInsights = allInsights
+    .filter((p) => !dismissedPatterns.includes(p.id))
+    .slice(0, MAX_STORY_INSIGHTS);
 
-  const visiblePatterns = patterns.filter((_, i) => !dismissedPatterns.includes(i));
   const toneStyles: Record<string, string> = {
     sage: "bg-sage/12 border-sage/18",
     lavender: "bg-lavender/12 border-lavender/18",
@@ -145,17 +96,11 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   return (
     <div className="pt-8 pb-12 space-y-8" role="region" aria-label="Your Body Story So Far">
       {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <div className="flex items-center gap-2.5 mb-2">
           <Shield className="w-5 h-5 text-sage-foreground/50" />
           <h2 className="text-[26px] font-serif text-foreground/90 leading-tight">Your Body Story So Far</h2>
         </div>
-
-        {/* Privacy message */}
         <motion.div
           className="rounded-2xl p-4 bg-sage/8 border border-sage/12 flex items-start gap-3 mt-4"
           initial={{ opacity: 0 }}
@@ -164,9 +109,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         >
           <Lock className="w-4 h-4 text-sage-foreground/40 mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-[13px] text-foreground/70 leading-relaxed">
-              Your body story is private.
-            </p>
+            <p className="text-[13px] text-foreground/70 leading-relaxed">Your body story is private.</p>
             <p className="text-[12px] text-muted-foreground/45 leading-relaxed mt-0.5">
               You can create summaries when it's helpful to share with someone you trust.
             </p>
@@ -175,11 +118,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
       </motion.div>
 
       {/* 1. Body Map Overview */}
-      <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-      >
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>
         <p className="section-label mb-3">Body map overview</p>
         {topRegions.length > 0 ? (
           <div className="rounded-2xl p-5 bg-card border border-border/20" style={{ boxShadow: "var(--shadow-xs)" }}>
@@ -204,11 +143,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
       </motion.section>
 
       {/* 2. Timeline Highlights */}
-      <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
-      >
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
         <p className="section-label mb-3">Timeline highlights</p>
         <div className="rounded-2xl p-5 bg-warm/12 border border-warm/15">
           <div className="flex items-baseline gap-3 mb-4">
@@ -217,11 +152,9 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               {visibleEvents.length} events · {years.length} {years.length === 1 ? "year" : "years"}
             </p>
           </div>
-
-          {/* Life phase clusters */}
           {lifeClusters.length > 0 && (
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
-              {lifeClusters.map((cluster, i) => (
+              {lifeClusters.map((cluster) => (
                 <div key={cluster.label} className="flex-shrink-0 rounded-xl p-3 bg-card/60 border border-border/15 min-w-[120px]">
                   <p className="text-[11px] font-medium text-foreground/65">{cluster.label}</p>
                   <p className="text-[10px] text-muted-foreground/35 mt-0.5">{cluster.count} events</p>
@@ -234,8 +167,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               ))}
             </div>
           )}
-
-          {/* Event type breakdown */}
           <div className="mt-4 pt-3 border-t border-warm/15 space-y-1.5">
             {Object.entries(typeCounts).map(([type, count]) => (
               <div key={type} className="flex items-center justify-between py-1">
@@ -251,30 +182,48 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
       </motion.section>
 
       {/* 3. Patterns Worth Noticing */}
-      <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-      >
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
         <p className="section-label mb-3">Patterns worth noticing</p>
-        {visiblePatterns.length > 0 ? (
+        {visibleInsights.length > 0 ? (
           <div className="space-y-3">
-            {visiblePatterns.map((pattern, idx) => {
-              const originalIdx = patterns.indexOf(pattern);
-              const isSaved = savedPatterns.includes(originalIdx);
+            {visibleInsights.map((insight, idx) => {
+              const isSaved = savedPatterns.includes(insight.id);
+              const isActive = state.activeInsightId === insight.id;
               return (
                 <motion.div
-                  key={pattern.title}
-                  className={`rounded-2xl p-5 border ${toneStyles[pattern.tone] || ""} relative`}
+                  key={insight.id}
+                  className={`rounded-2xl p-5 border relative cursor-pointer transition-all duration-300 ${
+                    toneStyles[insight.tone] || ""
+                  } ${isActive ? "ring-2 ring-primary/20 shadow-md" : ""}`}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.45 + idx * 0.1, duration: 0.4 }}
+                  onClick={() => highlightInsight(insight.id, insight.relatedRegions, insight.relatedEventIds)}
                 >
-                  <p className="text-[15px] font-serif text-foreground/80 mb-1.5">{pattern.title}</p>
-                  <p className="text-[13px] text-muted-foreground/55 leading-[1.8] mb-3">{pattern.body}</p>
-                  <div className="flex items-center gap-2">
+                  <p className="text-[15px] font-serif text-foreground/80 mb-1.5">{insight.title}</p>
+                  <p className="text-[13px] text-muted-foreground/55 leading-[1.8] mb-3">{insight.body}</p>
+
+                  {/* Highlighted regions when active */}
+                  {isActive && insight.relatedRegions.length > 0 && (
+                    <motion.div
+                      className="mb-3 flex flex-wrap gap-1.5"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                    >
+                      {insight.relatedRegions.slice(0, 4).map((r) => (
+                        <span key={r} className="px-2 py-0.5 rounded-full bg-primary/10 text-[10px] text-primary/60 font-medium">
+                          {REGION_LABELS[r]}
+                        </span>
+                      ))}
+                      <span className="text-[10px] text-muted-foreground/35 self-center ml-1">
+                        · {insight.relatedEventIds.length} events
+                      </span>
+                    </motion.div>
+                  )}
+
+                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                     <button
-                      onClick={() => setSavedPatterns((p) => isSaved ? p.filter((x) => x !== originalIdx) : [...p, originalIdx])}
+                      onClick={() => setSavedPatterns((p) => isSaved ? p.filter((x) => x !== insight.id) : [...p, insight.id])}
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-all duration-200 ${
                         isSaved ? "bg-primary/10 text-primary/70" : "bg-secondary/50 text-muted-foreground/45 hover:text-muted-foreground/65"
                       }`}
@@ -283,24 +232,30 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                       {isSaved ? "Saved" : "Save"}
                     </button>
                     <button
-                      onClick={() => setDismissedPatterns((p) => [...p, originalIdx])}
+                      onClick={() => setDismissedPatterns((p) => [...p, insight.id])}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-secondary/50 text-muted-foreground/45 hover:text-muted-foreground/65 transition-all duration-200"
                     >
                       <XIcon className="w-3 h-3" />
-                      Not relevant
+                      Dismiss
+                    </button>
+                    <button
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-secondary/50 text-muted-foreground/45 hover:text-muted-foreground/65 transition-all duration-200"
+                    >
+                      <BookOpen className="w-3 h-3" />
+                      Learn more
                     </button>
                   </div>
                 </motion.div>
               );
             })}
             <p className="text-[10px] text-muted-foreground/28 leading-relaxed">
-              These are observational patterns, not diagnoses. Things you may wish to explore with a practitioner.
+              Educational context only — not medical advice. Things you may wish to explore with a practitioner.
             </p>
           </div>
         ) : (
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12 text-center">
             <p className="text-[13px] text-muted-foreground/45">
-              {patterns.length > 0 ? "All patterns dismissed." : "As you add more events, patterns may emerge here."}
+              {allInsights.length > 0 ? "All patterns dismissed." : "As you add more events, patterns may emerge here."}
             </p>
           </div>
         )}
@@ -308,16 +263,17 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
       {/* 4. Treatments Explored */}
       {treatments.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
+        <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
           <p className="section-label mb-3">Treatments explored</p>
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12">
             <div className="space-y-3">
               {treatments.map((t) => (
-                <div key={t.id} className="flex items-start gap-3">
+                <div
+                  key={t.id}
+                  className={`flex items-start gap-3 p-2 -mx-2 rounded-xl transition-all duration-300 ${
+                    state.highlightedEventIds.includes(t.id) ? "bg-primary/8 ring-1 ring-primary/15" : ""
+                  }`}
+                >
                   <div className="w-2 h-2 rounded-full bg-body-healing mt-1.5 flex-shrink-0" />
                   <div>
                     <p className="text-[13px] font-medium text-foreground/70">{t.title}</p>
@@ -334,11 +290,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
       )}
 
       {/* 5. Reflection */}
-      <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.55, duration: 0.5 }}
-      >
+      <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.5 }}>
         <p className="section-label mb-2">Personal reflection</p>
         <p className="text-[11px] text-muted-foreground/40 mb-3 leading-relaxed">
           An optional space for your own thoughts. This stays private.
@@ -359,24 +311,15 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.5 }}
       >
-        <p className="text-[15px] font-serif text-foreground/80 mb-1.5">
-          You've been paying attention
-        </p>
+        <p className="text-[15px] font-serif text-foreground/80 mb-1.5">You've been paying attention</p>
         <p className="text-[12px] text-muted-foreground/45 leading-[1.8]">
           This record reflects care and self-awareness. That matters — regardless of what comes next.
         </p>
       </motion.div>
 
       {/* Create summary CTA */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.65 }}
-      >
-        <button
-          onClick={onCreateSummary}
-          className="btn-primary flex items-center justify-center gap-2"
-        >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
+        <button onClick={onCreateSummary} className="btn-primary flex items-center justify-center gap-2">
           <FileText className="w-4 h-4" />
           Create Body Story Summary
         </button>
