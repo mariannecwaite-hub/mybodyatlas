@@ -8,7 +8,7 @@ const steps = [
   {
     title: "Your body has a story",
     description:
-      "My Body Atlas helps you organise your body experiences across time. Your body story remains private and under your control.",
+      "My Body Atlas helps you understand your body experiences across time. Your body story remains private and under your control.",
     icon: "🗺️",
     principle: null,
   },
