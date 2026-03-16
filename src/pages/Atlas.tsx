@@ -91,6 +91,7 @@ const Atlas = () => {
   };
 
   const secondaryActions = [
+    { icon: Map, label: "Body Passport", action: () => setShowPassport(true) },
     { icon: ClipboardList, label: "Log treatment", action: () => setShowTreatment(true) },
     { icon: Palette, label: "Customise body", action: () => setShowCustomise(true) },
     { icon: FileText, label: "Create practitioner summary", action: () => setShowShare(true) },
