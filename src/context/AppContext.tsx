@@ -301,6 +301,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, insightsRevealed: true }));
   };
 
+  const highlightInsight = (insightId: string | null, regions: BodyRegion[], eventIds: string[]) => {
+    setState((s) => ({
+      ...s,
+      activeInsightId: s.activeInsightId === insightId ? null : insightId,
+      highlightedRegions: s.activeInsightId === insightId ? [] : regions,
+      highlightedEventIds: s.activeInsightId === insightId ? [] : eventIds,
+    }));
+  };
+
+  const clearHighlight = () => {
+    setState((s) => ({ ...s, activeInsightId: null, highlightedRegions: [], highlightedEventIds: [] }));
+  };
+
   const currentProfile = state.profiles.find((p) => p.id === state.currentProfile);
 
   const visibleEvents = state.events.filter((e) => state.showArchived || !e.archived);
@@ -309,6 +322,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       state, setState, addEvent, updateEvent, deleteEvent, archiveEvent, restoreEvent,
       setActiveLayer, switchProfile, completeOnboarding, selectRegion, revealInsights,
+      highlightInsight, clearHighlight,
       currentProfile, visibleEvents,
     }}>
       {children}
