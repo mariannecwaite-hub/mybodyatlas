@@ -20,6 +20,7 @@ import BodyCustomisation from "@/components/BodyCustomisation";
 import BodyStorySummary from "@/components/BodyStorySummary";
 import DataPrivacySettings from "@/components/DataPrivacySettings";
 import TreatmentGuide from "@/components/TreatmentGuide";
+import BodyMemories from "@/components/BodyMemories";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -194,6 +195,16 @@ const Atlas = () => {
                 transition={{ duration: 0.5, delay: 0.15 }}
               >
                 <BodyRecord />
+              </motion.section>
+
+              {/* Body Memories — reflective prompts */}
+              <motion.section
+                className="max-w-md mx-auto pb-2"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                <BodyMemories />
               </motion.section>
 
               {/* Connection indicator to timeline */}
