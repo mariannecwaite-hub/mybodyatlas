@@ -87,22 +87,42 @@ const BodyRecord = () => {
         ))}
       </div>
 
-      {/* Ongoing indicator */}
-      {ongoingCount > 0 && (
+      {/* Threads & ongoing indicator */}
+      {(threads.length > 0 || ongoingCount > 0) && (
         <motion.div
-          className="mt-3 rounded-xl px-4 py-2.5 bg-card border border-border/15 flex items-center justify-between"
+          className="mt-3 space-y-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          style={{ boxShadow: "var(--shadow-xs)" }}
         >
-          <div className="flex items-center gap-2.5">
-            <span className="w-2 h-2 rounded-full bg-sage/70 animate-breathe" />
-            <span className="text-[11px] text-foreground/55">
-              {ongoingCount} ongoing {ongoingCount === 1 ? "thread" : "threads"}
-            </span>
-          </div>
-          <span className="text-[10px] text-muted-foreground/30">actively tracked</span>
+          {threads.length > 0 && (
+            <div
+              className="rounded-xl px-4 py-2.5 bg-card border border-border/15 flex items-center justify-between"
+              style={{ boxShadow: "var(--shadow-xs)" }}
+            >
+              <div className="flex items-center gap-2.5">
+                <Link2 className="w-3.5 h-3.5 text-sage-foreground/35" />
+                <span className="text-[11px] text-foreground/55">
+                  {threads.length} body {threads.length === 1 ? "thread" : "threads"}
+                </span>
+              </div>
+              <span className="text-[10px] text-muted-foreground/30">connecting experiences</span>
+            </div>
+          )}
+          {ongoingCount > 0 && (
+            <div
+              className="rounded-xl px-4 py-2.5 bg-card border border-border/15 flex items-center justify-between"
+              style={{ boxShadow: "var(--shadow-xs)" }}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="w-2 h-2 rounded-full bg-sage/70 animate-breathe" />
+                <span className="text-[11px] text-foreground/55">
+                  {ongoingCount} ongoing {ongoingCount === 1 ? "thread" : "threads"}
+                </span>
+              </div>
+              <span className="text-[10px] text-muted-foreground/30">actively tracked</span>
+            </div>
+          )}
         </motion.div>
       )}
 
