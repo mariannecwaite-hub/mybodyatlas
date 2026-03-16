@@ -233,9 +233,6 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
           <path d={bodySilhouetteFront} fill="url(#bodyFill2)" stroke="hsl(var(--body-stroke))" strokeWidth="0.4" strokeLinejoin="round" />
 
-          {[thighLeft, thighRight, shinLeft, shinRight].map((d, i) => (
-            <path key={i} d={d} fill="url(#bodyFill2)" stroke="none" />
-          ))}
 
           {view === "front" && (
             <>
