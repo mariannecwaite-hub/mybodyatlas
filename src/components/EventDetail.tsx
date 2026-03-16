@@ -25,15 +25,20 @@ const EventDetail = () => {
           <div className="modal-overlay" onClick={close} />
           <motion.div
             className="modal-content max-h-[80vh]"
-            initial={{ y: 60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 60, opacity: 0 }}
-            transition={{ type: "spring", damping: 28, stiffness: 280 }}
+            initial={{ y: 80, opacity: 0, scale: 0.96 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 40, opacity: 0, scale: 0.98 }}
+            transition={{ type: "spring", damping: 32, stiffness: 240, mass: 0.8 }}
             role="dialog"
             aria-label={`Event detail: ${event.title}`}
             aria-modal="true"
           >
-            <div className="modal-header">
+            <motion.div
+              className="modal-header"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
               <span className="section-label">{typeLabels[event.type]}</span>
               <div className="flex gap-1">
                 <button
