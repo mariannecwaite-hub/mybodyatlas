@@ -76,6 +76,8 @@ interface AppContextType {
   completeOnboarding: () => void;
   selectRegion: (region: BodyRegion | null) => void;
   revealInsights: () => void;
+  highlightInsight: (insightId: string | null, regions: BodyRegion[], eventIds: string[]) => void;
+  clearHighlight: () => void;
   currentProfile: Profile | undefined;
   /** Returns only non-archived events (or all if showArchived) */
   visibleEvents: BodyEvent[];
