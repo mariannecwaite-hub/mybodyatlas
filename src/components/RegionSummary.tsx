@@ -89,15 +89,19 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
 
         {regionEvents.length > 0 && (
           <div className="space-y-1 mb-4">
-            {regionEvents.slice(0, 4).map((event) => (
-              <button
+            {regionEvents.slice(0, 4).map((event, i) => (
+              <motion.button
                 key={event.id}
                 onClick={() => setState((s) => ({ ...s, selectedEvent: event.id }))}
-                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all duration-300 group ${
+                className={`w-full flex items-center gap-3 p-3 rounded-xl text-left group ${
                   state.highlightedEventIds.includes(event.id)
                     ? "bg-primary/8 ring-1 ring-primary/15"
                     : "hover:bg-secondary/25"
                 }`}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 + i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ x: 3, transition: { duration: 0.25 } }}
                 aria-label={`${event.title}, ${new Date(event.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}${event.ongoing ? ", still ongoing" : ""}`}
               >
                 <span className="text-[12px]" aria-hidden="true">{typeIcons[event.type]}</span>
