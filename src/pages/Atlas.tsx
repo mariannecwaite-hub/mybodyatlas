@@ -8,6 +8,7 @@ import RegionSummary from "@/components/RegionSummary";
 import TimelineView from "@/components/TimelineView";
 import BodyStoryView from "@/components/BodyStoryView";
 import InsightCards from "@/components/InsightCards";
+import BodyRecord from "@/components/BodyRecord";
 import AddEventFlow from "@/components/AddEventFlow";
 import EventDetail from "@/components/EventDetail";
 import TreatmentLog from "@/components/TreatmentLog";
@@ -181,6 +182,16 @@ const Atlas = () => {
                     <RegionSummary onAddEvent={handleAddEventFromRegion} />
                   </motion.div>
                 )}
+              </motion.section>
+
+              {/* Your Body Record */}
+              <motion.section
+                className="py-6"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+              >
+                <BodyRecord />
               </motion.section>
 
               {/* Connection indicator to timeline */}
