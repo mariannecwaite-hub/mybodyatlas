@@ -21,6 +21,7 @@ import BodyStorySummary from "@/components/BodyStorySummary";
 import DataPrivacySettings from "@/components/DataPrivacySettings";
 import TreatmentGuide from "@/components/TreatmentGuide";
 import BodyMemories from "@/components/BodyMemories";
+import BodyPassport from "@/components/BodyPassport";
 
 type ActiveTab = "body" | "timeline" | "story";
 
