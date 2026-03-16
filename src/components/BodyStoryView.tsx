@@ -238,33 +238,21 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
             {/* Animated body silhouette */}
             <div className="flex justify-center mb-4">
               <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview — regions illuminate as your story unfolds">
-                {/* Simple silhouette outline */}
-                <ellipse cx="50" cy="10" rx="7" ry="8" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
-                <rect x="43" y="18" width="14" height="4" rx="2" fill="hsl(var(--body-fill))" />
-                <rect x="35" y="22" width="30" height="18" rx="4" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="38" y="40" width="24" height="18" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="20" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
-                <rect x="65" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
-                <rect x="16" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
-                <rect x="76" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
-                <rect x="38" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="52" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                <rect x="38" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
-                <rect x="52" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
-
-                {/* Animated region dots — appear as animation progresses */}
+                <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+                {/* Animated region dots */}
                 {Object.entries(storyRegionPositions).map(([region, pos]) => {
                   if (!revealedRegions.has(region as BodyRegion)) return null;
                   const isNew = currentAnimPhase?.regions.includes(region as BodyRegion) && !animationComplete;
+                  const isChipHighlighted = highlightedStoryRegion === region;
                   return (
                     <motion.circle
                       key={region}
                       cx={pos.cx}
                       cy={pos.cy}
-                      r={isNew ? 4 : 3}
-                      fill={isNew ? "hsl(var(--primary) / 0.5)" : "hsl(var(--primary) / 0.35)"}
-                      stroke={isNew ? "hsl(var(--primary) / 0.25)" : "hsl(var(--primary) / 0.15)"}
-                      strokeWidth={isNew ? 4 : 3}
+                      r={isChipHighlighted ? 5 : isNew ? 4 : 3}
+                      fill={isChipHighlighted ? "hsl(var(--sage) / 0.7)" : isNew ? "hsl(var(--primary) / 0.5)" : "hsl(var(--primary) / 0.35)"}
+                      stroke={isChipHighlighted ? "hsl(var(--sage) / 0.3)" : isNew ? "hsl(var(--primary) / 0.2)" : "hsl(var(--primary) / 0.12)"}
+                      strokeWidth={isChipHighlighted ? 5 : isNew ? 4 : 3}
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
