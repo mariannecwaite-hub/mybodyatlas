@@ -320,6 +320,7 @@ const Atlas = () => {
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
       <BodyStorySummary open={showBodyStorySummary} onClose={() => setShowBodyStorySummary(false)} />
       <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
+      <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
     </div>
   );
 };
