@@ -88,12 +88,33 @@ const InsightCards = () => {
           return (
             <motion.div
               key={insight.id}
-              className={`rounded-2xl p-6 border transition-all duration-600 relative cursor-pointer ${
+              className={`rounded-2xl p-6 border relative cursor-pointer ${
                 toneStyles[insight.tone] || ""
-              } ${isActive ? "ring-2 ring-primary/20 shadow-md" : ""}`}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 + i * 0.15, duration: 0.55, ease: "easeOut" }}
+              }`}
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                boxShadow: isActive
+                  ? "0 8px 32px -8px hsl(228 10% 22% / 0.08)"
+                  : "0 1px 4px 0 hsl(228 10% 22% / 0.02)",
+              }}
+              whileHover={{
+                y: -2,
+                boxShadow: "0 6px 24px -6px hsl(228 10% 22% / 0.06)",
+                transition: { duration: 0.4 },
+              }}
+              transition={{
+                delay: 0.4 + i * 0.18,
+                duration: 0.7,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              style={{
+                outline: isActive ? "2px solid hsl(var(--primary) / 0.15)" : "none",
+                outlineOffset: "1px",
+                transition: "outline 0.4s ease",
+              }}
               role="article"
               aria-label={insight.title}
               onClick={() => highlightInsight(insight.id, insight.relatedRegions, insight.relatedEventIds)}

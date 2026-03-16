@@ -186,14 +186,26 @@ const TimelineView = ({ onNavigateToBody, onNavigateToStory }: TimelineViewProps
                 {/* Phase events */}
                 <div className="space-y-1.5">
                   {phase.events.map((event, ei) => (
-                    <button
+                    <motion.button
                       key={event.id}
                       onClick={() => setState((s) => ({ ...s, selectedEvent: event.id }))}
-                      className="w-full flex items-start gap-3 p-3 rounded-xl text-left hover:bg-secondary/30 transition-all duration-300 group"
+                      className="w-full flex items-start gap-3 p-3 rounded-xl text-left hover:bg-secondary/30 group"
                       aria-label={`${event.title} — ${new Date(event.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}`}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: 0.4 + pi * 0.08 + ei * 0.05,
+                        duration: 0.5,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      whileHover={{ x: 4, transition: { duration: 0.3 } }}
                     >
                       <div className="flex-shrink-0 mt-0.5">
-                        <div className={`w-2 h-2 rounded-full ${typeDotColors[event.type]}`} />
+                        <motion.div
+                          className={`w-2 h-2 rounded-full ${typeDotColors[event.type]}`}
+                          whileHover={{ scale: 1.5 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[13px] font-medium text-foreground/75 truncate leading-snug">
@@ -205,13 +217,13 @@ const TimelineView = ({ onNavigateToBody, onNavigateToStory }: TimelineViewProps
                           </span>
                           {event.ongoing && (
                             <span className="inline-flex items-center gap-1">
-                              <span className="w-1 h-1 rounded-full bg-sage-foreground/30 animate-breathe" />
+                              <span className="w-1 h-1 rounded-full bg-sage-foreground/30 animate-soft-pulse" />
                               <span className="text-[10px] text-sage-foreground/45">ongoing</span>
                             </span>
                           )}
                         </div>
                       </div>
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </motion.div>

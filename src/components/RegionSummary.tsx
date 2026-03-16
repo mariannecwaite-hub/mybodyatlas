@@ -112,8 +112,8 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
                     {event.ongoing && <span className="ml-1.5 text-sage-foreground/50">· ongoing</span>}
                   </p>
                 </div>
-                <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]" aria-hidden="true">→</span>
-              </button>
+              <span className="opacity-0 group-hover:opacity-30 text-muted-foreground text-[10px]" aria-hidden="true">→</span>
+              </motion.button>
             ))}
             {regionEvents.length > 4 && (
               <p className="text-[10px] text-muted-foreground/28 text-center pt-2 tracking-wide">

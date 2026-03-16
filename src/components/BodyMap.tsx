@@ -274,6 +274,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
             const color = getRegionColor(region.id);
             const isHovered = hoveredRegion === region.id;
             const isSelected = activeRegion === region.id;
+            const isTapped = tappedRegion === region.id;
             const isHighlighted = highlightedRegions.includes(region.id);
             const hasEvents = !!color;
             const count = getRegionEventCount(region.id);
@@ -282,15 +283,34 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
 
             return (
               <g key={`${view}-${region.id}`} id={`region-${region.id}`} role="button" aria-label={a11yLabel} tabIndex={0}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onRegionSelect(region.id); } }}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleRegionTap(region.id); } }}
+                style={{
+                  transform: isTapped ? `scale(1.04)` : "scale(1)",
+                  transformOrigin: `${region.cx}px ${region.cy}px`,
+                  transition: "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+                }}
               >
+                {/* Tap ripple glow */}
+                {isTapped && (
+                  <circle
+                    cx={region.cx}
+                    cy={region.cy}
+                    r="18"
+                    fill={hasEvents ? `hsl(${color} / 0.15)` : "hsl(var(--primary) / 0.1)"}
+                    className="pointer-events-none"
+                    style={{
+                      animation: "soft-pulse 0.5s ease-out forwards",
+                    }}
+                  />
+                )}
+
                 {/* Highlight glow for pattern insights */}
                 {isHighlighted && (
                   <path
                     d={region.d}
                     fill="hsl(var(--primary) / 0.25)"
                     filter="url(#selectedGlow)"
-                    className="pointer-events-none animate-breathe"
+                    className="pointer-events-none animate-soft-pulse"
                   />
                 )}
 
@@ -300,6 +320,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                     fill={`hsl(${color} / ${isSelected ? 0.4 : 0.2})`}
                     filter={isSelected ? "url(#selectedGlow)" : "url(#glow2)"}
                     className="pointer-events-none"
+                    style={{ transition: "fill 0.5s ease, filter 0.5s ease" }}
                   />
                 )}
 
@@ -323,18 +344,20 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                   }
                   strokeWidth={isHighlighted ? "1" : isSelected ? "0.7" : "0.4"}
                   className="cursor-pointer"
-                  style={{ transition: "fill 0.4s ease, stroke 0.4s ease" }}
-                  onClick={() => onRegionSelect(region.id)}
+                  style={{ transition: "fill 0.45s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.45s ease" }}
+                  onClick={() => handleRegionTap(region.id)}
                   onMouseEnter={() => setHoveredRegion(region.id)}
                   onMouseLeave={() => setHoveredRegion(null)}
                 />
 
                 {hasEvents && !isHovered && !isSelected && !isHighlighted && (
-                  <circle cx={region.cx} cy={region.cy} r="1.8" fill={`hsl(${color})`} opacity="0.45" className="pointer-events-none animate-breathe" />
+                  <circle cx={region.cx} cy={region.cy} r="1.8" fill={`hsl(${color})`} opacity="0.45" className="pointer-events-none animate-soft-pulse" />
                 )}
 
                 {isSelected && count > 0 && (
-                  <g className="pointer-events-none">
+                  <g className="pointer-events-none" style={{
+                    animation: "reveal 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards",
+                  }}>
                     <circle cx={region.cx + 14} cy={region.cy - 10} r="7" fill="hsl(var(--primary))" opacity="0.75" />
                     <text x={region.cx + 14} y={region.cy - 6.5} textAnchor="middle" fill="hsl(var(--primary-foreground))" fontSize="7" fontWeight="500" fontFamily="DM Sans, sans-serif">
                       {count}

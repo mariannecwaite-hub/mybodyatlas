@@ -158,7 +158,7 @@ const EventDetail = () => {
                   </p>
                 </div>
               )}
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       )}

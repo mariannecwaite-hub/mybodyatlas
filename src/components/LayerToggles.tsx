@@ -28,21 +28,31 @@ const LayerToggles = () => {
               aria-selected={isActive}
               title={layer.description}
               onClick={() => setActiveLayer(layer.type)}
-              className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-medium tracking-wide transition-all duration-400 ${
-                isActive
-                  ? "bg-card text-foreground/75 border border-border/30"
-                  : "text-muted-foreground/35 hover:text-muted-foreground/55"
-              }`}
-              style={isActive ? { boxShadow: "var(--shadow-xs)" } : undefined}
-              whileTap={{ scale: 0.97 }}
+              className="relative inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[11px] font-medium tracking-wide"
+              whileTap={{ scale: 0.96 }}
             >
-              <span
-                className={`w-2 h-2 rounded-full transition-all duration-400 ${layer.dot} ${
-                  isActive ? "opacity-80 scale-110" : "opacity-30"
-                }`}
+              {isActive && (
+                <motion.div
+                  className="absolute inset-0 bg-card rounded-full border border-border/30"
+                  layoutId="activeLayerPill"
+                  transition={{ type: "spring", stiffness: 350, damping: 28 }}
+                  style={{ boxShadow: "var(--shadow-xs)" }}
+                />
+              )}
+              <motion.span
+                className={`relative z-10 w-2 h-2 rounded-full ${layer.dot}`}
+                animate={{
+                  opacity: isActive ? 0.8 : 0.3,
+                  scale: isActive ? 1.15 : 1,
+                }}
+                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 aria-hidden="true"
               />
-              {layer.label}
+              <span className={`relative z-10 transition-colors duration-400 ${
+                isActive ? "text-foreground/75" : "text-muted-foreground/35 hover:text-muted-foreground/55"
+              }`}>
+                {layer.label}
+              </span>
             </motion.button>
           );
         })}
