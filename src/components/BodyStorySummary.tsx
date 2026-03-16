@@ -1,7 +1,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, REGION_LABELS, EventType } from "@/context/AppContext";
+import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppContext";
+import { useBodyThreads } from "@/hooks/useBodyThreads";
 import { X, Shield, Copy, Check, FileText, Link2, BookOpen, Lock } from "lucide-react";
+
+/** Mini silhouette region positions for summary */
+const summaryRegionPos: Record<string, { cx: number; cy: number }> = {
+  head_jaw: { cx: 50, cy: 10 }, neck: { cx: 50, cy: 18 },
+  shoulder_left: { cx: 35, cy: 24 }, shoulder_right: { cx: 65, cy: 24 },
+  chest: { cx: 50, cy: 32 }, upper_back: { cx: 50, cy: 32 },
+  abdomen: { cx: 50, cy: 45 }, lower_back: { cx: 50, cy: 45 },
+  wrist_hand_left: { cx: 22, cy: 48 }, wrist_hand_right: { cx: 78, cy: 48 },
+  hip_left: { cx: 42, cy: 56 }, hip_right: { cx: 58, cy: 56 },
+  knee_left: { cx: 42, cy: 72 }, knee_right: { cx: 58, cy: 72 },
+  ankle_foot_left: { cx: 42, cy: 88 }, ankle_foot_right: { cx: 58, cy: 88 },
+};
 
 interface BodyStorySummaryProps {
   open: boolean;
@@ -20,6 +33,7 @@ type Step = "story" | "configure" | "preview";
 
 const BodyStorySummary = ({ open, onClose }: BodyStorySummaryProps) => {
   const { visibleEvents } = useApp();
+  const threads = useBodyThreads(visibleEvents);
   const [step, setStep] = useState<Step>("story");
   const [reflection, setReflection] = useState("");
   const [copied, setCopied] = useState(false);
@@ -350,6 +364,34 @@ const BodyStorySummary = ({ open, onClose }: BodyStorySummaryProps) => {
                       </p>
                     </div>
 
+                    {/* Body silhouette with highlighted regions */}
+                    {includeBodyMap && allRegions.length > 0 && (
+                      <div className="flex justify-center py-2">
+                        <svg viewBox="10 0 80 100" className="w-20 h-28" aria-label="Body summary showing affected areas">
+                          <ellipse cx="50" cy="10" rx="7" ry="8" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+                          <rect x="43" y="18" width="14" height="4" rx="2" fill="hsl(var(--body-fill))" />
+                          <rect x="35" y="22" width="30" height="18" rx="4" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                          <rect x="38" y="40" width="24" height="18" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                          <rect x="20" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
+                          <rect x="65" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
+                          <rect x="16" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
+                          <rect x="76" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
+                          <rect x="38" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                          <rect x="52" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
+                          <rect x="38" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
+                          <rect x="52" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
+                          {allRegions.map((region) => {
+                            const pos = summaryRegionPos[region];
+                            if (!pos) return null;
+                            return (
+                              <circle key={region} cx={pos.cx} cy={pos.cy} r="2.5"
+                                fill="hsl(var(--primary) / 0.35)" stroke="hsl(var(--primary) / 0.15)" strokeWidth="2" />
+                            );
+                          })}
+                        </svg>
+                      </div>
+                    )}
+
                     {includeBodyMap && topRegions.length > 0 && (
                       <div>
                         <p className="text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1.5">Body areas</p>
@@ -363,6 +405,11 @@ const BodyStorySummary = ({ open, onClose }: BodyStorySummaryProps) => {
                       <div>
                         <p className="text-[10px] text-muted-foreground/40 uppercase tracking-wider mb-1.5">Timeline</p>
                         <p className="text-[12px] text-foreground/65">{span} · {visibleEvents.length} events</p>
+                        {threads.length > 0 && (
+                          <p className="text-[11px] text-muted-foreground/40 mt-1">
+                            {threads.length} connecting {threads.length === 1 ? "thread" : "threads"}
+                          </p>
+                        )}
                       </div>
                     )}
 

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
@@ -54,6 +54,8 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
   const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
   const [reflection, setReflection] = useState("");
+  const [animationPhase, setAnimationPhase] = useState(0);
+  const [animationComplete, setAnimationComplete] = useState(false);
   const threads = useBodyThreads(visibleEvents);
 
   const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
@@ -76,6 +78,53 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     .slice(0, 6);
 
   const activeRegions = new Set(visibleEvents.flatMap((e) => e.regions));
+
+  // ── Timeline animation data ──
+  const timelinePhases = useMemo(() => {
+    const sorted = [...visibleEvents].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const phases: { year: number; regions: BodyRegion[]; event: typeof sorted[0] }[] = [];
+    sorted.forEach((event) => {
+      const year = new Date(event.date).getFullYear();
+      phases.push({ year, regions: event.regions, event });
+    });
+    return phases;
+  }, [visibleEvents]);
+
+  // ── Run timeline animation on mount ──
+  const showMagicMoment = visibleEvents.length >= MAGIC_MOMENT_THRESHOLD;
+
+  useEffect(() => {
+    if (!showMagicMoment || animationComplete) return;
+    if (timelinePhases.length === 0) { setAnimationComplete(true); return; }
+
+    const totalPhases = Math.min(timelinePhases.length, 8);
+    const interval = setInterval(() => {
+      setAnimationPhase((prev) => {
+        if (prev >= totalPhases) {
+          clearInterval(interval);
+          setAnimationComplete(true);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 600);
+
+    return () => clearInterval(interval);
+  }, [showMagicMoment, timelinePhases.length, animationComplete]);
+
+  // Regions revealed so far in animation
+  const revealedRegions = useMemo(() => {
+    if (animationComplete) return activeRegions;
+    const revealed = new Set<BodyRegion>();
+    timelinePhases.slice(0, animationPhase).forEach((p) => {
+      p.regions.forEach((r) => revealed.add(r));
+    });
+    return revealed;
+  }, [animationPhase, animationComplete, timelinePhases, activeRegions]);
+
+  const currentAnimPhase = animationPhase > 0 && animationPhase <= timelinePhases.length
+    ? timelinePhases[animationPhase - 1]
+    : null;
 
   // Life phase clusters
   const lifeClusters: { label: string; count: number; types: EventType[] }[] = [];
@@ -119,8 +168,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     warm: "bg-warm/15 border-warm/18",
   };
 
-  const showMagicMoment = visibleEvents.length >= MAGIC_MOMENT_THRESHOLD;
-
   return (
     <div className="pt-8 pb-12 space-y-8" role="region" aria-label="Your Body Story So Far">
       {/* Header */}
@@ -145,7 +192,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         </motion.div>
       </motion.div>
 
-      {/* Magic Moment — Visual narrative summary */}
+      {/* ── Magic Moment with Timeline Animation ── */}
       {showMagicMoment && (
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -157,37 +204,39 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               Your body at a glance
             </p>
 
-            {/* Mini body silhouette with active regions */}
-            <div className="flex justify-center mb-5">
-              <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview showing affected regions">
+            {/* Animated body silhouette */}
+            <div className="flex justify-center mb-4">
+              <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview — regions illuminate as your story unfolds">
                 {/* Simple silhouette outline */}
                 <ellipse cx="50" cy="10" rx="7" ry="8" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
                 <rect x="43" y="18" width="14" height="4" rx="2" fill="hsl(var(--body-fill))" />
                 <rect x="35" y="22" width="30" height="18" rx="4" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
                 <rect x="38" y="40" width="24" height="18" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
-                {/* Arms */}
                 <rect x="20" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
                 <rect x="65" y="24" width="15" height="5" rx="2.5" fill="hsl(var(--body-fill))" />
                 <rect x="16" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
                 <rect x="76" y="38" width="8" height="14" rx="3" fill="hsl(var(--body-fill))" />
-                {/* Legs */}
                 <rect x="38" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
                 <rect x="52" y="58" width="10" height="20" rx="3" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.3" />
                 <rect x="38" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
                 <rect x="52" y="78" width="10" height="16" rx="3" fill="hsl(var(--body-fill))" />
 
-                {/* Active region dots */}
+                {/* Animated region dots — appear as animation progresses */}
                 {Object.entries(storyRegionPositions).map(([region, pos]) => {
-                  if (!activeRegions.has(region as BodyRegion)) return null;
+                  if (!revealedRegions.has(region as BodyRegion)) return null;
+                  const isNew = currentAnimPhase?.regions.includes(region as BodyRegion) && !animationComplete;
                   return (
-                    <circle
+                    <motion.circle
                       key={region}
                       cx={pos.cx}
                       cy={pos.cy}
-                      r="3"
-                      fill="hsl(var(--primary) / 0.35)"
-                      stroke="hsl(var(--primary) / 0.15)"
-                      strokeWidth="3"
+                      r={isNew ? 4 : 3}
+                      fill={isNew ? "hsl(var(--primary) / 0.5)" : "hsl(var(--primary) / 0.35)"}
+                      stroke={isNew ? "hsl(var(--primary) / 0.25)" : "hsl(var(--primary) / 0.15)"}
+                      strokeWidth={isNew ? 4 : 3}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
                       className="animate-breathe"
                     />
                   );
@@ -195,28 +244,65 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               </svg>
             </div>
 
-            {/* Narrative summary */}
-            <div className="text-center space-y-2">
-              <p className="text-[15px] font-serif text-foreground/80">
-                {visibleEvents.length} experiences across {activeRegions.size} areas of your body
-              </p>
-              <p className="text-[12px] text-muted-foreground/50 leading-relaxed">
-                Spanning {span} · {threads.length > 0 ? `${threads.length} connecting threads` : "patterns emerging"}
-              </p>
-            </div>
-
-            {/* Narrative insight — the magic moment */}
-            {visibleInsights.length > 0 && (
+            {/* Animation year indicator */}
+            {!animationComplete && currentAnimPhase && (
               <motion.div
-                className="mt-5 pt-4 border-t border-lavender/15"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                className="text-center mb-3"
+                key={animationPhase}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
               >
-                <p className="text-[13px] text-foreground/65 leading-[1.8] text-center italic font-serif">
-                  "{visibleInsights[0].body}"
+                <p className="text-[18px] font-serif text-foreground/70">{currentAnimPhase.year}</p>
+                <p className="text-[11px] text-muted-foreground/45 mt-0.5 truncate max-w-[240px] mx-auto">
+                  {currentAnimPhase.event.title}
                 </p>
               </motion.div>
+            )}
+
+            {/* Post-animation summary */}
+            <AnimatePresence>
+              {animationComplete && (
+                <motion.div
+                  className="text-center space-y-2"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <p className="text-[15px] font-serif text-foreground/80">
+                    {visibleEvents.length} experiences across {activeRegions.size} areas of your body
+                  </p>
+                  <p className="text-[12px] text-muted-foreground/50 leading-relaxed">
+                    Spanning {span} · {threads.length > 0 ? `${threads.length} connecting threads` : "patterns emerging"}
+                  </p>
+
+                  {/* Narrative insight */}
+                  {visibleInsights.length > 0 && (
+                    <motion.div
+                      className="mt-4 pt-4 border-t border-lavender/15"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <p className="text-[13px] text-foreground/65 leading-[1.8] italic font-serif">
+                        "{visibleInsights[0].body}"
+                      </p>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Skip animation button */}
+            {!animationComplete && (
+              <div className="text-center mt-2">
+                <button
+                  onClick={() => { setAnimationComplete(true); setAnimationPhase(timelinePhases.length); }}
+                  className="text-[10px] text-muted-foreground/35 hover:text-muted-foreground/55 transition-colors"
+                >
+                  Skip animation
+                </button>
+              </div>
             )}
           </div>
         </motion.section>
@@ -247,7 +333,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         )}
       </motion.section>
 
-      {/* 2. Timeline Highlights */}
+      {/* 2. Timeline of Experiences */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
         <p className="section-label mb-3">Timeline of experiences</p>
         <div className="rounded-2xl p-5 bg-warm/12 border border-warm/15">
@@ -411,7 +497,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         />
       </motion.section>
 
-      {/* Validating message */}
+      {/* Calm reflection message */}
       <motion.div
         className="rounded-2xl p-6 bg-lavender/8 border border-lavender/12 text-center"
         initial={{ opacity: 0, y: 12 }}

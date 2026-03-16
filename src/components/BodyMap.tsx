@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, BodyRegion, EventType, REGION_LABELS, REGION_A11Y } from "@/context/AppContext";
 
@@ -43,6 +43,26 @@ const regions: RegionDef[] = [
   { id: "ankle_foot_right", d: "M108,398 L122,398 L126,424 Q128,438 130,446 L114,446 Q108,438 108,424 Z", cx: 117, cy: 422, views: ["front", "back"] },
 ];
 
+/** Biomechanical connection chains for drawing lines */
+const CONNECTION_CHAINS: [BodyRegion, BodyRegion][] = [
+  ["ankle_foot_left", "knee_left"],
+  ["knee_left", "hip_left"],
+  ["hip_left", "lower_back"],
+  ["ankle_foot_right", "knee_right"],
+  ["knee_right", "hip_right"],
+  ["hip_right", "lower_back"],
+  ["lower_back", "upper_back"],
+  ["upper_back", "neck"],
+  ["neck", "head_jaw"],
+  ["neck", "shoulder_left"],
+  ["neck", "shoulder_right"],
+  ["shoulder_left", "wrist_hand_left"],
+  ["shoulder_right", "wrist_hand_right"],
+  ["upper_back", "shoulder_left"],
+  ["upper_back", "shoulder_right"],
+  ["lower_back", "abdomen"],
+];
+
 const bodySilhouetteFront = `
   M100,6 C80,6 66,20 66,36 C66,52 78,64 90,66
   L90,80 Q74,80 60,88 Q46,98 44,112
@@ -67,6 +87,8 @@ const thighRight = "M104,270 L122,272 L124,330 L106,330 Z";
 const shinLeft   = "M76,362 L94,362 L92,398 L78,398 Z";
 const shinRight  = "M106,362 L124,362 L122,398 L108,398 Z";
 
+const regionMap = new Map(regions.map((r) => [r.id, r]));
+
 const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const { state, visibleEvents } = useApp();
   const [view, setView] = useState<BodyView>("front");
@@ -75,6 +97,19 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
   const activeRegion = state.selectedRegion;
   const highlightedRegions = state.highlightedRegions || [];
   const visibleRegions = regions.filter((r) => r.views.includes(view));
+
+  // Compute which connections to show
+  const activeConnections = useMemo(() => {
+    if (highlightedRegions.length < 2) return [];
+    const visibleIds = new Set(visibleRegions.map((r) => r.id));
+    return CONNECTION_CHAINS.filter(
+      ([a, b]) =>
+        highlightedRegions.includes(a) &&
+        highlightedRegions.includes(b) &&
+        visibleIds.has(a) &&
+        visibleIds.has(b)
+    );
+  }, [highlightedRegions, visibleRegions]);
 
   const getRegionColor = (regionId: BodyRegion): string | null => {
     const events = visibleEvents.filter(
@@ -172,6 +207,10 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
               <feGaussianBlur stdDeviation="12" result="b" />
               <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
+            <filter id="connectionGlow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="4" result="b" />
+              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
           </defs>
 
           <path d={bodySilhouetteFront} fill="url(#bodyFill2)" stroke="hsl(var(--body-stroke))" strokeWidth="0.4" strokeLinejoin="round" />
@@ -195,6 +234,28 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
           )}
 
           <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.1" />
+
+          {/* Connection lines between highlighted regions */}
+          {activeConnections.map(([a, b], i) => {
+            const ra = regionMap.get(a);
+            const rb = regionMap.get(b);
+            if (!ra || !rb) return null;
+            return (
+              <line
+                key={`conn-${a}-${b}`}
+                x1={ra.cx}
+                y1={ra.cy}
+                x2={rb.cx}
+                y2={rb.cy}
+                stroke="hsl(var(--primary) / 0.2)"
+                strokeWidth="1.2"
+                strokeDasharray="3 4"
+                filter="url(#connectionGlow)"
+                className="pointer-events-none animate-breathe"
+                style={{ animationDelay: `${i * 0.3}s` }}
+              />
+            );
+          })}
 
           {visibleRegions.map((region) => {
             const color = getRegionColor(region.id);
@@ -273,7 +334,18 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </svg>
       </div>
 
-      <p className="text-[10px] text-muted-foreground/30 mt-5 tracking-[0.2em] uppercase" aria-hidden="true">
+      {/* Active layer indicator */}
+      {state.activeLayer !== "all" && (
+        <motion.p
+          className="text-[10px] text-primary/50 mt-3 tracking-wide"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          Viewing: {state.activeLayer === "treatment" ? "what helped" : state.activeLayer === "life-event" ? "life transitions" : state.activeLayer + "s"}
+        </motion.p>
+      )}
+
+      <p className="text-[10px] text-muted-foreground/30 mt-3 tracking-[0.2em] uppercase" aria-hidden="true">
         {activeRegion ? "Tap to deselect" : "Tap to explore"}
       </p>
     </div>
