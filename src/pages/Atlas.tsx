@@ -19,6 +19,7 @@ import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
 import BodyStorySummary from "@/components/BodyStorySummary";
 import DataPrivacySettings from "@/components/DataPrivacySettings";
+import TreatmentGuide from "@/components/TreatmentGuide";
 
 type ActiveTab = "body" | "timeline" | "story";
 
