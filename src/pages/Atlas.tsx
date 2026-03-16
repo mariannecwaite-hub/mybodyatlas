@@ -19,6 +19,7 @@ import LegacySettings from "@/components/LegacySettings";
 import BodyCustomisation from "@/components/BodyCustomisation";
 import BodyStorySummary from "@/components/BodyStorySummary";
 import DataPrivacySettings from "@/components/DataPrivacySettings";
+import TreatmentGuide from "@/components/TreatmentGuide";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -70,6 +71,7 @@ const Atlas = () => {
   const [showCustomise, setShowCustomise] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showBodyStorySummary, setShowBodyStorySummary] = useState(false);
+  const [showTreatmentGuide, setShowTreatmentGuide] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
 
   const handleRegionSelect = (region: BodyRegion) => {
@@ -303,6 +305,7 @@ const Atlas = () => {
       <LegacySettings open={showLegacy} onClose={() => setShowLegacy(false)} />
       <BodyCustomisation open={showCustomise} onClose={() => setShowCustomise(false)} />
       <BodyStorySummary open={showBodyStorySummary} onClose={() => setShowBodyStorySummary(false)} />
+      <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { motion } from "framer-motion";
 import { Bookmark, X as XIcon, BookOpen, Sparkles } from "lucide-react";
+import TreatmentGuide from "@/components/TreatmentGuide";
 
 const MAX_INSIGHTS = 2;
 
@@ -10,6 +11,7 @@ const InsightCards = () => {
   const { state, visibleEvents, revealInsights, highlightInsight } = useApp();
   const [savedInsights, setSavedInsights] = useState<string[]>([]);
   const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
+  const [showGuide, setShowGuide] = useState(false);
 
   // ── Consent gate ──
   if (!state.insightsRevealed) {
@@ -146,6 +148,7 @@ const InsightCards = () => {
                   Dismiss
                 </button>
                 <button
+                  onClick={() => setShowGuide(true)}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium bg-secondary/50 text-muted-foreground/50 hover:text-muted-foreground/70 transition-all duration-200"
                 >
                   <BookOpen className="w-3 h-3" />
@@ -162,6 +165,8 @@ const InsightCards = () => {
         Educational context only — not medical advice.
         Always consult a qualified practitioner for health decisions.
       </p>
+
+      <TreatmentGuide open={showGuide} onClose={() => setShowGuide(false)} />
     </div>
   );
 };
