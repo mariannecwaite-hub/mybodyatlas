@@ -71,6 +71,7 @@ const Atlas = () => {
   const [showCustomise, setShowCustomise] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [showBodyStorySummary, setShowBodyStorySummary] = useState(false);
+  const [showTreatmentGuide, setShowTreatmentGuide] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
 
   const handleRegionSelect = (region: BodyRegion) => {
