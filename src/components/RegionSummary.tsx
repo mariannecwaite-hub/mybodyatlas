@@ -51,15 +51,15 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
   );
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       <motion.div
         key={region}
         className="rounded-2xl border border-border/20 bg-card/70 backdrop-blur-md p-7 relative overflow-hidden"
         style={{ boxShadow: "var(--shadow-md)" }}
-        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+        initial={{ opacity: 0, y: 16, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+        exit={{ opacity: 0, y: -12, scale: 0.97 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         role="region"
         aria-label={REGION_A11Y[region]}
       >
