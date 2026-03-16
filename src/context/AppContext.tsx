@@ -240,6 +240,9 @@ const initialState: AppState = {
   currentScreen: "welcome",
   insightsRevealed: false,
   showArchived: false,
+  highlightedRegions: [],
+  highlightedEventIds: [],
+  activeInsightId: null,
 };
 
 const AppContext = createContext<AppContextType | null>(null);
