@@ -432,8 +432,13 @@ const Onboarding = () => {
               </motion.div>
             )}
 
+            {/* ── Acknowledgement screen ── */}
+            {current.id === "acknowledgement" && (
+              <AcknowledgementScreen onContinue={next} />
+            )}
+
             {/* ── Intro content ── */}
-            {current.phase === "intro" && (
+            {current.phase === "intro" && current.id !== "acknowledgement" && (
               <div className="flex-1 flex items-center justify-center">
                 {current.id === "intro" ? (
                   <motion.div
