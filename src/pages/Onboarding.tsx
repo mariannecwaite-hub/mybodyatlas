@@ -294,15 +294,34 @@ const AcknowledgementScreen = ({ onContinue }: { onContinue: () => void }) => {
 
 /* ─── Component ─── */
 const Onboarding = () => {
+  const [bodyRelationshipChoice, setBodyRelationshipChoice] = useState<BodyRelationship | null>(null);
+  const [showBodyRelationshipScreen, setShowBodyRelationshipScreen] = useState(true);
+  const [bodyRelAck, setBodyRelAck] = useState(false);
   const [step, setStep] = useState(0);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customYears, setCustomYears] = useState<Record<string, number>>({});
   const [dismissalAck, setDismissalAck] = useState(false);
   const navigate = useNavigate();
-  const { addEvent, completeOnboarding } = useApp();
+  const { addEvent, completeOnboarding, setState } = useApp();
 
+  const isObservational = bodyRelationshipChoice === "observational";
+  const onboardingSteps = React.useMemo(() => buildOnboardingSteps(isObservational), [isObservational]);
   const current = onboardingSteps[step];
   const totalSteps = onboardingSteps.length;
+
+  const handleBodyRelationshipSelect = (choice: BodyRelationship) => {
+    setBodyRelationshipChoice(choice);
+    if (choice === "observational") {
+      setBodyRelAck(true);
+      setTimeout(() => setBodyRelAck(false), 3000);
+    }
+  };
+
+  const confirmBodyRelationship = () => {
+    if (!bodyRelationshipChoice) return;
+    setState((s) => ({ ...s, bodyRelationship: bodyRelationshipChoice }));
+    setShowBodyRelationshipScreen(false);
+  };
 
   const toggleCard = useCallback((card: SuggestionCard) => {
     setSelectedIds((prev) => {
@@ -318,14 +337,14 @@ const Onboarding = () => {
 
   const adjustYear = useCallback((cardId: string, delta: number) => {
     setCustomYears((prev) => {
-      const card = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards].find((c) => c.id === cardId);
+      const card = [...childhoodCards, ...adultCards, ...transitionCards, ...sportInjuryCards, ...treatmentCards].find((c) => c.id === cardId);
       const currentYear = prev[cardId] ?? card?.defaultYear ?? 2020;
       return { ...prev, [cardId]: Math.max(1950, Math.min(2026, currentYear + delta)) };
     });
   }, []);
 
   const finishOnboarding = () => {
-    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
+    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...sportInjuryCards, ...treatmentCards];
     allCards.forEach((card) => {
       if (selectedIds.has(card.id)) {
         const year = customYears[card.id] ?? card.defaultYear;
@@ -362,9 +381,83 @@ const Onboarding = () => {
     navigate("/atlas");
   };
 
-  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
+  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...sportInjuryCards, ...treatmentCards];
   const selectedEvents = allCards.filter((c) => selectedIds.has(c.id));
   const affectedRegions = new Set(selectedEvents.flatMap((e) => e.regions));
+
+  /* ── Body relationship question screen ── */
+  if (showBodyRelationshipScreen) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <div className="flex-1 flex flex-col items-center justify-center px-10 max-w-lg mx-auto w-full">
+          <motion.h2
+            className="text-[24px] font-serif italic text-center leading-[1.4] mb-10"
+            style={{ color: "#2A2A28" }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            How do you tend to relate to your body?
+          </motion.h2>
+
+          <div className="w-full space-y-3 mb-8">
+            {([
+              { value: "aware" as const, label: "I'm fairly aware of how my body feels" },
+              { value: "noticing" as const, label: "I notice things but don't always know what they mean" },
+              { value: "observational" as const, label: "Honestly, I don't think about it much" },
+            ]).map((opt, i) => (
+              <motion.button
+                key={opt.value}
+                onClick={() => handleBodyRelationshipSelect(opt.value)}
+                className={`w-full py-4 px-5 rounded-xl text-left text-[15px] transition-all duration-300 ${
+                  bodyRelationshipChoice === opt.value
+                    ? "border-2 border-sage/60 bg-sage/8"
+                    : "border border-transparent bg-secondary/40 hover:bg-secondary/60"
+                }`}
+                style={{ fontFamily: "'DM Sans', sans-serif", color: "#2A2A28" }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {opt.label}
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Observational acknowledgement */}
+          <AnimatePresence>
+            {bodyRelAck && (
+              <motion.p
+                className="text-[15px] italic text-center max-w-xs mx-auto mb-6 leading-[1.7]"
+                style={{ color: "#6B6960", fontFamily: "'DM Serif Display', serif" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Most of us were never taught to pay attention to what our bodies are saying. That's not a personal failing — it's just where we all started.
+              </motion.p>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {bodyRelationshipChoice && (
+              <motion.button
+                onClick={confirmBodyRelationship}
+                className="btn-primary"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                Continue →
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
