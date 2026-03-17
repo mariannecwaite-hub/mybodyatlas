@@ -132,7 +132,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
                 What we're learning together
               </h2>
               <p className="text-[15px] italic mt-3 leading-relaxed" style={{ color: "#6B6960", fontFamily: "'DM Sans', sans-serif" }}>
-                Anonymous patterns from women who've contributed to the Atlas
+                Anonymous patterns from women who've chosen to share
               </p>
             </motion.div>
 
