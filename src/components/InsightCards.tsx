@@ -89,6 +89,34 @@ const InsightCards = () => {
 
       <div className="space-y-4">
         {insights.map((insight, i) => {
+          // ── Unsafe experience insight — distinct visual treatment ──
+          if (insight.type === "unsafe_experience") {
+            return (
+              <UnsafeExperienceInsight
+                key={insight.id}
+                regions={insight.relatedRegions as BodyRegion[]}
+                timingDescription={insight.timingDescription || "appeared around this time"}
+              />
+            );
+          }
+
+          // ── Dismissal insight — distinct card ──
+          if (insight.type === "dismissal") {
+            const dismissalEventId = insight.relatedEventIds[0];
+            const dismissalEvent = visibleEvents.find((e) => e.id === dismissalEventId);
+            if (!dismissalEvent) return null;
+            const followingEvents = visibleEvents.filter((e) =>
+              insight.followingEventIds?.includes(e.id)
+            );
+            return (
+              <DismissalInsight
+                key={insight.id}
+                dismissalEvent={dismissalEvent}
+                followingEvents={followingEvents}
+              />
+            );
+          }
+
           const isActive = state.activeInsightId === insight.id;
           const isEditingThis = editingNote === insight.id;
           return (
