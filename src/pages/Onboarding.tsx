@@ -421,7 +421,7 @@ const Onboarding = () => {
 
             {/* ── Prompt cards — with colored dots (lavender for women's health) ── */}
             {current.phase === "prompt" && current.cards && (
-              <WomensHealthCards
+              <OnboardingCards
                 cards={current.cards}
                 selectedIds={selectedIds}
                 toggleCard={toggleCard}
