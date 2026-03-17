@@ -250,6 +250,7 @@ const initialState: AppState = {
   highlightedRegions: [],
   highlightedEventIds: [],
   activeInsightId: null,
+  bodyRelationship: null,
 };
 
 const AppContext = createContext<AppContextType | null>(null);
