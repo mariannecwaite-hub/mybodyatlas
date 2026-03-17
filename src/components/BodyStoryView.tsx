@@ -29,6 +29,7 @@ const storyRegionPositions: Record<string, { cx: number; cy: number }> = {
 
 interface BodyStoryViewProps {
   onCreateSummary: () => void;
+  onOpenCollective?: () => void;
 }
 
 /** Splits events into early / middle / recent chapters */
@@ -60,7 +61,7 @@ function buildChapters(events: BodyEvent[], birthYear?: number) {
   return { early, middle, recent };
 }
 
-const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
+const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps) => {
   const { visibleEvents, state, highlightInsight, currentProfile } = useApp();
   const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
   const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
@@ -560,6 +561,19 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Collective Atlas link */}
+      {onOpenCollective && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="text-center">
+          <button
+            onClick={onOpenCollective}
+            className="text-[13px] italic transition-colors duration-200"
+            style={{ color: "#9B8EC4", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            See what the collective is showing →
+          </button>
+        </motion.div>
+      )}
 
       {/* Create summary CTA */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>

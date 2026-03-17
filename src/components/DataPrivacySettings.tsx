@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, Trash2, FlaskConical, Shield, Lock } from "lucide-react";
+import CollectiveContributionSettings from "./CollectiveContributionSettings";
 
 interface DataPrivacySettingsProps {
   open: boolean;
@@ -146,6 +147,9 @@ const DataPrivacySettings = ({ open, onClose }: DataPrivacySettingsProps) => {
                 </AnimatePresence>
               </div>
             </div>
+
+            {/* Collective Atlas contribution */}
+            <CollectiveContributionSettings className="mt-6 pt-5 border-t border-border/20" />
 
             {/* Ethical principles summary */}
             <div className="mt-6 pt-5 border-t border-border/20 space-y-2.5">

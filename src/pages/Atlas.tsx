@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield, Lock, Map } from "lucide-react";
 import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
@@ -25,6 +25,8 @@ import BodyMemories from "@/components/BodyMemories";
 import BodyPassport from "@/components/BodyPassport";
 import ReturnPrompt from "@/components/ReturnPrompt";
 import BodyQuery from "@/components/BodyQuery";
+import CollectiveConsent from "@/components/CollectiveConsent";
+import CollectiveAtlas from "@/components/CollectiveAtlas";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -79,6 +81,30 @@ const Atlas = () => {
   const [showTreatmentGuide, setShowTreatmentGuide] = useState(false);
   const [showPassport, setShowPassport] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
+  const [showCollectiveConsent, setShowCollectiveConsent] = useState(false);
+  const [showCollectiveAtlas, setShowCollectiveAtlas] = useState(false);
+  const [hasViewedStory, setHasViewedStory] = useState(false);
+
+  // Track story views for consent trigger
+  useEffect(() => {
+    if (activeTab === "story") setHasViewedStory(true);
+  }, [activeTab]);
+
+  // Trigger collective consent: 5+ events, viewed story, not yet shown
+  useEffect(() => {
+    if (!hasViewedStory) return;
+    if (state.events.length < 5) return;
+    try {
+      if (localStorage.getItem("collective-atlas-consented") === "true") return;
+      if (localStorage.getItem("collective-atlas-dismissed") === "true") return;
+      if (localStorage.getItem("collective-atlas-shown") === "true") return;
+    } catch {}
+    const timer = setTimeout(() => {
+      localStorage.setItem("collective-atlas-shown", "true");
+      setShowCollectiveConsent(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [hasViewedStory, state.events.length]);
 
   const handleRegionSelect = (region: BodyRegion) => {
     if (state.selectedRegion === region) {
@@ -275,7 +301,10 @@ const Atlas = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <BodyStoryView onCreateSummary={() => setShowBodyStorySummary(true)} />
+              <BodyStoryView
+                onCreateSummary={() => setShowBodyStorySummary(true)}
+                onOpenCollective={() => setShowCollectiveAtlas(true)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -339,6 +368,12 @@ const Atlas = () => {
       <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
       <ReturnPrompt />
       <AhaMoment />
+      <CollectiveConsent
+        open={showCollectiveConsent}
+        onClose={() => setShowCollectiveConsent(false)}
+        onContribute={() => setShowCollectiveConsent(false)}
+      />
+      <CollectiveAtlas open={showCollectiveAtlas} onClose={() => setShowCollectiveAtlas(false)} />
     </div>
   );
 };

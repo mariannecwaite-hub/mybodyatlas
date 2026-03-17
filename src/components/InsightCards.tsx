@@ -4,6 +4,7 @@ import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
+import CollectivePatternNote from "@/components/CollectivePatternNote";
 
 const MAX_INSIGHTS = 2;
 
@@ -133,6 +134,9 @@ const InsightCards = () => {
 
               <p className="text-[15px] font-serif text-foreground/85 mb-2">{insight.title}</p>
               <p className="text-[13px] text-muted-foreground/60 leading-[1.8] mb-3">{insight.body}</p>
+
+              {/* Collective pattern note */}
+              <CollectivePatternNote regionIds={insight.relatedRegions} />
 
               {/* Reflective question */}
               {insight.reflectiveQuestion && (
