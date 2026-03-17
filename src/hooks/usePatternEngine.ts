@@ -210,6 +210,80 @@ export function usePatternEngine(
       });
     }
 
+    // ── Type 5: Unsafe Experience — somatic trauma insight ──
+    const safetyEvents = events.filter((e) => e.type === "safety-experience" || (e.isPrivate && e.title.toLowerCase().includes("safe")));
+    if (safetyEvents.length > 0) {
+      const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
+      const TWELVE_MONTHS = 365 * 24 * 60 * 60 * 1000;
+      const physicalEvents = events.filter((e) => e.type === "symptom" || e.type === "injury");
+
+      for (const safetyEvt of safetyEvents) {
+        const safetyTime = new Date(safetyEvt.date).getTime();
+        const nearbyPhysical = physicalEvents.filter((pe) => {
+          const peTime = new Date(pe.date).getTime();
+          return Math.abs(peTime - safetyTime) <= SIX_MONTHS;
+        });
+        // Also check for recurring patterns within 12 months
+        const longerRange = physicalEvents.filter((pe) => {
+          const peTime = new Date(pe.date).getTime();
+          return peTime > safetyTime && (peTime - safetyTime) <= TWELVE_MONTHS;
+        });
+
+        const allRelated = [...new Set([...nearbyPhysical, ...longerRange])];
+        if (allRelated.length > 0) {
+          const affectedRegions = [...new Set(allRelated.flatMap((e) => e.regions))] as BodyRegion[];
+          const timingDesc = nearbyPhysical.length > 0
+            ? "appeared around this time"
+            : "appeared in the months and years that followed";
+
+          insights.push({
+            id: `unsafe-exp-${safetyEvt.id}`,
+            type: "unsafe_experience",
+            title: "",
+            body: "",
+            tone: "neutral",
+            regionLabel: "",
+            relatedRegions: affectedRegions.slice(0, 2),
+            relatedEventIds: [...allRelated, safetyEvt].map((e) => e.id),
+            reflectiveQuestion: "",
+            specificity: allRelated.length + 10,
+            timingDescription: timingDesc,
+          });
+          break; // Only one per record
+        }
+      }
+    }
+
+    // ── Type 6: Medical Dismissal ──
+    const dismissalEvents = events.filter((e) =>
+      e.title.toLowerCase().includes("dismissed") ||
+      e.title.toLowerCase().includes("disbelieved") ||
+      e.title.toLowerCase().includes("not taken seriously") ||
+      e.description?.toLowerCase().includes("dismissed") ||
+      e.description?.toLowerCase().includes("not believed")
+    );
+    if (dismissalEvents.length > 0) {
+      const dismissalEvt = dismissalEvents[0];
+      const dismissalTime = new Date(dismissalEvt.date).getTime();
+      const followingEvts = events.filter((e) =>
+        e.id !== dismissalEvt.id && new Date(e.date).getTime() > dismissalTime
+      );
+
+      insights.push({
+        id: `dismissal-${dismissalEvt.id}`,
+        type: "dismissal",
+        title: "Time lost to being unheard",
+        body: "",
+        tone: "warm",
+        regionLabel: "",
+        relatedRegions: [],
+        relatedEventIds: [dismissalEvt.id, ...followingEvts.map((e) => e.id)],
+        reflectiveQuestion: "",
+        specificity: followingEvts.length + 8,
+        followingEventIds: followingEvts.map((e) => e.id),
+      });
+    }
+
     // ── Sort & deduplicate ──
     if (insights.length === 0) {
       return [{
@@ -233,7 +307,7 @@ export function usePatternEngine(
     });
 
     const deduped: PatternInsight[] = [];
-    const typeOrder: PatternInsight["type"][] = ["origin_reframe", "stress_body", "recurring_pattern", "care_gap"];
+    const typeOrder: PatternInsight["type"][] = ["unsafe_experience", "dismissal", "origin_reframe", "stress_body", "recurring_pattern", "care_gap"];
     for (const t of typeOrder) {
       const candidates = byType[t];
       if (!candidates) continue;
