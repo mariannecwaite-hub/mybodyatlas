@@ -32,10 +32,11 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
     if (event) {
       updateEvent(selectedEventId, {
         treatment: event.treatment ? `${event.treatment}\n\n${new Date().toLocaleDateString()}: ${entry}` : `${new Date().toLocaleDateString()}: ${entry}`,
+        treatmentOutcome: outcome,
       });
     }
     setSaved(true);
-    setTimeout(() => { setSaved(false); setEntry(""); setSelectedEventId(null); onClose(); }, 1200);
+    setTimeout(() => { setSaved(false); setEntry(""); setOutcome("not-sure"); setSelectedEventId(null); onClose(); }, 1200);
   };
 
   return (
