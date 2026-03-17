@@ -53,6 +53,17 @@ const sectionMeta: { id: Section; label: string; icon: typeof MapPin; color: str
   { id: "care", label: "Care Journey", icon: Heart, color: "sage" },
 ];
 
+type PassportFilter = "injury" | "symptom" | "treatment" | "stress" | "life-event" | "patterns";
+
+const filterLabels: Record<PassportFilter, string> = {
+  injury: "Injuries",
+  symptom: "Sensations",
+  treatment: "Treatments",
+  stress: "Stress periods",
+  "life-event": "Life transitions",
+  patterns: "Patterns",
+};
+
 const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const { visibleEvents, currentProfile } = useApp();
   const threads = useBodyThreads(visibleEvents);
@@ -60,6 +71,24 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const [expandedSections, setExpandedSections] = useState<Set<Section>>(
     new Set(["map", "timeline", "patterns", "care"])
   );
+  const [activeFilters, setActiveFilters] = useState<Set<PassportFilter>>(
+    new Set(["injury", "symptom", "treatment", "stress", "life-event", "patterns"])
+  );
+  const [hasConfirmedFilters, setHasConfirmedFilters] = useState(false);
+
+  const toggleFilter = (f: PassportFilter) => {
+    setActiveFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f); else next.add(f);
+      return next;
+    });
+  };
+
+  const filteredEvents = useMemo(() => {
+    const typeFilters = new Set([...activeFilters].filter((f) => f !== "patterns"));
+    return visibleEvents.filter((e) => typeFilters.has(e.type as PassportFilter));
+  }, [visibleEvents, activeFilters]);
+  const showPatterns = activeFilters.has("patterns");
 
   const toggleSection = (s: Section) => {
     setExpandedSections((prev) => {
