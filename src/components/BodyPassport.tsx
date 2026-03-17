@@ -85,8 +85,9 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   };
 
   const filteredEvents = useMemo(() => {
-    const typeFilters = new Set([...activeFilters].filter((f) => f !== "patterns"));
-    return visibleEvents.filter((e) => typeFilters.has(e.type as PassportFilter));
+    const typeFilters = new Set<string>([...activeFilters].filter((f) => f !== "patterns"));
+    return visibleEvents.filter((e) => typeFilters.has(e.type));
+  }, [visibleEvents, activeFilters]);
   }, [visibleEvents, activeFilters]);
   const showPatterns = activeFilters.has("patterns");
 
