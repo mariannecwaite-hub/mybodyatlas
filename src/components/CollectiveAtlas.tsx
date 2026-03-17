@@ -25,7 +25,7 @@ const COLLECTIVE_INSIGHTS = [
   },
   {
     id: "ci3",
-    text: "Lower-body experiences are the most common thread across the Atlas — often beginning earlier in life than the user first recognises.",
+    text: "Lower-body experiences are the most common thread across the Collective — often beginning earlier in life than the person first recognises.",
     supporting: "Hip, knee, and lower back experiences account for the largest share of logged events.",
     count: 4203,
   },
