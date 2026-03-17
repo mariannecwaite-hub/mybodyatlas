@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, MoreHorizontal, ClipboardList, Palette, FileText, BookOpen, Heart, Shield, Lock, Map } from "lucide-react";
 import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppContext";
@@ -25,6 +25,8 @@ import BodyMemories from "@/components/BodyMemories";
 import BodyPassport from "@/components/BodyPassport";
 import ReturnPrompt from "@/components/ReturnPrompt";
 import BodyQuery from "@/components/BodyQuery";
+import CollectiveConsent from "@/components/CollectiveConsent";
+import CollectiveAtlas from "@/components/CollectiveAtlas";
 
 type ActiveTab = "body" | "timeline" | "story";
 
