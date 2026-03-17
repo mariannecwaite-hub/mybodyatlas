@@ -1,86 +1,93 @@
-/**
- * Shared organic body silhouette SVG paths.
- * Single continuous forms — no joint breaks, smooth curves, natural posture.
- */
+import { ReactNode, SVGProps } from "react";
 
-/** Main body silhouette for the Body Map (viewBox "20 -2 160 460") */
-export const mainSilhouettePath = `
-  M100,6
-  C87,6 77,17 77,33 C77,47 85,57 93,62
-  Q95,64 95,70
-  C88,72 76,80 68,92
-  C60,104 54,122 50,142
-  C46,162 44,184 42,208
-  C40,232 40,252 42,268
-  L50,266
-  C50,248 52,228 54,208
-  C56,188 60,168 66,150
-  L72,134
-  C70,154 68,176 68,198
-  C68,218 70,236 74,252
-  C76,264 78,278 80,294
-  C82,312 84,330 84,348
-  C84,366 83,384 82,402
-  C82,420 81,436 80,446
-  L90,446
-  C90,434 91,418 92,400
-  C93,382 94,364 94,348
-  C94,330 95,312 97,296
-  C98,284 99,274 100,266
-  C101,274 102,284 103,296
-  C105,312 106,330 106,348
-  C106,364 107,382 108,400
-  C109,418 110,434 110,446
-  L120,446
-  C119,436 118,420 118,402
-  C117,384 116,366 116,348
-  C116,330 118,312 120,294
-  C122,278 124,264 126,252
-  C130,236 132,218 132,198
-  C132,176 130,154 128,134
-  L134,150
-  C140,168 144,188 146,208
-  C148,228 150,248 150,266
-  L158,268
-  C160,252 160,232 158,208
-  C156,184 154,162 150,142
-  C146,122 140,104 132,92
-  C124,80 112,72 105,70
-  Q105,64 107,62
-  C115,57 123,47 123,33
-  C123,17 113,6 100,6 Z
-`;
+export const BODY_SILHOUETTE_VIEWBOX = "0 0 200 480";
 
-/** Mini body silhouette for story cards, passport, onboarding (viewBox "10 0 80 100") */
-export const miniSilhouettePath = `
-  M50,4
-  C44,4 40,9 40,15 C40,21 43,25 47,27
-  Q48,28 48,30
-  C44,31 38,36 34,43
-  C30,50 28,58 27,67
-  C26,76 26,84 27,90
-  L32,89
-  C32,82 33,74 35,66
-  L38,56
-  C37,64 36,73 37,82
-  C37,87 38,92 38,96
-  L44,96
-  C44,92 44,86 44,80
-  C44,74 45,68 47,62
-  C48,58 49,55 50,52
-  C51,55 52,58 53,62
-  C55,68 56,74 56,80
-  C56,86 56,92 56,96
-  L62,96
-  C62,92 63,87 63,82
-  C64,73 63,64 62,56
-  L65,66
-  C67,74 68,82 68,89
-  L73,90
-  C74,84 74,76 73,67
-  C72,58 70,50 66,43
-  C62,36 56,31 52,30
-  Q52,28 53,27
-  C57,25 60,21 60,15
-  C60,9 56,4 50,4 Z
-`;
+interface BodySilhouetteFigureProps extends SVGProps<SVGSVGElement> {
+  children?: ReactNode;
+  extraDefs?: ReactNode;
+}
+
+export const BodySilhouetteFigure = ({ children, extraDefs, ...props }: BodySilhouetteFigureProps) => {
+  return (
+    <svg viewBox={BODY_SILHOUETTE_VIEWBOX} xmlns="http://www.w3.org/2000/svg" width="100%" {...props}>
+      <defs>
+        <linearGradient id="bodyGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="hsl(var(--body-fill))" />
+          <stop offset="50%" stopColor="hsl(var(--body-fill) / 0.96)" />
+          <stop offset="100%" stopColor="hsl(var(--body-fill))" />
+        </linearGradient>
+        {extraDefs}
+      </defs>
+
+      <ellipse cx="100" cy="38" rx="28" ry="34" fill="url(#bodyGrad)" stroke="hsl(var(--body-stroke))" strokeWidth="1" />
+
+      <path
+        d="M88 68 Q100 74 112 68 L114 86 Q100 92 86 86 Z"
+        fill="url(#bodyGrad)"
+        stroke="none"
+      />
+
+      <path
+        d="M60 88 Q42 92 36 108 Q28 130 30 160 Q32 185 38 200 Q44 215 50 224 L68 224 Q72 210 74 195 L74 160 L126 160 L126 195 Q128 210 132 224 L150 224 Q156 215 162 200 Q168 185 170 160 Q172 130 164 108 Q158 92 140 88 Q120 82 100 81 Q80 82 60 88 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <path
+        d="M60 90 Q44 96 36 116 Q28 138 26 165 Q24 185 28 200 Q32 212 40 214 Q48 214 52 202 Q56 188 56 168 Q58 148 62 130 L68 108 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <ellipse cx="36" cy="218" rx="10" ry="14" fill="url(#bodyGrad)" stroke="hsl(var(--body-stroke))" strokeWidth="0.8" />
+
+      <path
+        d="M140 90 Q156 96 164 116 Q172 138 174 165 Q176 185 172 200 Q168 212 160 214 Q152 214 148 202 Q144 188 144 168 Q142 148 138 130 L132 108 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <ellipse cx="164" cy="218" rx="10" ry="14" fill="url(#bodyGrad)" stroke="hsl(var(--body-stroke))" strokeWidth="0.8" />
+
+      <path
+        d="M50 222 Q48 238 50 252 Q52 262 60 266 L140 266 Q148 262 150 252 Q152 238 150 222 L68 224 L132 224 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <path
+        d="M60 264 Q52 280 50 310 Q48 340 50 375 Q52 400 54 420 Q56 440 60 455 Q66 466 76 466 Q86 466 90 455 Q94 440 94 420 Q96 395 94 365 Q92 335 90 305 L88 268 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <path
+        d="M60 458 Q54 462 50 468 Q48 474 56 476 Q70 478 82 474 Q90 470 90 464 L76 462 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <path
+        d="M140 264 Q148 280 150 310 Q152 340 150 375 Q148 400 146 420 Q144 440 140 455 Q134 466 124 466 Q114 466 110 455 Q106 440 106 420 Q108 395 106 365 Q108 335 110 305 L112 268 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      <path
+        d="M140 458 Q146 462 150 468 Q152 474 144 476 Q130 478 118 474 Q110 470 110 464 L124 462 Z"
+        fill="url(#bodyGrad)"
+        stroke="hsl(var(--body-stroke))"
+        strokeWidth="0.8"
+      />
+
+      {children}
+    </svg>
+  );
+};

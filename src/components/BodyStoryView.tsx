@@ -5,7 +5,7 @@ import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import BodyThreads from "@/components/BodyThreads";
 import { Lock, FileText, Bookmark, X as XIcon, BookOpen } from "lucide-react";
-import { miniSilhouettePath } from "@/components/BodySilhouette";
+import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 const typeLabels: Record<EventType, string> = {
   injury: "Injuries",
@@ -259,8 +259,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
             {/* Animated body silhouette */}
             <div className="flex justify-center mb-4">
-              <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview — regions illuminate as your story unfolds">
-                <path d={miniSilhouettePath} fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+              <BodySilhouetteFigure className="w-24 h-36" aria-label="Body overview — regions illuminate as your story unfolds">
                 {Object.entries(storyRegionPositions).map(([region, pos]) => {
                   if (!revealedRegions.has(region as BodyRegion)) return null;
                   const isNew = currentAnimPhase?.regions.includes(region as BodyRegion) && !animationComplete;
@@ -268,9 +267,9 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                   return (
                     <motion.circle
                       key={region}
-                      cx={pos.cx}
-                      cy={pos.cy}
-                      r={isChipHighlighted ? 5 : isNew ? 4 : 3}
+                      cx={pos.cx * 2}
+                      cy={pos.cy * 4.8}
+                      r={isChipHighlighted ? 10 : isNew ? 8 : 6}
                       fill={isChipHighlighted ? "hsl(var(--sage) / 0.7)" : isNew ? "hsl(var(--primary) / 0.5)" : "hsl(var(--primary) / 0.35)"}
                       stroke={isChipHighlighted ? "hsl(var(--sage) / 0.3)" : isNew ? "hsl(var(--primary) / 0.2)" : "hsl(var(--primary) / 0.12)"}
                       strokeWidth={isChipHighlighted ? 5 : isNew ? 4 : 3}
@@ -281,7 +280,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                     />
                   );
                 })}
-              </svg>
+              </BodySilhouetteFigure>
             </div>
 
             {/* Animation year indicator */}

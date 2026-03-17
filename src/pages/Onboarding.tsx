@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useApp, BodyRegion, EventType, BodyEvent } from "@/context/AppContext";
 import { Shield, Check, ChevronRight, Undo2 } from "lucide-react";
-import { miniSilhouettePath } from "@/components/BodySilhouette";
+import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 /* ─── Suggestion card type ─── */
 interface SuggestionCard {
@@ -396,10 +396,9 @@ const Onboarding = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.6 }}
                   >
-                    <svg viewBox="10 0 80 100" className="w-28 h-40">
-                      <path d={miniSilhouettePath} fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
-                      <circle cx="50" cy="45" r="4" fill="hsl(var(--body-tension) / 0.7)" className="animate-soft-pulse" />
-                    </svg>
+                    <BodySilhouetteFigure className="w-28 h-40">
+                      <circle cx="100" cy="216" r="8" fill="hsl(var(--body-tension) / 0.7)" className="animate-soft-pulse" />
+                    </BodySilhouetteFigure>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -428,9 +427,7 @@ const Onboarding = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <svg viewBox="10 0 80 100" className="w-full h-full opacity-20">
-                        <path d={miniSilhouettePath} fill="hsl(var(--foreground))" />
-                      </svg>
+                      <BodySilhouetteFigure className="w-full h-full opacity-20" />
                       {Array.from(affectedRegions).map((regionId, i) => {
                         const pos = regionPositions[regionId];
                         if (!pos) return null;

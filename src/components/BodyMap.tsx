@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, BodyRegion, EventType, REGION_LABELS, REGION_A11Y } from "@/context/AppContext";
-import { mainSilhouettePath } from "@/components/BodySilhouette";
+import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 type BodyView = "front" | "back";
 
@@ -63,8 +63,6 @@ const CONNECTION_CHAINS: [BodyRegion, BodyRegion][] = [
   ["upper_back", "shoulder_right"],
   ["lower_back", "abdomen"],
 ];
-
-const bodySilhouetteFront = mainSilhouettePath;
 
 const regionMap = new Map(regions.map((r) => [r.id, r]));
 
@@ -175,54 +173,32 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
       <div className="relative w-full max-w-[300px] sm:max-w-[320px] mx-auto">
         <div className="absolute -inset-10 body-ambient rounded-full pointer-events-none opacity-60" />
 
-        <svg
-          viewBox="20 -2 160 460"
+        <BodySilhouetteFigure
           className="relative z-10 w-full"
           style={{ filter: "drop-shadow(0 8px 32px hsl(158 16% 88% / 0.15))" }}
           role="group"
           aria-label={`Body map — ${view} view`}
+          extraDefs={
+            <>
+              <linearGradient id="regionHover" x1="0.5" y1="0" x2="0.5" y2="1">
+                <stop offset="0%" stopColor="hsl(40 10% 88%)" />
+                <stop offset="100%" stopColor="hsl(40 8% 84%)" />
+              </linearGradient>
+              <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="7" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+              <filter id="selectedGlow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="12" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+              <filter id="connectionGlow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="4" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </>
+          }
         >
-          <defs>
-            <linearGradient id="bodyFill2" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(40 10% 93%)" />
-              <stop offset="100%" stopColor="hsl(40 8% 88%)" />
-            </linearGradient>
-            <linearGradient id="regionHover" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(40 10% 88%)" />
-              <stop offset="100%" stopColor="hsl(40 8% 84%)" />
-            </linearGradient>
-            <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="7" result="b" />
-              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="selectedGlow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="12" result="b" />
-              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="connectionGlow" x="-100%" y="-100%" width="300%" height="300%">
-              <feGaussianBlur stdDeviation="4" result="b" />
-              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
-
-          <path d={bodySilhouetteFront} fill="url(#bodyFill2)" stroke="hsl(var(--body-stroke))" strokeWidth="0.4" strokeLinejoin="round" />
-
-
-          {view === "front" && (
-            <>
-              <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.18" />
-              <line x1="100" y1="92" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.08" />
-            </>
-          )}
-          {view === "back" && (
-            <>
-              <line x1="100" y1="80" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.14" />
-              <path d="M76,104 Q84,114 80,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
-              <path d="M124,104 Q116,114 120,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
-            </>
-          )}
-
-          <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.1" />
 
           {/* Connection lines between highlighted regions */}
           {activeConnections.map(([a, b], i) => {
@@ -343,7 +319,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
               </g>
             );
           })}
-        </svg>
+        </BodySilhouetteFigure>
       </div>
 
       {/* Active layer indicator */}
@@ -357,9 +333,6 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </motion.p>
       )}
 
-      <p className="text-[10px] text-muted-foreground/30 mt-3 tracking-[0.2em] uppercase" aria-hidden="true">
-        {activeRegion ? "Tap to deselect" : "Tap to explore"}
-      </p>
     </div>
   );
 };
