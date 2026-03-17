@@ -104,7 +104,7 @@ export function usePatternEngine(
           insights.push({
             id: `origin-${currentRegion}-${originRegion}`,
             type: "origin_reframe",
-            title: "An earlier chapter",
+            title: "Your body has been returning to this",
             body: `Your ${regionLabel(currentRegion)} story may start earlier than you think. In ${originYear}, you recorded "${earliestOrigin.title.toLowerCase()}" — and in ${currentYear}, "${earliestCurrent.title.toLowerCase()}" appeared. These two areas are often connected, and it may be worth wondering whether they're part of the same story. Based on what you've recorded so far.`,
             tone: "sage",
             regionLabel: REGION_LABELS[currentRegion] ?? currentRegion,
