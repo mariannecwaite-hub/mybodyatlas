@@ -447,7 +447,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                               animate={{ opacity: 1, x: 0 }}
                                               transition={{ delay: i * 0.05, duration: 0.35 }}
                                             >
-                                              <span className="text-sm">🌿</span>
+                                              <div className="w-2 h-2 rounded-full bg-body-healing flex-shrink-0 mt-0.5" />
                                               <div className="min-w-0">
                                                 <p className="text-[12px] font-medium text-foreground/70 truncate">{t.title}</p>
                                                 <p className="text-[10px] text-muted-foreground/30 mt-0.5">
