@@ -10,11 +10,10 @@ export interface PatternInsight {
   regionLabel: string;
   relatedRegions: BodyRegion[];
   relatedEventIds: string[];
-  /** Specificity score — higher = more personal to user's data */
+  reflectiveQuestion: string;
   specificity: number;
 }
 
-/** Biomechanical chains: region → upstream origins */
 const BIOMECHANICAL_CHAINS: Record<string, BodyRegion[]> = {
   lower_back: ["hip_left", "hip_right", "knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right"],
   hip_left: ["knee_left", "ankle_foot_left"],
@@ -29,6 +28,14 @@ const BIOMECHANICAL_CHAINS: Record<string, BodyRegion[]> = {
 };
 
 const regionLabel = (r: BodyRegion) => REGION_LABELS[r]?.toLowerCase() ?? r;
+
+const REFLECTIVE_QUESTIONS = [
+  "Do you remember what was happening in your life when this first started?",
+  "Has anything changed in this area, or does it feel the same as it did then?",
+  "Is there a connection here you've noticed yourself?",
+  "What was your body trying to tell you during that time?",
+  "Looking back, does this pattern surprise you — or confirm something you already sensed?",
+];
 
 export function usePatternEngine(
   events: BodyEvent[],
@@ -47,6 +54,7 @@ export function usePatternEngine(
         regionLabel: "Getting started",
         relatedRegions: [],
         relatedEventIds: [],
+        reflectiveQuestion: "",
         specificity: 0,
       }];
     }
@@ -70,7 +78,7 @@ export function usePatternEngine(
     const stressAndLifeEvents = events.filter((e) => e.type === "stress" || e.type === "life-event");
     const treatmentEvents = events.filter((e) => e.type === "treatment");
 
-    // ── Type 1: Origin Reframe ──
+    // ── Type 1: Origin Reframe — now with specific event names ──
     const regionsToCheck = selectedRegion ? [selectedRegion] : Object.keys(regionEvents) as BodyRegion[];
 
     for (const currentRegion of regionsToCheck) {
@@ -92,15 +100,17 @@ export function usePatternEngine(
 
         if (new Date(earliestOrigin.date) < new Date(earliestCurrent.date)) {
           const originYear = new Date(earliestOrigin.date).getFullYear();
+          const currentYear = new Date(earliestCurrent.date).getFullYear();
           insights.push({
             id: `origin-${currentRegion}-${originRegion}`,
             type: "origin_reframe",
             title: "An earlier chapter",
-            body: `Your ${regionLabel(currentRegion)} story may start earlier than you think. You recorded a ${earliestOrigin.title.toLowerCase()} in ${originYear}, and these two areas are often connected biomechanically. It may be worth exploring whether your ${regionLabel(currentRegion)} has been compensating for longer than you realise.`,
+            body: `Your ${regionLabel(currentRegion)} story may start earlier than you think. In ${originYear}, you recorded "${earliestOrigin.title.toLowerCase()}" — and in ${currentYear}, "${earliestCurrent.title.toLowerCase()}" appeared. These two areas are often connected, and it may be worth wondering whether they're part of the same story. Based on what you've recorded so far.`,
             tone: "sage",
             regionLabel: REGION_LABELS[currentRegion] ?? currentRegion,
             relatedRegions: [currentRegion, originRegion],
             relatedEventIds: [...currentEvents, earliestOrigin].map((e) => e.id),
+            reflectiveQuestion: "Do you remember what was happening in your life when this first started?",
             specificity: currentEvents.length + originEvts.length,
           });
           break;
@@ -108,7 +118,7 @@ export function usePatternEngine(
       }
     }
 
-    // ── Type 2: Stress-Body Connection ──
+    // ── Type 2: Stress-Body Connection — with specific names ──
     if (stressAndLifeEvents.length > 0) {
       const physicalEvents = events.filter((e) => e.type === "symptom" || e.type === "injury");
       const THREE_MONTHS = 90 * 24 * 60 * 60 * 1000;
@@ -123,24 +133,27 @@ export function usePatternEngine(
 
       if (overlapping.length > 0) {
         const affectedRegions = [...new Set(overlapping.flatMap((e) => e.regions))] as BodyRegion[];
-        const regionNames = affectedRegions.slice(0, 3).map(regionLabel).filter(Boolean);
-        const regionStr = regionNames.length > 0 ? ` — particularly in your ${regionNames.join(" and ")}` : "";
+        // Pick most specific stress event and physical event pair
+        const bestStress = stressAndLifeEvents[0];
+        const bestPhysical = overlapping[0];
+        const stressYear = new Date(bestStress.date).getFullYear();
 
         insights.push({
           id: "stress-body",
           type: "stress_body",
-          title: "Stress & your body",
-          body: `${overlapping.length} of your recorded experiences appeared during or shortly after a period of stress or change${regionStr}. Based on what you've mapped so far, your body appears to carry emotional load in physical ways. This pattern might be worth noticing.`,
+          title: "Your body and your life",
+          body: `In ${stressYear}, "${bestStress.title.toLowerCase()}" was happening — and "${bestPhysical.title.toLowerCase()}" appeared around the same time. Some of these arrived during harder times — your body often carries what life brings. Based on what you've recorded so far.`,
           tone: "lavender",
           regionLabel: "Stress & body",
           relatedRegions: affectedRegions,
           relatedEventIds: [...overlapping, ...stressAndLifeEvents].map((e) => e.id),
+          reflectiveQuestion: "Has anything changed in this area, or does it feel the same as it did then?",
           specificity: overlapping.length + stressAndLifeEvents.length,
         });
       }
     }
 
-    // ── Type 3: Recurring Pattern ──
+    // ── Type 3: Recurring Pattern — with specific events ──
     const regionsForRecurring = selectedRegion ? [selectedRegion] : Object.keys(regionYears) as BodyRegion[];
 
     for (const region of regionsForRecurring) {
@@ -148,21 +161,25 @@ export function usePatternEngine(
       if (!years || years.size < 3) continue;
       const sortedYears = [...years].sort((a, b) => a - b);
       const evts = regionEvents[region];
+      const sortedEvts = [...evts].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const firstEvt = sortedEvts[0];
+      const lastEvt = sortedEvts[sortedEvts.length - 1];
 
       insights.push({
         id: `recurring-${region}`,
         type: "recurring_pattern",
-        title: "A recurring thread",
-        body: `Your ${regionLabel(region)} appears in your record in ${sortedYears.slice(0, -1).join(", ")} and ${sortedYears[sortedYears.length - 1]}. Recurring experiences in the same area across years often point to something that hasn't fully resolved — rather than separate new issues. Based on what you've mapped so far.`,
+        title: "A thread through time",
+        body: `Your ${regionLabel(region)} story starts in ${sortedYears[0]} with "${firstEvt.title.toLowerCase()}" and reaches ${sortedYears[sortedYears.length - 1]} — "${lastEvt.title.toLowerCase()}". Your body has been saying something here for a while. Based on what you've recorded so far.`,
         tone: "warm",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
         relatedEventIds: evts.map((e) => e.id),
+        reflectiveQuestion: "Looking back, does this pattern surprise you — or confirm something you already sensed?",
         specificity: sortedYears.length + evts.length,
       });
     }
 
-    // ── Type 4: Care Gap ──
+    // ── Type 4: Care Gap — with specific events ──
     const treatmentRegions = new Set(treatmentEvents.flatMap((e) => e.regions));
     const regionsForCareGap = selectedRegion ? [selectedRegion] : Object.keys(regionEvents) as BodyRegion[];
 
@@ -171,22 +188,25 @@ export function usePatternEngine(
       if (!evts || evts.length < 3) continue;
       if (treatmentRegions.has(region)) continue;
 
-      const earliestYear = Math.min(...evts.map((e) => new Date(e.date).getFullYear()));
+      const sortedEvts = [...evts].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      const firstEvt = sortedEvts[0];
+      const firstYear = new Date(firstEvt.date).getFullYear();
 
       insights.push({
         id: `care-gap-${region}`,
         type: "care_gap",
         title: "Worth exploring",
-        body: `Your ${regionLabel(region)} has been an area of attention in your record since ${earliestYear} but doesn't yet have any associated treatment logged. That might be worth exploring.`,
+        body: `Your ${regionLabel(region)} has been part of your record since ${firstYear} — starting with "${firstEvt.title.toLowerCase()}" — but doesn't yet have any treatment logged alongside it. That might be worth exploring. Based on what you've recorded so far.`,
         tone: "sage",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
         relatedEventIds: evts.map((e) => e.id),
+        reflectiveQuestion: "Is there a connection here you've noticed yourself?",
         specificity: evts.length,
       });
     }
 
-    // ── Sort by specificity (most specific first) and return ──
+    // ── Sort & deduplicate ──
     if (insights.length === 0) {
       return [{
         id: "growing",
@@ -197,11 +217,11 @@ export function usePatternEngine(
         regionLabel: "Getting started",
         relatedRegions: [],
         relatedEventIds: [],
+        reflectiveQuestion: "",
         specificity: 0,
       }];
     }
 
-    // Deduplicate by type — keep at most one of each type, most specific
     const byType: Record<string, PatternInsight[]> = {};
     insights.forEach((i) => {
       if (!byType[i.type]) byType[i.type] = [];
