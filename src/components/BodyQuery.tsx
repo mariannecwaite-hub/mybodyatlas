@@ -206,7 +206,8 @@ interface BodyQueryProps {
 }
 
 const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
-  const { visibleEvents } = useApp();
+  const { visibleEvents, state } = useApp();
+  const isObservational = state.bodyRelationship === "observational";
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [results, setResults] = useState<QueryResults | null>(null);
@@ -260,7 +261,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
             onFocus={() => setFocused(true)}
             onBlur={() => { if (!query && !results) setFocused(false); }}
             onKeyDown={handleKeyDown}
-            placeholder="What is your body telling you right now?"
+            placeholder={isObservational ? "What's going on physically right now?" : "What is your body telling you right now?"}
             className="flex-1 bg-transparent text-[15px] text-foreground/80 placeholder:text-muted-foreground/40 focus:outline-none"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           />
@@ -289,7 +290,9 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              Your body has said something like this before. Let's look back together.
+              {isObservational
+                ? "You've had something like this before. Here's what your record shows."
+                : "Your body has said something like this before. Let's look back together."}
             </motion.p>
           )}
         </AnimatePresence>

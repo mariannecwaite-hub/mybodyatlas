@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useApp, BodyRegion, EventType, BodyEvent } from "@/context/AppContext";
+import { useApp, BodyRegion, EventType, BodyEvent, BodyRelationship } from "@/context/AppContext";
 import { Shield, Check, ChevronRight, Undo2 } from "lucide-react";
 import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
@@ -66,6 +66,15 @@ const transitionCards: SuggestionCard[] = [
   { id: "t6", title: "Becoming a parent", description: "The physical and emotional shift of caring for a new life.", type: "life-event", regions: ["lower_back", "wrist_hand_left", "shoulder_left"], defaultYear: 2021, severity: "moderate" },
   { id: "t7", title: "Hormonal changes", description: "Menopause, puberty, thyroid changes or hormonal shifts.", type: "life-event", regions: ["abdomen", "head_jaw"], defaultYear: 2022, severity: "moderate" },
   { id: "t8", title: "Mental health period", description: "Anxiety, depression or a period of emotional difficulty.", type: "stress", regions: ["chest", "head_jaw", "abdomen"], defaultYear: 2020, severity: "moderate" },
+  // Male-specific life transition cards — terracotta dots
+  { id: "tm1", title: "Becoming a father — the shift in identity and body", description: "Sleep deprivation, responsibility, and physical adjustment.", type: "life-event", regions: ["lower_back", "neck", "chest"], defaultYear: 2020, severity: "moderate" },
+  { id: "tm2", title: "Redundancy or professional failure", description: "The physical toll of losing your footing.", type: "stress", regions: ["chest", "head_jaw", "neck"], defaultYear: 2019, severity: "significant" },
+  { id: "tm3", title: "Bereavement — carrying a loss", description: "Grief sits in the body, not just the mind.", type: "life-event", regions: ["chest", "abdomen"], defaultYear: 2018, severity: "significant" },
+  { id: "tm4", title: "Relationship breakdown", description: "The physical weight of things falling apart.", type: "stress", regions: ["chest", "abdomen", "head_jaw"], defaultYear: 2019, severity: "moderate" },
+  { id: "tm5", title: "High-pressure period — when everything was on you", description: "Sustained demand with no recovery.", type: "stress", regions: ["neck", "shoulder_left", "shoulder_right", "lower_back"], defaultYear: 2020, severity: "significant" },
+  { id: "tm6", title: "Heart event or health scare", description: "The moment your body demanded attention.", type: "life-event", regions: ["chest"], defaultYear: 2021, severity: "significant" },
+  { id: "tm7", title: "Sleep stopped working — extended disruption", description: "Months or years of broken sleep.", type: "symptom", regions: ["head_jaw", "neck"], defaultYear: 2020, severity: "moderate", ongoing: true },
+  { id: "tm8", title: "Running on empty — sustained exhaustion with no clear cause", description: "Tiredness that doesn't make sense and doesn't resolve.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2021, severity: "moderate", ongoing: true },
 ];
 
 const treatmentCards: SuggestionCard[] = [
@@ -77,6 +86,18 @@ const treatmentCards: SuggestionCard[] = [
   { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for pain or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
   { id: "tr7", title: "Psychotherapy or counselling", description: "Therapy for emotional wellbeing and stress management.", type: "treatment", regions: [], defaultYear: 2020, severity: "mild" },
   { id: "tr8", title: "Strength & conditioning", description: "Structured exercise for rehabilitation or prevention.", type: "treatment", regions: ["knee_left", "hip_left", "lower_back"], defaultYear: 2022, severity: "mild" },
+];
+
+/* ─── Sport & injury cards for observational users ─── */
+const sportInjuryCards: SuggestionCard[] = [
+  { id: "si1", title: "Sport injury — old or recurring", description: "Something from playing sport that still shows up.", type: "injury", regions: ["knee_left", "ankle_foot_left"], defaultYear: 2008, severity: "moderate" },
+  { id: "si2", title: "Training or overuse injury", description: "Repetitive strain from running, gym, or physical training.", type: "injury", regions: ["knee_right", "shoulder_right"], defaultYear: 2015, severity: "moderate" },
+  { id: "si3", title: "Accident or impact", description: "Car accident, collision, or significant impact.", type: "injury", regions: ["neck", "lower_back"], defaultYear: 2012, severity: "significant" },
+  { id: "si4", title: "Work-related physical strain", description: "Physical wear from your job — lifting, standing, repetitive tasks.", type: "injury", regions: ["lower_back", "shoulder_left", "wrist_hand_right"], defaultYear: 2016, severity: "moderate" },
+  { id: "si5", title: "Something that never fully healed", description: "An injury you worked through but that still reminds you it's there.", type: "injury", regions: ["ankle_foot_left"], defaultYear: 2010, severity: "mild", ongoing: true },
+  { id: "si6", title: "A knock or fall that seemed fine at the time", description: "Minor at the time, but maybe not as minor as you thought.", type: "injury", regions: ["wrist_hand_left", "knee_left"], defaultYear: 2006, severity: "mild" },
+  { id: "si7", title: "Surgery or procedure", description: "An operation — planned or emergency — and the recovery.", type: "treatment", regions: ["abdomen"], defaultYear: 2014, severity: "moderate" },
+  { id: "si8", title: "Physical job — cumulative wear", description: "Years of physical work that your body carries.", type: "injury", regions: ["lower_back", "knee_left", "shoulder_right"], defaultYear: 2012, severity: "moderate", ongoing: true },
 ];
 
 /* ─── Step definitions ─── */
@@ -108,68 +129,93 @@ const womensHealthCards: SuggestionCard[] = [
   { id: "wh15", title: "An experience that affected how safe you felt in your body", description: "You only need to record what feels right.", type: "life-event", regions: [], defaultYear: 2015, severity: "significant" },
 ];
 
-const onboardingSteps: OnboardingStep[] = [
-  {
-    id: "intro",
-    phase: "intro",
-    title: "Your body has a story",
-    subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
-  },
-  {
-    id: "acknowledgement",
-    phase: "intro",
-    title: "",
-    subtitle: "",
-  },
-  {
-    id: "privacy",
-    phase: "intro",
-    title: "Everything stays yours",
-    subtitle: "Your body story is private. Nothing is shared unless you choose to share it. You can skip anything, anytime.",
-    principle: { icon: Shield, label: "Private by default" },
-  },
-  {
-    id: "childhood",
-    phase: "prompt",
-    title: "Childhood body memories",
-    subtitle: "Think back to your earliest body experiences — injuries, illnesses, or things that stood out. Tap any that feel familiar.",
-    cards: childhoodCards,
-  },
-  {
-    id: "adult",
-    phase: "prompt",
-    title: "Your body now",
-    subtitle: "What has your body been telling you in recent years? Aches, tensions, changes you've noticed.",
-    cards: adultCards,
-  },
-  {
-    id: "transitions",
-    phase: "prompt",
-    title: "Life transitions",
-    subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
-    cards: transitionCards,
-  },
-  {
-    id: "womens-health",
-    phase: "prompt",
-    title: "Your body through womanhood",
-    subtitle: "Experiences that are often overlooked but matter deeply",
-    cards: womensHealthCards,
-  },
-  {
-    id: "treatments",
-    phase: "prompt",
-    title: "What you've explored",
-    subtitle: "Treatments, therapies or practices you've tried — even briefly.",
-    cards: treatmentCards,
-  },
-  {
-    id: "reveal",
-    phase: "reveal",
-    title: "Your Body Story So Far",
-    subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
-  },
-];
+/** Build steps dynamically based on body relationship */
+function buildOnboardingSteps(isObservational: boolean): OnboardingStep[] {
+  const steps: OnboardingStep[] = [
+    {
+      id: "intro",
+      phase: "intro",
+      title: isObservational ? "Your physical history" : "Your body has a story",
+      subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
+    },
+    {
+      id: "acknowledgement",
+      phase: "intro",
+      title: "",
+      subtitle: "",
+    },
+    {
+      id: "privacy",
+      phase: "intro",
+      title: "Everything stays yours",
+      subtitle: isObservational
+        ? "Your body record is private. Nothing is shared unless you choose to share it. You can skip anything, anytime."
+        : "Your body story is private. Nothing is shared unless you choose to share it. You can skip anything, anytime.",
+      principle: { icon: Shield, label: "Private by default" },
+    },
+  ];
+
+  // Observational users get sport/injury step first
+  if (isObservational) {
+    steps.push({
+      id: "sport-injury",
+      phase: "prompt",
+      title: "Your physical history",
+      subtitle: "Injuries, strains, and things that never quite resolved",
+      cards: sportInjuryCards,
+    });
+  }
+
+  steps.push(
+    {
+      id: "childhood",
+      phase: "prompt",
+      title: isObservational ? "Childhood physical history" : "Childhood body memories",
+      subtitle: isObservational
+        ? "What was your body doing during this period? Injuries, illnesses, or things that stood out."
+        : "Think back to your earliest body experiences — injuries, illnesses, or things that stood out. Tap any that feel familiar.",
+      cards: childhoodCards,
+    },
+    {
+      id: "adult",
+      phase: "prompt",
+      title: isObservational ? "Your body now" : "Your body now",
+      subtitle: isObservational
+        ? "What have you noticed physically in recent years? Aches, tensions, changes."
+        : "What has your body been telling you in recent years? Aches, tensions, changes you've noticed.",
+      cards: adultCards,
+    },
+    {
+      id: "transitions",
+      phase: "prompt",
+      title: "Life transitions",
+      subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
+      cards: transitionCards,
+    },
+    {
+      id: "womens-health",
+      phase: "prompt",
+      title: "Your body through womanhood",
+      subtitle: "Experiences that are often overlooked but matter deeply",
+      cards: womensHealthCards,
+    },
+    {
+      id: "treatments",
+      phase: "prompt",
+      title: "What you've explored",
+      subtitle: "Treatments, therapies or practices you've tried — even briefly.",
+      cards: treatmentCards,
+    },
+    {
+      id: "reveal",
+      phase: "reveal",
+      title: isObservational ? "Your Body Record So Far" : "Your Body Story So Far",
+      subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
+    },
+  );
+
+  return steps;
+}
 
 /* ─── Mini body silhouette for reveal ─── */
 const regionPositions: Partial<Record<BodyRegion, { x: number; y: number }>> = {
@@ -248,15 +294,34 @@ const AcknowledgementScreen = ({ onContinue }: { onContinue: () => void }) => {
 
 /* ─── Component ─── */
 const Onboarding = () => {
+  const [bodyRelationshipChoice, setBodyRelationshipChoice] = useState<BodyRelationship | null>(null);
+  const [showBodyRelationshipScreen, setShowBodyRelationshipScreen] = useState(true);
+  const [bodyRelAck, setBodyRelAck] = useState(false);
   const [step, setStep] = useState(0);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customYears, setCustomYears] = useState<Record<string, number>>({});
   const [dismissalAck, setDismissalAck] = useState(false);
   const navigate = useNavigate();
-  const { addEvent, completeOnboarding } = useApp();
+  const { addEvent, completeOnboarding, setState } = useApp();
 
+  const isObservational = bodyRelationshipChoice === "observational";
+  const onboardingSteps = React.useMemo(() => buildOnboardingSteps(isObservational), [isObservational]);
   const current = onboardingSteps[step];
   const totalSteps = onboardingSteps.length;
+
+  const handleBodyRelationshipSelect = (choice: BodyRelationship) => {
+    setBodyRelationshipChoice(choice);
+    if (choice === "observational") {
+      setBodyRelAck(true);
+      setTimeout(() => setBodyRelAck(false), 3000);
+    }
+  };
+
+  const confirmBodyRelationship = () => {
+    if (!bodyRelationshipChoice) return;
+    setState((s) => ({ ...s, bodyRelationship: bodyRelationshipChoice }));
+    setShowBodyRelationshipScreen(false);
+  };
 
   const toggleCard = useCallback((card: SuggestionCard) => {
     setSelectedIds((prev) => {
@@ -272,14 +337,14 @@ const Onboarding = () => {
 
   const adjustYear = useCallback((cardId: string, delta: number) => {
     setCustomYears((prev) => {
-      const card = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards].find((c) => c.id === cardId);
+      const card = [...childhoodCards, ...adultCards, ...transitionCards, ...sportInjuryCards, ...treatmentCards].find((c) => c.id === cardId);
       const currentYear = prev[cardId] ?? card?.defaultYear ?? 2020;
       return { ...prev, [cardId]: Math.max(1950, Math.min(2026, currentYear + delta)) };
     });
   }, []);
 
   const finishOnboarding = () => {
-    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
+    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...sportInjuryCards, ...treatmentCards];
     allCards.forEach((card) => {
       if (selectedIds.has(card.id)) {
         const year = customYears[card.id] ?? card.defaultYear;
@@ -316,9 +381,83 @@ const Onboarding = () => {
     navigate("/atlas");
   };
 
-  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
+  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...sportInjuryCards, ...treatmentCards];
   const selectedEvents = allCards.filter((c) => selectedIds.has(c.id));
   const affectedRegions = new Set(selectedEvents.flatMap((e) => e.regions));
+
+  /* ── Body relationship question screen ── */
+  if (showBodyRelationshipScreen) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <div className="flex-1 flex flex-col items-center justify-center px-10 max-w-lg mx-auto w-full">
+          <motion.h2
+            className="text-[24px] font-serif italic text-center leading-[1.4] mb-10"
+            style={{ color: "#2A2A28" }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            How do you tend to relate to your body?
+          </motion.h2>
+
+          <div className="w-full space-y-3 mb-8">
+            {([
+              { value: "aware" as const, label: "I'm fairly aware of how my body feels" },
+              { value: "noticing" as const, label: "I notice things but don't always know what they mean" },
+              { value: "observational" as const, label: "Honestly, I don't think about it much" },
+            ]).map((opt, i) => (
+              <motion.button
+                key={opt.value}
+                onClick={() => handleBodyRelationshipSelect(opt.value)}
+                className={`w-full py-4 px-5 rounded-xl text-left text-[15px] transition-all duration-300 ${
+                  bodyRelationshipChoice === opt.value
+                    ? "border-2 border-sage/60 bg-sage/8"
+                    : "border border-transparent bg-secondary/40 hover:bg-secondary/60"
+                }`}
+                style={{ fontFamily: "'DM Sans', sans-serif", color: "#2A2A28" }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {opt.label}
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Observational acknowledgement */}
+          <AnimatePresence>
+            {bodyRelAck && (
+              <motion.p
+                className="text-[15px] italic text-center max-w-xs mx-auto mb-6 leading-[1.7]"
+                style={{ color: "#6B6960", fontFamily: "'DM Serif Display', serif" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Most of us were never taught to pay attention to what our bodies are saying. That's not a personal failing — it's just where we all started.
+              </motion.p>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {bodyRelationshipChoice && (
+              <motion.button
+                onClick={confirmBodyRelationship}
+                className="btn-primary"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.4 }}
+              >
+                Continue →
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -394,6 +533,11 @@ const Onboarding = () => {
                   Women's health experiences are among the most underrecorded. All of these are worth having in your body story.
                 </p>
               )}
+              {current.id === "sport-injury" && (
+                <p className="text-muted-foreground/50 text-[13px] leading-relaxed mt-3 max-w-xs mx-auto italic" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                  Many body stories start here — the physical events that left a mark, even if they seemed minor at the time.
+                </p>
+              )}
             </div>
             )}
 
@@ -410,8 +554,10 @@ const Onboarding = () => {
                     const isSelected = selectedIds.has(card.id);
                     const year = customYears[card.id] ?? card.defaultYear;
                     const isWomensHealth = current.id === "womens-health";
+                    const isSportInjury = current.id === "sport-injury";
                     const isSafetyCard = card.id === "wh15";
                     const isDismissalCard = card.id === "wh10";
+                    const isMaleTransition = card.id.startsWith("tm");
                     return (
                       <motion.button
                         key={card.id}
@@ -453,7 +599,7 @@ const Onboarding = () => {
                         </AnimatePresence>
 
                         {/* Colored dot — lavender for women's health */}
-                        <div className={`w-3 h-3 rounded-full mb-2 ${isWomensHealth ? "bg-lavender" : typeDotClass[card.type]}`} />
+                        <div className={`w-3 h-3 rounded-full mb-2 ${isWomensHealth ? "bg-lavender" : isSportInjury || isMaleTransition ? "bg-body-pain" : typeDotClass[card.type]}`} />
 
                         <p className="text-[13px] font-medium text-foreground/80 leading-snug mb-1 pr-6">
                           {card.title}

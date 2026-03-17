@@ -49,6 +49,8 @@ export interface Profile {
   handoverAge?: number;
 }
 
+export type BodyRelationship = "aware" | "noticing" | "observational";
+
 export interface AppState {
   hasOnboarded: boolean;
   currentProfile: string;
@@ -65,6 +67,7 @@ export interface AppState {
   highlightedRegions: BodyRegion[];
   highlightedEventIds: string[];
   activeInsightId: string | null;
+  bodyRelationship: BodyRelationship | null;
 }
 
 interface AppContextType {
@@ -247,6 +250,7 @@ const initialState: AppState = {
   highlightedRegions: [],
   highlightedEventIds: [],
   activeInsightId: null,
+  bodyRelationship: null,
 };
 
 const AppContext = createContext<AppContextType | null>(null);

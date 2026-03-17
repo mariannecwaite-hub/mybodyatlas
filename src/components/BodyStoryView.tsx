@@ -65,12 +65,14 @@ function buildChapters(events: BodyEvent[], birthYear?: number) {
 
 const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps) => {
   const { visibleEvents, state, highlightInsight, currentProfile } = useApp();
+  const isObservational = state.bodyRelationship === "observational";
   const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
   const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
   const [reflection, setReflection] = useState("");
   const [highlightedStoryRegion, setHighlightedStoryRegion] = useState<string | null>(null);
   const [insightNotes, setInsightNotes] = useState<Record<string, string>>({});
   const [editingNote, setEditingNote] = useState<string | null>(null);
+  const [useGroundedClosing, setUseGroundedClosing] = useState(false);
   const [privacyDismissed, setPrivacyDismissed] = useState(() => {
     try { return localStorage.getItem("body-story-privacy-seen") === "true"; } catch { return false; }
   });
@@ -165,11 +167,17 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
       {/* Philosophical framing */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
         <p className="text-[18px] font-serif italic text-center leading-[1.8] max-w-[295px] mx-auto mb-8" style={{ color: "#6B6960" }}>
-          Your body has been responding to your life — to what has happened, what has been felt, and what has been carried. This is what it has recorded.
+          {isObservational
+            ? "This is what your body has been through — what's happened, what's built up, and what's still present. It's all here now."
+            : "Your body has been responding to your life — to what has happened, what has been felt, and what has been carried. This is what it has recorded."}
         </p>
-        <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story</h2>
+        <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">
+          {isObservational ? "Your Body Record" : "Your Body Story"}
+        </h2>
         <p className="text-[13px] text-muted-foreground/45 mt-2 text-center leading-relaxed italic font-serif">
-          For many people, this is the first time their body history has been held in one place.
+          {isObservational
+            ? "For many people, this is the first time their physical history has been held in one place."
+            : "For many people, this is the first time their body history has been held in one place."}
         </p>
       </motion.div>
 
@@ -313,9 +321,24 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.6 }}
       >
-        <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
-          None of this is malfunction. Your body has been doing exactly what bodies do — responding, adapting, remembering. The question is never what is wrong with your body. It is what your body has been trying to say.
-        </p>
+        {useGroundedClosing ? (
+          <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
+            This is your physical history. The patterns in it are real. Understanding them is worth your time.
+          </p>
+        ) : (
+          <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
+            None of this is malfunction. Your body has been doing exactly what bodies do — responding, adapting, remembering. The question is never what is wrong with your body. It is what your body has been trying to say.
+          </p>
+        )}
+        {isObservational && (
+          <button
+            onClick={() => setUseGroundedClosing(!useGroundedClosing)}
+            className="mt-4 text-[11px] transition-colors duration-200"
+            style={{ color: "#A8A59E", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            {useGroundedClosing ? "Use original tone" : "Prefer a different tone?"}
+          </button>
+        )}
       </motion.div>
 
       {/* Body Map Overview */}
