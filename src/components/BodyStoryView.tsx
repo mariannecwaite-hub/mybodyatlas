@@ -29,6 +29,7 @@ const storyRegionPositions: Record<string, { cx: number; cy: number }> = {
 
 interface BodyStoryViewProps {
   onCreateSummary: () => void;
+  onOpenCollective?: () => void;
 }
 
 /** Splits events into early / middle / recent chapters */
