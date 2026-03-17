@@ -97,7 +97,19 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
                     </div>
                   </button>
 
-                  <button onClick={handleSave} disabled={!selectedEventId || !entry.trim()} className="btn-primary">
+                  {/* Outcome selector */}
+                  <div>
+                    <label className="section-label mb-2.5 block">How did it go?</label>
+                    <div className="flex flex-wrap gap-2">
+                      {outcomeOptions.map((opt) => (
+                        <button key={opt.value} onClick={() => setOutcome(opt.value)}
+                          className={`chip ${outcome === opt.value ? "chip-active" : "chip-inactive"}`}>
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                     Save treatment log
                   </button>
                 </div>
