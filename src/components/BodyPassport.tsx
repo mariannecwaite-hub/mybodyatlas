@@ -133,10 +133,10 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const patternObservations: string[] = [];
   const lowerBodyRegions: BodyRegion[] = ["knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right", "hip_left", "hip_right", "lower_back"];
   const upperBodyRegions: BodyRegion[] = ["neck", "shoulder_left", "shoulder_right", "upper_back", "head_jaw"];
-  const lowerBodyEvents = visibleEvents.filter((e) => e.regions.some((r) => lowerBodyRegions.includes(r)));
-  const upperBodyEvents = visibleEvents.filter((e) => e.regions.some((r) => upperBodyRegions.includes(r)));
-  const stressEvents = visibleEvents.filter((e) => e.type === "stress");
-  const symptomEvents = visibleEvents.filter((e) => e.type === "symptom");
+  const lowerBodyEvents = filteredEvents.filter((e) => e.regions.some((r) => lowerBodyRegions.includes(r)));
+  const upperBodyEvents = filteredEvents.filter((e) => e.regions.some((r) => upperBodyRegions.includes(r)));
+  const stressEvents = filteredEvents.filter((e) => e.type === "stress");
+  const symptomEvents = filteredEvents.filter((e) => e.type === "symptom");
 
   if (lowerBodyEvents.length >= 2) {
     patternObservations.push("Several lower-body experiences appear across time in your record. You may wish to explore whether earlier events are connected to current ones.");
