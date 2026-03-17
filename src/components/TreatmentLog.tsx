@@ -13,8 +13,16 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
   const { state, updateEvent } = useApp();
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [entry, setEntry] = useState("");
+  const [outcome, setOutcome] = useState<TreatmentOutcome>("not-sure");
   const [saved, setSaved] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+
+  const outcomeOptions: { value: TreatmentOutcome; label: string }[] = [
+    { value: "helped", label: "This helped" },
+    { value: "no-change", label: "No change" },
+    { value: "worse", label: "Made things worse" },
+    { value: "not-sure", label: "Not sure yet" },
+  ];
 
   const ongoingEvents = state.events.filter((e) => e.ongoing);
 
