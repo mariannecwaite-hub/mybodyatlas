@@ -377,7 +377,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
 
       {/* Patterns Worth Noticing — with reflective questions */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
-        <p className="section-label mb-3">Patterns worth noticing</p>
+        <p className="section-label mb-3">PATTERNS WORTH NOTICING</p>
         {visibleInsights.length > 0 ? (
           <div className="space-y-3">
             {visibleInsights.map((insight, idx) => {
