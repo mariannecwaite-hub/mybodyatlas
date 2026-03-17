@@ -278,6 +278,21 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
             </button>
           )}
         </div>
+        {/* Framing line in focused state */}
+        <AnimatePresence>
+          {focused && !results && (
+            <motion.p
+              className="text-[13px] italic text-center mt-2"
+              style={{ color: "#A8A59E", fontFamily: "'DM Sans', sans-serif" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              Your body has said something like this before. Let's look back together.
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ── Results ── */}
