@@ -189,6 +189,61 @@ const regionPositions: Partial<Record<BodyRegion, { x: number; y: number }>> = {
   ankle_foot_right: { x: 58, y: 90 },
 };
 
+/* ── Acknowledgement screen — a breath before asking anything ── */
+const AcknowledgementScreen = ({ onContinue }: { onContinue: () => void }) => {
+  const [showContinue, setShowContinue] = useState(false);
+
+  useState(() => {
+    const timer = setTimeout(() => setShowContinue(true), 1500);
+    return () => clearTimeout(timer);
+  });
+
+  // Use useEffect for the delayed continue button
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowContinue(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
+      <motion.h2
+        className="text-[28px] font-serif italic text-foreground/85 leading-[1.4] mb-8 max-w-xs"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        Everything your body has experienced is worth recording
+      </motion.h2>
+      <motion.div
+        className="max-w-[280px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.8 }}
+      >
+        <p className="text-[16px] leading-[1.75] text-center" style={{ color: "#6B6960", fontFamily: "'DM Sans', sans-serif" }}>
+          Many people who come to My Body Atlas have spent years feeling that their body wasn't fully understood — by the healthcare system, or sometimes even by themselves.
+        </p>
+        <p className="text-[16px] leading-[1.75] text-center mt-4 italic" style={{ color: "#6B6960", fontFamily: "'DM Sans', sans-serif" }}>
+          Nothing you've experienced is too small. Nothing is imagined. Your body has been responding to your life all along — this is simply the first time you've had somewhere to put it.
+        </p>
+      </motion.div>
+      <AnimatePresence>
+        {showContinue && (
+          <motion.button
+            onClick={onContinue}
+            className="mt-10 text-[14px] text-foreground/50 hover:text-foreground/70 transition-colors duration-300"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            Continue →
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 /* ─── Component ─── */
 const Onboarding = () => {
   const [step, setStep] = useState(0);
