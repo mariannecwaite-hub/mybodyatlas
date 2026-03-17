@@ -398,95 +398,14 @@ const Onboarding = () => {
 
             {/* ── Prompt cards — with colored dots (lavender for women's health) ── */}
             {current.phase === "prompt" && current.cards && (
-              <motion.div
-                className="flex-1 overflow-y-auto pb-4 -mx-1 px-1"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2, duration: 0.4 }}
-              >
-                <div className="grid grid-cols-2 gap-2.5">
-                  {current.cards.map((card, i) => {
-                    const isSelected = selectedIds.has(card.id);
-                    const year = customYears[card.id] ?? card.defaultYear;
-                    const isWomensHealth = current.id === "womens-health";
-                    const isSafetyCard = card.id === "wh15";
-                    return (
-                      <motion.button
-                        key={card.id}
-                        onClick={() => toggleCard(card)}
-                        className={`relative text-left p-4 rounded-2xl border transition-colors duration-300 ${
-                          isSelected
-                            ? "bg-sage/15 border-sage/30"
-                            : "bg-card/60 border-border/20 hover:bg-secondary/30"
-                        }`}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          delay: 0.25 + i * 0.04,
-                          duration: 0.5,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                        whileTap={{ scale: 0.97 }}
-                      >
-                        {/* Selected checkmark */}
-                        <AnimatePresence>
-                          {isSelected && (
-                            <motion.div
-                              className="absolute top-3 right-3 w-5 h-5 rounded-full bg-primary/80 flex items-center justify-center"
-                              initial={{ scale: 0, opacity: 0 }}
-                              animate={{ scale: 1, opacity: 1 }}
-                              exit={{ scale: 0, opacity: 0 }}
-                              transition={{ type: "spring", stiffness: 500, damping: 25 }}
-                            >
-                              <Check className="w-3 h-3 text-primary-foreground" />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-
-                        {/* Colored dot — lavender for women's health */}
-                        <div className={`w-3 h-3 rounded-full mb-2 ${isWomensHealth ? "bg-lavender" : typeDotClass[card.type]}`} />
-
-                        <p className="text-[13px] font-medium text-foreground/80 leading-snug mb-1 pr-6">
-                          {card.title}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground/40 leading-relaxed line-clamp-2">
-                          {card.description}
-                        </p>
-
-                        {/* Year adjuster */}
-                        <AnimatePresence>
-                          {isSelected && (
-                            <motion.div
-                              className="mt-3 flex items-center gap-2"
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              transition={{ duration: 0.3 }}
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <button
-                                onClick={(e) => { e.stopPropagation(); adjustYear(card.id, -1); }}
-                                className="w-6 h-6 rounded-full bg-secondary/60 flex items-center justify-center text-[11px] text-muted-foreground/50 hover:bg-secondary transition-colors"
-                              >
-                                ‹
-                              </button>
-                              <span className="text-[12px] font-medium text-foreground/60 min-w-[36px] text-center">
-                                {year}
-                              </span>
-                              <button
-                                onClick={(e) => { e.stopPropagation(); adjustYear(card.id, 1); }}
-                                className="w-6 h-6 rounded-full bg-secondary/60 flex items-center justify-center text-[11px] text-muted-foreground/50 hover:bg-secondary transition-colors"
-                              >
-                                ›
-                              </button>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </motion.div>
+              <WomensHealthCards
+                cards={current.cards}
+                selectedIds={selectedIds}
+                toggleCard={toggleCard}
+                customYears={customYears}
+                adjustYear={adjustYear}
+                isWomensHealth={current.id === "womens-health"}
+              />
             )}
 
             {/* ── Acknowledgement screen ── */}
