@@ -187,6 +187,53 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
               </button>
             </div>
 
+            {/* Filter checklist — user controls what's included */}
+            {!hasConfirmedFilters ? (
+              <motion.div
+                className="space-y-5"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+              >
+                <div>
+                  <p className="text-[14px] font-serif text-foreground/80 mb-1">Choose what to include</p>
+                  <p className="text-[11px] text-muted-foreground/40 leading-relaxed">
+                    You decide what appears in your passport. Toggle anything you'd prefer to leave out.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  {(Object.entries(filterLabels) as [PassportFilter, string][]).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => toggleFilter(key)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 border ${
+                        activeFilters.has(key)
+                          ? "bg-sage/12 border-sage/20"
+                          : "bg-secondary/30 border-border/15 opacity-50"
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${
+                        activeFilters.has(key) ? "bg-primary border-primary" : "border-border/40"
+                      }`}>
+                        {activeFilters.has(key) && (
+                          <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-[13px] text-foreground/70">{label}</span>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setHasConfirmedFilters(true)}
+                  className="btn-primary"
+                >
+                  Generate passport
+                </button>
+              </motion.div>
+            ) : (
+              <>
             {/* Summary banner */}
             <motion.div
               className="rounded-2xl p-5 bg-sage/10 border border-sage/15 mb-6"
@@ -196,7 +243,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
             >
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <p className="text-[22px] font-serif text-foreground/80">{visibleEvents.length}</p>
+                  <p className="text-[22px] font-serif text-foreground/80">{filteredEvents.length}</p>
                   <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Events</p>
                 </div>
                 <div className="w-px h-10 bg-border/25" />
@@ -215,6 +262,20 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                   {ongoingCount} ongoing · {threads.length} {threads.length === 1 ? "thread" : "threads"} connecting experiences
                 </p>
               )}
+
+              {/* Treatment outcome summary */}
+              {(() => {
+                const allTreatments = filteredEvents.filter((e) => e.type === "treatment");
+                const helped = allTreatments.filter((e) => e.treatmentOutcome === "helped").length;
+                if (allTreatments.length >= 2 && helped > 0) {
+                  return (
+                    <p className="text-[11px] text-sage-foreground/50 mt-2 text-center">
+                      Of the {allTreatments.length} treatments explored, {helped} appear{helped === 1 ? "s" : ""} to have helped
+                    </p>
+                  );
+                }
+                return null;
+              })()}
             </motion.div>
 
             {/* Sections */}
