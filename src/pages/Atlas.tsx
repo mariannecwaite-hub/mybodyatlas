@@ -24,6 +24,7 @@ import TreatmentGuide from "@/components/TreatmentGuide";
 import BodyMemories from "@/components/BodyMemories";
 import BodyPassport from "@/components/BodyPassport";
 import ReturnPrompt from "@/components/ReturnPrompt";
+import BodyQuery from "@/components/BodyQuery";
 
 type ActiveTab = "body" | "timeline" | "story";
 
@@ -174,6 +175,19 @@ const Atlas = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1, ease: "easeOut" }}
               >
+                {/* Body Query — personal treatment memory search */}
+                <div className="w-full max-w-sm mb-6">
+                  <BodyQuery
+                    onOpenAddEvent={(region) => {
+                      if (region) setPreselectedRegion(region);
+                      setState((s) => ({ ...s, showAddEvent: true }));
+                    }}
+                    onSelectRegionOnMap={() => {
+                      // Just keep them on the body map tab
+                    }}
+                  />
+                </div>
+
                 <BodyMap onRegionSelect={handleRegionSelect} />
                 
                 <div className="mt-8">
