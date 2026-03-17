@@ -37,6 +37,14 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
   const [ongoing, setOngoing] = useState(false);
   const [notes, setNotes] = useState("");
   const [treatment, setTreatment] = useState("");
+  const [treatmentOutcome, setTreatmentOutcome] = useState<TreatmentOutcome>("not-sure");
+
+  const outcomeOptions: { value: TreatmentOutcome; label: string }[] = [
+    { value: "helped", label: "This helped" },
+    { value: "no-change", label: "No change" },
+    { value: "worse", label: "Made things worse" },
+    { value: "not-sure", label: "Not sure yet" },
+  ];
 
   const toggleRegion = (r: BodyRegion) => {
     setRegions((prev) => prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]);
