@@ -5,7 +5,8 @@ import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppConte
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
 import RegionSummary from "@/components/RegionSummary";
-import TimelineView from "@/components/TimelineView";
+import ParallelTimeline from "@/components/ParallelTimeline";
+import AhaMoment from "@/components/AhaMoment";
 import BodyStoryView from "@/components/BodyStoryView";
 import InsightCards from "@/components/InsightCards";
 import BodyRecord from "@/components/BodyRecord";
@@ -246,7 +247,7 @@ const Atlas = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <TimelineView onNavigateToBody={() => setActiveTab("body")} onNavigateToStory={() => setActiveTab("story")} />
+              <ParallelTimeline onNavigateToBody={() => setActiveTab("body")} onNavigateToStory={() => setActiveTab("story")} />
             </motion.div>
           )}
 
@@ -323,6 +324,7 @@ const Atlas = () => {
       <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
       <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
       <ReturnPrompt />
+      <AhaMoment />
     </div>
   );
 };

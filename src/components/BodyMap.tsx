@@ -302,9 +302,22 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
                   onMouseLeave={() => setHoveredRegion(null)}
                 />
 
-                {hasEvents && !isHovered && !isSelected && !isHighlighted && (
-                  <circle cx={region.cx} cy={region.cy} r="4" fill={`hsl(${color})`} opacity="0.65" className="pointer-events-none animate-soft-pulse" style={{ filter: `drop-shadow(0 0 6px hsl(${color} / 0.4))` }} />
-                )}
+                {hasEvents && !isHovered && !isSelected && !isHighlighted && (() => {
+                  const dotSize = count >= 4 ? 6 : count >= 2 ? 5 : 3.5;
+                  const dotOpacity = count >= 4 ? 0.85 : count >= 2 ? 0.65 : 0.45;
+                  const shouldPulse = count >= 4;
+                  return (
+                    <circle
+                      cx={region.cx}
+                      cy={region.cy}
+                      r={dotSize}
+                      fill={`hsl(${color})`}
+                      opacity={dotOpacity}
+                      className={`pointer-events-none ${shouldPulse ? "animate-breathe" : ""}`}
+                      style={{ filter: `drop-shadow(0 0 ${count >= 4 ? 8 : 6}px hsl(${color} / 0.4))` }}
+                    />
+                  );
+                })()}
 
                 {isSelected && count > 0 && (
                   <g className="pointer-events-none" style={{
