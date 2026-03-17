@@ -135,6 +135,9 @@ const InsightCards = () => {
               <p className="text-[15px] font-serif text-foreground/85 mb-2">{insight.title}</p>
               <p className="text-[13px] text-muted-foreground/60 leading-[1.8] mb-3">{insight.body}</p>
 
+              {/* Collective pattern note */}
+              <CollectivePatternNote regionIds={insight.relatedRegions} />
+
               {/* Reflective question */}
               {insight.reflectiveQuestion && (
                 <div className="border-t border-border/20 pt-3 mb-3" onClick={(e) => e.stopPropagation()}>
