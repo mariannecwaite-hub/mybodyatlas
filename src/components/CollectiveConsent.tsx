@@ -114,7 +114,7 @@ const CollectiveConsent = ({ open, onClose, onContribute }: CollectiveConsentPro
                 }}
               >
                 <AtlasSymbol size={16} />
-                Contribute to the Atlas
+                Contribute to the Collective
               </button>
               <button
                 onClick={handleDismiss}
