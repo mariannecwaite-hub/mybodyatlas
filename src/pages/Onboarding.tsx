@@ -523,11 +523,7 @@ const Onboarding = () => {
               <p className="text-muted-foreground/60 text-[14px] leading-relaxed max-w-sm mx-auto">
                 {current.subtitle}
               </p>
-              {current.id === "intro" && (
-                <p className="text-muted-foreground/40 text-[12px] leading-relaxed mt-3 max-w-xs mx-auto">
-                  For people who've felt their health history has never quite been understood.
-                </p>
-              )}
+              
               {current.id === "womens-health" && (
                 <p className="text-muted-foreground/50 text-[13px] leading-relaxed mt-3 max-w-xs mx-auto italic" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                   Women's health experiences are among the most underrecorded. All of these are worth having in your body story.
