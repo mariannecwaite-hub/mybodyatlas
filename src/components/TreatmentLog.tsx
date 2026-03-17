@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp } from "@/context/AppContext";
+import { useApp, TreatmentOutcome } from "@/context/AppContext";
 import { X, Check, BookOpen } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
 
