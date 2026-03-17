@@ -150,7 +150,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
               <div>
                 <h2 className="text-xl leading-tight">Body Passport</h2>
                 <p className="text-[11px] text-muted-foreground/40 mt-1 tracking-wide">
-                  A record of your body story across time
+                  Based on what you've recorded so far
                 </p>
               </div>
               <button onClick={onClose} className="modal-close">
