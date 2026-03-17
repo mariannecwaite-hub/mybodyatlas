@@ -199,24 +199,34 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story So Far</h2>
       </motion.div>
 
-      {/* Hero insight — the most important element, directly after title */}
+      {/* Hero insights — calm, direct observations */}
       {visibleInsights.length > 0 && (
         <motion.div
-          className="text-center py-6 px-4 max-w-md mx-auto space-y-6"
+          className="py-4 px-4 max-w-md mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          {visibleInsights.slice(0, 2).map((insight, i) => (
-            <motion.p
+          {visibleInsights.slice(0, 3).map((insight, i) => (
+            <motion.div
               key={insight.id}
-              className="text-[19px] font-serif text-foreground/70 leading-[1.9] italic"
+              className={`text-center ${i > 0 ? "mt-0" : ""}`}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + i * 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ delay: 0.6 + i * 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             >
-              &ldquo;{insight.body}&rdquo;
-            </motion.p>
+              {i > 0 && (
+                <div className="flex justify-center py-6">
+                  <div className="w-12 h-px bg-border/30" />
+                </div>
+              )}
+              <span className="inline-block px-3 py-1 rounded-full bg-sage/15 text-[10px] font-medium text-sage-foreground/60 tracking-wider uppercase mb-4">
+                {insight.regionLabel}
+              </span>
+              <p className="text-[18px] font-serif text-foreground/70 leading-[2] italic">
+                {insight.body}
+              </p>
+            </motion.div>
           ))}
         </motion.div>
       )}
