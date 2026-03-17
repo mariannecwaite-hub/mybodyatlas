@@ -533,6 +533,11 @@ const Onboarding = () => {
                   Women's health experiences are among the most underrecorded. All of these are worth having in your body story.
                 </p>
               )}
+              {current.id === "intro" && (
+                <p className="text-muted-foreground/40 text-[12px] leading-relaxed mt-3 max-w-xs mx-auto">
+                  For people who've felt their health history has never quite been understood.
+                </p>
+              )}
               {current.id === "sport-injury" && (
                 <p className="text-muted-foreground/50 text-[13px] leading-relaxed mt-3 max-w-xs mx-auto italic" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                   Many body stories start here — the physical events that left a mark, even if they seemed minor at the time.
