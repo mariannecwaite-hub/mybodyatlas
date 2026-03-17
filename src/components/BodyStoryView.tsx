@@ -531,7 +531,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
       {/* Treatments explored */}
       {treatments.length > 0 && (
         <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
-          <p className="section-label mb-3">Treatments explored</p>
+          <p className="section-label mb-3">TREATMENTS EXPLORED</p>
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12">
             {(() => {
               const withOutcome = treatments.filter((t) => t.treatmentOutcome && t.treatmentOutcome !== "not-sure");
