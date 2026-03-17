@@ -595,7 +595,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
 
       
 
-      {/* Collective Atlas link */}
+      {/* Collective link */}
       {onOpenCollective && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="text-center">
           <button
@@ -603,7 +603,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
             className="text-[13px] italic transition-colors duration-200"
             style={{ color: "#9B8EC4", fontFamily: "'DM Sans', sans-serif" }}
           >
-            See what the collective is showing →
+            See what the Collective is showing →
           </button>
         </motion.div>
       )}
