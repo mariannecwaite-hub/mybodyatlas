@@ -77,6 +77,19 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     new Set(["injury", "symptom", "treatment", "stress", "life-event", "patterns"])
   );
   const [hasConfirmedFilters, setHasConfirmedFilters] = useState(false);
+  const [includeDismissalContext, setIncludeDismissalContext] = useState(false);
+  const [showDismissalPrompt, setShowDismissalPrompt] = useState(false);
+
+  // Detect dismissal events in the record
+  const hasDismissalEvent = useMemo(() =>
+    visibleEvents.some((e) =>
+      e.title.toLowerCase().includes("dismissed") ||
+      e.title.toLowerCase().includes("disbelieved") ||
+      e.title.toLowerCase().includes("not taken seriously") ||
+      e.description?.toLowerCase().includes("dismissed")
+    ),
+    [visibleEvents]
+  );
 
   const toggleFilter = (f: PassportFilter) => {
     setActiveFilters((prev) => {
