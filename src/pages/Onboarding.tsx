@@ -83,7 +83,7 @@ const treatmentCards: SuggestionCard[] = [
   { id: "tr3", title: "Ongoing medication", description: "Regular medication for a recurring area of attention.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
   { id: "tr4", title: "Massage therapy", description: "Regular or occasional massage for tension or recovery.", type: "treatment", regions: ["upper_back", "neck", "shoulder_left"], defaultYear: 2021, severity: "mild" },
   { id: "tr5", title: "Yoga or Pilates", description: "Movement practice for strength, flexibility or recovery.", type: "treatment", regions: ["lower_back", "abdomen"], defaultYear: 2022, severity: "mild", ongoing: true },
-  { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for pain or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
+  { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for discomfort or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
   { id: "tr7", title: "Psychotherapy or counselling", description: "Therapy for emotional wellbeing and stress management.", type: "treatment", regions: [], defaultYear: 2020, severity: "mild" },
   { id: "tr8", title: "Strength & conditioning", description: "Structured exercise for rehabilitation or prevention.", type: "treatment", regions: ["knee_left", "hip_left", "lower_back"], defaultYear: 2022, severity: "mild" },
 ];
