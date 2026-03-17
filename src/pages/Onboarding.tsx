@@ -386,8 +386,8 @@ const Onboarding = () => {
                           )}
                         </AnimatePresence>
 
-                        {/* Colored dot for event type */}
-                        <div className={`w-3 h-3 rounded-full ${typeDotClass[card.type]} mb-2`} />
+                        {/* Colored dot — lavender for women's health */}
+                        <div className={`w-3 h-3 rounded-full mb-2 ${isWomensHealth ? "bg-lavender" : typeDotClass[card.type]}`} />
 
                         <p className="text-[13px] font-medium text-foreground/80 leading-snug mb-1 pr-6">
                           {card.title}
