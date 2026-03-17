@@ -150,12 +150,20 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
               <div>
                 <label className="section-label mb-2 block">More detail <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Any details you'd like to remember..." rows={2} className="field-input resize-none" />
+                  placeholder={isSafetyExperience ? "Whatever you want to record..." : "Any details you'd like to remember..."} rows={2} className="field-input resize-none" />
               </div>
 
               <div>
                 <label className="section-label mb-2.5 block">Where on your body?</label>
                 <div className="flex flex-wrap gap-1.5">
+                  {isSafetyExperience && (
+                    <button
+                      onClick={() => setRegions([])}
+                      className={`chip text-[11px] ${regions.length === 0 ? "chip-active" : "chip-inactive"}`}
+                    >
+                      Whole body
+                    </button>
+                  )}
                   {allRegions.map((r) => (
                     <button key={r} onClick={() => toggleRegion(r)}
                       className={`chip text-[11px] ${regions.includes(r) ? "chip-active" : "chip-inactive"}`}>
