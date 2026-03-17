@@ -122,10 +122,10 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     patternObservations.push(`You're currently navigating ${ongoingCount} ongoing experiences. This context may be valuable to share with a practitioner.`);
   }
   if (threads.length >= 2) {
-    patternObservations.push(`${threads.length} body threads connect experiences across time — patterns that may be worth exploring.`);
+    patternObservations.push(`${threads.length} body threads connect recorded experiences across time — patterns that may be worth exploring.`);
   }
   if (treatments.length >= 2 && symptomEvents.length > 0) {
-    patternObservations.push("You've explored multiple approaches to care. Understanding which ones helped most can guide future decisions.");
+    patternObservations.push("You've recorded multiple approaches to care. Noticing which ones you found helpful can guide future decisions.");
   }
 
   return (
