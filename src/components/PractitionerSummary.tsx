@@ -425,9 +425,9 @@ const PractitionerSummary = ({ open, onClose }: PractitionerSummaryProps) => {
                       {/* Footer disclosure */}
                       <div className="pt-4 border-t border-border/15">
                         <p className="text-[10px] text-muted-foreground/30 leading-relaxed italic">
-                          This summary reflects user-reported body experiences organised by My Body Atlas.
+                          This summary reflects experiences the user has chosen to record in My Body Atlas.
                           It is intended to support conversation with healthcare professionals.
-                          It does not constitute a medical record or diagnosis.
+                          It does not constitute a medical record, and patterns noted are based solely on what has been recorded so far.
                         </p>
                       </div>
                     </div>
