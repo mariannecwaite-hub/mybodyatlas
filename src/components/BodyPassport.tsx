@@ -377,7 +377,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                           className="w-2 h-2 rounded-full"
                                           style={{
                                             backgroundColor: `hsl(${typeColor[
-                                              visibleEvents.find((e) => e.regions.includes(region as BodyRegion))?.type || "symptom"
+                                              filteredEvents.find((e) => e.regions.includes(region as BodyRegion))?.type || "symptom"
                                             ]} / 0.6)`,
                                           }}
                                         />
