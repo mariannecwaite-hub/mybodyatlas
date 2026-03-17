@@ -258,7 +258,7 @@ const Onboarding = () => {
     navigate("/atlas");
   };
 
-  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards];
+  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
   const selectedEvents = allCards.filter((c) => selectedIds.has(c.id));
   const affectedRegions = new Set(selectedEvents.flatMap((e) => e.regions));
 
