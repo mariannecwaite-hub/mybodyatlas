@@ -427,9 +427,7 @@ const Onboarding = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      <svg viewBox="10 0 80 100" className="w-full h-full opacity-20">
-                        <path d={miniSilhouettePath} fill="hsl(var(--foreground))" />
-                      </svg>
+                      <BodySilhouetteFigure className="w-full h-full opacity-20" />
                       {Array.from(affectedRegions).map((regionId, i) => {
                         const pos = regionPositions[regionId];
                         if (!pos) return null;
