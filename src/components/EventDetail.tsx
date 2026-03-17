@@ -114,6 +114,15 @@ const EventDetail = () => {
                 <div>
                   <p className="section-label mb-1.5">What you tried</p>
                   <p className="text-[13px] text-foreground/70 leading-[1.8] whitespace-pre-line">{event.treatment}</p>
+                  {event.treatmentOutcome && event.treatmentOutcome !== "not-sure" && (
+                    <p className={`text-[12px] mt-2 font-medium ${
+                      event.treatmentOutcome === "helped" ? "text-sage-foreground/60" :
+                      event.treatmentOutcome === "worse" ? "text-body-pain/70" :
+                      "text-muted-foreground/50"
+                    }`}>
+                      {event.treatmentOutcome === "helped" ? "This helped" : event.treatmentOutcome === "no-change" ? "No change noticed" : "Made things worse"}
+                    </p>
+                  )}
                 </div>
               )}
 

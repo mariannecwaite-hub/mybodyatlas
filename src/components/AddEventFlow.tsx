@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, EventType, BodyRegion, EventSeverity, REGION_LABELS } from "@/context/AppContext";
+import { useApp, EventType, BodyRegion, EventSeverity, TreatmentOutcome, REGION_LABELS } from "@/context/AppContext";
 import { X } from "lucide-react";
 
 const eventTypes: { type: EventType; label: string; icon: string }[] = [
@@ -37,6 +37,14 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
   const [ongoing, setOngoing] = useState(false);
   const [notes, setNotes] = useState("");
   const [treatment, setTreatment] = useState("");
+  const [treatmentOutcome, setTreatmentOutcome] = useState<TreatmentOutcome>("not-sure");
+
+  const outcomeOptions: { value: TreatmentOutcome; label: string }[] = [
+    { value: "helped", label: "This helped" },
+    { value: "no-change", label: "No change" },
+    { value: "worse", label: "Made things worse" },
+    { value: "not-sure", label: "Not sure yet" },
+  ];
 
   const toggleRegion = (r: BodyRegion) => {
     setRegions((prev) => prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]);
@@ -44,9 +52,14 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
 
   const handleSubmit = () => {
     if (!title.trim()) return;
-    addEvent({ type, title, description, regions, date, severity, ongoing, notes: notes || undefined, treatment: treatment || undefined });
+    addEvent({
+      type, title, description, regions, date, severity, ongoing,
+      notes: notes || undefined,
+      treatment: treatment || undefined,
+      treatmentOutcome: type === "treatment" ? treatmentOutcome : undefined,
+    });
     onClose();
-    setTitle(""); setDescription(""); setRegions([]); setNotes(""); setTreatment("");
+    setTitle(""); setDescription(""); setRegions([]); setNotes(""); setTreatment(""); setTreatmentOutcome("not-sure");
   };
 
   return (
@@ -135,6 +148,20 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                   <label className="section-label mb-2 block">Treatment details</label>
                   <textarea value={treatment} onChange={(e) => setTreatment(e.target.value)}
                     placeholder="What treatment did you receive?" rows={2} className="field-input resize-none" />
+                </div>
+              )}
+
+              {type === "treatment" && (
+                <div>
+                  <label className="section-label mb-2.5 block">How did it go?</label>
+                  <div className="flex flex-wrap gap-2">
+                    {outcomeOptions.map((opt) => (
+                      <button key={opt.value} onClick={() => setTreatmentOutcome(opt.value)}
+                        className={`chip ${treatmentOutcome === opt.value ? "chip-active" : "chip-inactive"}`}>
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 

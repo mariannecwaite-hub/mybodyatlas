@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
@@ -53,6 +53,17 @@ const sectionMeta: { id: Section; label: string; icon: typeof MapPin; color: str
   { id: "care", label: "Care Journey", icon: Heart, color: "sage" },
 ];
 
+type PassportFilter = "injury" | "symptom" | "treatment" | "stress" | "life-event" | "patterns";
+
+const filterLabels: Record<PassportFilter, string> = {
+  injury: "Injuries",
+  symptom: "Sensations",
+  treatment: "Treatments",
+  stress: "Stress periods",
+  "life-event": "Life transitions",
+  patterns: "Patterns",
+};
+
 const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const { visibleEvents, currentProfile } = useApp();
   const threads = useBodyThreads(visibleEvents);
@@ -60,6 +71,24 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const [expandedSections, setExpandedSections] = useState<Set<Section>>(
     new Set(["map", "timeline", "patterns", "care"])
   );
+  const [activeFilters, setActiveFilters] = useState<Set<PassportFilter>>(
+    new Set(["injury", "symptom", "treatment", "stress", "life-event", "patterns"])
+  );
+  const [hasConfirmedFilters, setHasConfirmedFilters] = useState(false);
+
+  const toggleFilter = (f: PassportFilter) => {
+    setActiveFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f); else next.add(f);
+      return next;
+    });
+  };
+
+  const filteredEvents = useMemo(() => {
+    const typeFilters = new Set<string>([...activeFilters].filter((f) => f !== "patterns"));
+    return visibleEvents.filter((e) => typeFilters.has(e.type));
+  }, [visibleEvents, activeFilters]);
+  const showPatterns = activeFilters.has("patterns");
 
   const toggleSection = (s: Section) => {
     setExpandedSections((prev) => {
@@ -69,9 +98,9 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     });
   };
 
-  // ── Computed data ──
-  const allRegions = [...new Set(visibleEvents.flatMap((e) => e.regions))];
-  const regionCounts = visibleEvents.flatMap((e) => e.regions).reduce((acc, r) => {
+  // ── Computed data (uses filteredEvents for user-controlled content) ──
+  const allRegions = [...new Set(filteredEvents.flatMap((e) => e.regions))];
+  const regionCounts = filteredEvents.flatMap((e) => e.regions).reduce((acc, r) => {
     acc[r] = (acc[r] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -79,10 +108,10 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const topRegions = Object.entries(regionCounts)
     .sort(([, a], [, b]) => b - a);
 
-  const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
+  const years = [...new Set(filteredEvents.map((e) => new Date(e.date).getFullYear()))].sort();
   const span = years.length > 1 ? `${years[0]}–${years[years.length - 1]}` : years[0]?.toString() || "—";
 
-  const sortedEvents = [...visibleEvents].sort(
+  const sortedEvents = [...filteredEvents].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
@@ -94,20 +123,20 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     return acc;
   }, {} as Record<number, typeof sortedEvents>);
 
-  const treatments = visibleEvents.filter((e) => e.type === "treatment");
+  const treatments = filteredEvents.filter((e) => e.type === "treatment");
   const ongoingTreatments = treatments.filter((e) => e.ongoing);
   const pastTreatments = treatments.filter((e) => !e.ongoing);
 
-  const ongoingCount = visibleEvents.filter((e) => e.ongoing).length;
+  const ongoingCount = filteredEvents.filter((e) => e.ongoing).length;
 
   // Pattern observations
   const patternObservations: string[] = [];
   const lowerBodyRegions: BodyRegion[] = ["knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right", "hip_left", "hip_right", "lower_back"];
   const upperBodyRegions: BodyRegion[] = ["neck", "shoulder_left", "shoulder_right", "upper_back", "head_jaw"];
-  const lowerBodyEvents = visibleEvents.filter((e) => e.regions.some((r) => lowerBodyRegions.includes(r)));
-  const upperBodyEvents = visibleEvents.filter((e) => e.regions.some((r) => upperBodyRegions.includes(r)));
-  const stressEvents = visibleEvents.filter((e) => e.type === "stress");
-  const symptomEvents = visibleEvents.filter((e) => e.type === "symptom");
+  const lowerBodyEvents = filteredEvents.filter((e) => e.regions.some((r) => lowerBodyRegions.includes(r)));
+  const upperBodyEvents = filteredEvents.filter((e) => e.regions.some((r) => upperBodyRegions.includes(r)));
+  const stressEvents = filteredEvents.filter((e) => e.type === "stress");
+  const symptomEvents = filteredEvents.filter((e) => e.type === "symptom");
 
   if (lowerBodyEvents.length >= 2) {
     patternObservations.push("Several lower-body experiences appear across time in your record. You may wish to explore whether earlier events are connected to current ones.");
@@ -158,6 +187,53 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
               </button>
             </div>
 
+            {/* Filter checklist — user controls what's included */}
+            {!hasConfirmedFilters ? (
+              <motion.div
+                className="space-y-5"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+              >
+                <div>
+                  <p className="text-[14px] font-serif text-foreground/80 mb-1">Choose what to include</p>
+                  <p className="text-[11px] text-muted-foreground/40 leading-relaxed">
+                    You decide what appears in your passport. Toggle anything you'd prefer to leave out.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  {(Object.entries(filterLabels) as [PassportFilter, string][]).map(([key, label]) => (
+                    <button
+                      key={key}
+                      onClick={() => toggleFilter(key)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 border ${
+                        activeFilters.has(key)
+                          ? "bg-sage/12 border-sage/20"
+                          : "bg-secondary/30 border-border/15 opacity-50"
+                      }`}
+                    >
+                      <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all duration-200 ${
+                        activeFilters.has(key) ? "bg-primary border-primary" : "border-border/40"
+                      }`}>
+                        {activeFilters.has(key) && (
+                          <svg className="w-3 h-3 text-primary-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-[13px] text-foreground/70">{label}</span>
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setHasConfirmedFilters(true)}
+                  className="btn-primary"
+                >
+                  Generate passport
+                </button>
+              </motion.div>
+            ) : (
+              <>
             {/* Summary banner */}
             <motion.div
               className="rounded-2xl p-5 bg-sage/10 border border-sage/15 mb-6"
@@ -167,7 +243,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
             >
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <p className="text-[22px] font-serif text-foreground/80">{visibleEvents.length}</p>
+                  <p className="text-[22px] font-serif text-foreground/80">{filteredEvents.length}</p>
                   <p className="text-[9px] text-muted-foreground/40 uppercase tracking-wider">Events</p>
                 </div>
                 <div className="w-px h-10 bg-border/25" />
@@ -186,6 +262,20 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                   {ongoingCount} ongoing · {threads.length} {threads.length === 1 ? "thread" : "threads"} connecting experiences
                 </p>
               )}
+
+              {/* Treatment outcome summary */}
+              {(() => {
+                const allTreatments = filteredEvents.filter((e) => e.type === "treatment");
+                const helped = allTreatments.filter((e) => e.treatmentOutcome === "helped").length;
+                if (allTreatments.length >= 2 && helped > 0) {
+                  return (
+                    <p className="text-[11px] text-sage-foreground/50 mt-2 text-center">
+                      Of the {allTreatments.length} treatments explored, {helped} appear{helped === 1 ? "s" : ""} to have helped
+                    </p>
+                  );
+                }
+                return null;
+              })()}
             </motion.div>
 
             {/* Sections */}
@@ -247,7 +337,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                         const pos = regionPos[regionId];
                                         if (!pos) return null;
                                         const count = regionCounts[regionId] || 0;
-                                        const evts = visibleEvents.filter((e) => e.regions.includes(regionId as BodyRegion));
+                                        const evts = filteredEvents.filter((e) => e.regions.includes(regionId as BodyRegion));
                                         const primaryType = evts[0]?.type || "symptom";
                                         return (
                                           <motion.div
@@ -287,7 +377,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                           className="w-2 h-2 rounded-full"
                                           style={{
                                             backgroundColor: `hsl(${typeColor[
-                                              visibleEvents.find((e) => e.regions.includes(region as BodyRegion))?.type || "symptom"
+                                              filteredEvents.find((e) => e.regions.includes(region as BodyRegion))?.type || "symptom"
                                             ]} / 0.6)`,
                                           }}
                                         />
@@ -366,7 +456,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                             )}
 
                             {/* ── 3. Patterns Worth Noticing ── */}
-                            {section.id === "patterns" && (
+                            {section.id === "patterns" && showPatterns && (
                               <div className="space-y-3">
                                 {patternObservations.length > 0 ? (
                                   patternObservations.map((obs, i) => (
@@ -519,10 +609,11 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                 Your body story belongs to you
               </p>
               <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
-                This passport reflects what you've chosen to record so far.
-                Nothing is shared unless you choose to share it.
+                You chose what to include. Nothing is shared without your decision.
               </p>
             </motion.div>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}

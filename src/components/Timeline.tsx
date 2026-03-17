@@ -85,6 +85,15 @@ const Timeline = () => {
                       <span className="text-sage-foreground/50">ongoing</span>
                     </span>
                   )}
+                  {event.type === "treatment" && event.treatmentOutcome && event.treatmentOutcome !== "not-sure" && (
+                    <span className={`ml-2 text-[10px] font-medium ${
+                      event.treatmentOutcome === "helped" ? "text-sage-foreground/60" :
+                      event.treatmentOutcome === "worse" ? "text-body-pain/70" :
+                      "text-muted-foreground/40"
+                    }`}>
+                      · {event.treatmentOutcome === "helped" ? "Helped" : event.treatmentOutcome === "no-change" ? "No change" : "Made things worse"}
+                    </span>
+                  )}
                 </p>
               </div>
               <span className="opacity-0 group-hover:opacity-30 text-muted-foreground transition-opacity duration-400 text-[10px] mt-1.5" aria-hidden="true">→</span>

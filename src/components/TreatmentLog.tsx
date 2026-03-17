@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp } from "@/context/AppContext";
+import { useApp, TreatmentOutcome } from "@/context/AppContext";
 import { X, Check, BookOpen } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
 
@@ -13,8 +13,16 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
   const { state, updateEvent } = useApp();
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [entry, setEntry] = useState("");
+  const [outcome, setOutcome] = useState<TreatmentOutcome>("not-sure");
   const [saved, setSaved] = useState(false);
   const [showGuide, setShowGuide] = useState(false);
+
+  const outcomeOptions: { value: TreatmentOutcome; label: string }[] = [
+    { value: "helped", label: "This helped" },
+    { value: "no-change", label: "No change" },
+    { value: "worse", label: "Made things worse" },
+    { value: "not-sure", label: "Not sure yet" },
+  ];
 
   const ongoingEvents = state.events.filter((e) => e.ongoing);
 
@@ -24,10 +32,11 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
     if (event) {
       updateEvent(selectedEventId, {
         treatment: event.treatment ? `${event.treatment}\n\n${new Date().toLocaleDateString()}: ${entry}` : `${new Date().toLocaleDateString()}: ${entry}`,
+        treatmentOutcome: outcome,
       });
     }
     setSaved(true);
-    setTimeout(() => { setSaved(false); setEntry(""); setSelectedEventId(null); onClose(); }, 1200);
+    setTimeout(() => { setSaved(false); setEntry(""); setOutcome("not-sure"); setSelectedEventId(null); onClose(); }, 1200);
   };
 
   return (
@@ -87,6 +96,19 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
                       <p className="text-[10px] text-muted-foreground/35">Browse the Treatment Guide</p>
                     </div>
                   </button>
+
+                  {/* Outcome selector */}
+                  <div>
+                    <label className="section-label mb-2.5 block">How did it go?</label>
+                    <div className="flex flex-wrap gap-2">
+                      {outcomeOptions.map((opt) => (
+                        <button key={opt.value} onClick={() => setOutcome(opt.value)}
+                          className={`chip ${outcome === opt.value ? "chip-active" : "chip-inactive"}`}>
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                   <button onClick={handleSave} disabled={!selectedEventId || !entry.trim()} className="btn-primary">
                     Save treatment log
