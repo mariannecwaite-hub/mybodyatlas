@@ -240,6 +240,33 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                     </button>
                   ))}
                 </div>
+                {/* Dismissal context prompt */}
+                {hasDismissalEvent && (
+                  <div className="rounded-2xl p-4 bg-warm/8 border border-warm/15 space-y-3">
+                    <p className="text-[13px] text-foreground/65 leading-relaxed">
+                      Your record includes an experience of being dismissed or disbelieved. Would you like to include a brief note of context for the practitioner you're sharing this with?
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setIncludeDismissalContext(true)}
+                        className={`flex-1 py-2.5 rounded-xl text-[12px] font-medium transition-all duration-200 ${
+                          includeDismissalContext ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-foreground/60"
+                        }`}
+                      >
+                        Yes, include context
+                      </button>
+                      <button
+                        onClick={() => setIncludeDismissalContext(false)}
+                        className={`flex-1 py-2.5 rounded-xl text-[12px] font-medium transition-all duration-200 ${
+                          !includeDismissalContext ? "bg-secondary/80 text-foreground/60" : "bg-secondary/40 text-muted-foreground/50"
+                        }`}
+                      >
+                        No thank you
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <button
                   onClick={() => setHasConfirmedFilters(true)}
                   className="btn-primary"
