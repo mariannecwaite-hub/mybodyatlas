@@ -336,7 +336,7 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
               </g>
             );
           })}
-        </svg>
+        </BodySilhouetteFigure>
       </div>
 
       {/* Active layer indicator */}
