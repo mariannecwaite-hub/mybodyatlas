@@ -52,16 +52,50 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
     setRegions((prev) => prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]);
   };
 
+  const isSafetyExperience = type === "safety-experience";
+  const actualType: EventType = isSafetyExperience ? "life-event" : type;
+
   const handleSubmit = () => {
-    if (!title.trim()) return;
+    if (!title.trim() && !isSafetyExperience) return;
+    const eventTitle = isSafetyExperience && !title.trim() ? "An experience that affected how safe I felt in my body" : title;
     addEvent({
-      type, title, description, regions, date, severity, ongoing,
+      type: actualType, title: eventTitle, description, regions: isSafetyExperience && regions.length === 0 ? [] : regions, date, severity, ongoing,
       notes: notes || undefined,
       treatment: treatment || undefined,
-      treatmentOutcome: type === "treatment" ? treatmentOutcome : undefined,
+      treatmentOutcome: actualType === "treatment" ? treatmentOutcome : undefined,
+      isPrivate: isSafetyExperience ? true : undefined,
     });
+
+    // Contextual acknowledgement toasts
+    const eventDate = new Date(date);
+    const yearsOngoing = ongoing ? Math.max(0, (new Date().getFullYear() - eventDate.getFullYear())) : 0;
+
+    if (isSafetyExperience) {
+      // No toast — the in-form acknowledgement is enough
+    } else if (actualType === "stress") {
+      toast(
+        "Stress often leaves traces in the body — sometimes immediately, sometimes months later. Your record will hold this.",
+        { duration: 4000, className: "font-sans italic text-[14px]", style: { color: "#6B6960" } }
+      );
+    } else if (actualType === "life-event") {
+      toast(
+        "Major transitions ask a lot of the body — even the joyful ones. It's worth having this in your record.",
+        { duration: 4000, className: "font-sans italic text-[14px]", style: { color: "#6B6960" } }
+      );
+    } else if (yearsOngoing >= 2) {
+      toast(
+        "Your body has been carrying this for a while. That matters.",
+        { duration: 4000, className: "font-sans italic text-[14px]", style: { color: "#6B6960" } }
+      );
+    } else if (actualType === "treatment" && treatmentOutcome === "helped") {
+      toast(
+        "Your body remembered what worked. Now your record will too.",
+        { duration: 4000, className: "font-sans italic text-[14px]", style: { color: "#6B6960" } }
+      );
+    }
+
     onClose();
-    setTitle(""); setDescription(""); setRegions([]); setNotes(""); setTreatment(""); setTreatmentOutcome("not-sure");
+    setTitle(""); setDescription(""); setRegions([]); setNotes(""); setTreatment(""); setTreatmentOutcome("not-sure"); setType("symptom");
   };
 
   return (
