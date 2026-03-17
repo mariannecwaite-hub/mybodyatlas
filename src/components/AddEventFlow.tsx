@@ -2,13 +2,15 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, EventType, BodyRegion, EventSeverity, TreatmentOutcome, REGION_LABELS } from "@/context/AppContext";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 const eventTypes: { type: EventType; label: string; icon: string }[] = [
   { type: "injury", label: "Injury", icon: "🩹" },
-  { type: "symptom", label: "Symptom", icon: "💭" },
+  { type: "symptom", label: "Sensation", icon: "💭" },
   { type: "stress", label: "Stress", icon: "🌊" },
   { type: "treatment", label: "Treatment", icon: "🌿" },
   { type: "life-event", label: "Life event", icon: "⭐" },
+  { type: "safety-experience", label: "An experience that affected how safe you felt in your body", icon: "" },
 ];
 
 const allRegions: BodyRegion[] = [
