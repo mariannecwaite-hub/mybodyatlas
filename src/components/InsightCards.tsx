@@ -182,10 +182,9 @@ const InsightCards = () => {
         })}
       </div>
 
-      {/* Educational disclaimer footer */}
+      {/* Disclaimer */}
       <p className="text-[10px] text-muted-foreground/30 text-center leading-relaxed pt-2">
-        Educational context only — not medical advice.
-        Always consult a qualified practitioner for health decisions.
+        Based on what you've recorded so far. This is a reflection, not a medical assessment.
       </p>
 
       <TreatmentGuide open={showGuide} onClose={() => setShowGuide(false)} />

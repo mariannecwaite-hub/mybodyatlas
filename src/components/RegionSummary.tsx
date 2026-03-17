@@ -77,7 +77,7 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
 
         {regionEvents.length === 0 ? (
           <p className="text-[13px] text-muted-foreground/40 mb-6 leading-relaxed">
-            Nothing recorded here yet. That's perfectly fine.
+            Nothing recorded here yet.
           </p>
         ) : (
           <p className="text-[12px] text-muted-foreground/45 mb-6 tracking-wide">
@@ -151,7 +151,7 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
               })}
             </div>
             <p className="text-[10px] text-muted-foreground/30 mt-2 leading-relaxed">
-              Areas that may be biomechanically related to your {REGION_LABELS[region].toLowerCase()}.
+              These areas are often biomechanically related — based on what you've recorded so far.
             </p>
           </motion.div>
         )}

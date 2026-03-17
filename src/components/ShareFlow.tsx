@@ -74,10 +74,10 @@ const ShareFlow = ({ open, onClose }: ShareFlowProps) => {
                 <p className="section-label mb-2 text-lavender-foreground/60">Patterns detected</p>
                 <div className="space-y-1.5 text-[12px] text-muted-foreground/60">
                   {topRegions.length > 0 && (
-                    <p>Most active areas: {topRegions.map(([r]) => REGION_LABELS[r as keyof typeof REGION_LABELS]?.toLowerCase()).join(", ")}</p>
+                    <p>Most recorded areas: {topRegions.map(([r]) => REGION_LABELS[r as keyof typeof REGION_LABELS]?.toLowerCase()).join(", ")}</p>
                   )}
                   {stressEvents.length > 0 && symptomEvents.length > 0 && (
-                    <p>Stress periods appear to coincide with physical sensations</p>
+                    <p>Stress periods and physical experiences appear close together in the timeline</p>
                   )}
                   {ongoingCount > 0 && (
                     <p>{ongoingCount} ongoing {ongoingCount === 1 ? "thread" : "threads"} currently active</p>

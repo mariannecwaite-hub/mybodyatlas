@@ -42,7 +42,7 @@ export function usePatternEngine(
         id: "growing",
         type: "fallback",
         title: "Your map is growing",
-        body: "As you add experiences, patterns will gently surface here. There's no rush.",
+        body: "As you add experiences, patterns may gently surface here. There's no rush.",
         tone: "sage",
         regionLabel: "Getting started",
         relatedRegions: [],
@@ -96,14 +96,14 @@ export function usePatternEngine(
             id: `origin-${currentRegion}-${originRegion}`,
             type: "origin_reframe",
             title: "An earlier chapter",
-            body: `Your ${regionLabel(currentRegion)} story may start earlier than you think. A ${earliestOrigin.title.toLowerCase()} in ${originYear} often affects how the ${regionLabel(currentRegion)} works over time. It may be worth wondering whether your ${regionLabel(currentRegion)} has been compensating for longer than you realise.`,
+            body: `Your ${regionLabel(currentRegion)} story may start earlier than you think. You recorded a ${earliestOrigin.title.toLowerCase()} in ${originYear}, and these two areas are often connected biomechanically. It may be worth exploring whether your ${regionLabel(currentRegion)} has been compensating for longer than you realise.`,
             tone: "sage",
             regionLabel: REGION_LABELS[currentRegion] ?? currentRegion,
             relatedRegions: [currentRegion, originRegion],
             relatedEventIds: [...currentEvents, earliestOrigin].map((e) => e.id),
             specificity: currentEvents.length + originEvts.length,
           });
-          break; // one origin reframe per current region
+          break;
         }
       }
     }
@@ -130,7 +130,7 @@ export function usePatternEngine(
           id: "stress-body",
           type: "stress_body",
           title: "Stress & your body",
-          body: `${overlapping.length} of your experiences first appeared during or shortly after a period of stress or change${regionStr}. Your body appears to carry emotional load in physical ways.`,
+          body: `${overlapping.length} of your recorded experiences appeared during or shortly after a period of stress or change${regionStr}. Based on what you've mapped so far, your body appears to carry emotional load in physical ways. This pattern might be worth noticing.`,
           tone: "lavender",
           regionLabel: "Stress & body",
           relatedRegions: affectedRegions,
@@ -153,7 +153,7 @@ export function usePatternEngine(
         id: `recurring-${region}`,
         type: "recurring_pattern",
         title: "A recurring thread",
-        body: `Your ${regionLabel(region)} has come up in ${sortedYears.slice(0, -1).join(", ")} and ${sortedYears[sortedYears.length - 1]}. Recurring experiences in the same area across years often point to something that hasn't fully resolved — rather than separate new issues.`,
+        body: `Your ${regionLabel(region)} appears in your record in ${sortedYears.slice(0, -1).join(", ")} and ${sortedYears[sortedYears.length - 1]}. Recurring experiences in the same area across years often point to something that hasn't fully resolved — rather than separate new issues. Based on what you've mapped so far.`,
         tone: "warm",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
@@ -177,7 +177,7 @@ export function usePatternEngine(
         id: `care-gap-${region}`,
         type: "care_gap",
         title: "Worth exploring",
-        body: `Your ${regionLabel(region)} has been an area of attention since ${earliestYear} but hasn't yet had dedicated care. That might be worth exploring.`,
+        body: `Your ${regionLabel(region)} has been an area of attention in your record since ${earliestYear} but doesn't yet have any associated treatment logged. That might be worth exploring.`,
         tone: "sage",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
@@ -192,7 +192,7 @@ export function usePatternEngine(
         id: "growing",
         type: "fallback",
         title: "Your map is growing",
-        body: "As you add more experiences, we'll gently surface connections you might not have noticed. There's no rush.",
+        body: "As you add more experiences, we may gently surface connections you might not have noticed. There's no rush.",
         tone: "sage",
         regionLabel: "Getting started",
         relatedRegions: [],
@@ -209,7 +209,6 @@ export function usePatternEngine(
     });
 
     const deduped: PatternInsight[] = [];
-    // Priority order: origin_reframe > stress_body > recurring_pattern > care_gap
     const typeOrder: PatternInsight["type"][] = ["origin_reframe", "stress_body", "recurring_pattern", "care_gap"];
     for (const t of typeOrder) {
       const candidates = byType[t];

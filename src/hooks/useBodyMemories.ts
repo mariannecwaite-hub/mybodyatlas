@@ -70,7 +70,7 @@ export function useBodyMemories(
 
       memories.push({
         id: `mem-cluster-${r}`,
-        prompt: `Do you remember when your ${label} first started bothering you?`,
+        prompt: `Do you remember when you first noticed something in your ${label}?`,
         context: `You've recorded ${evts.length} experiences in this area. Sometimes the story goes back further than we first think.`,
         triggerType: "region_cluster",
         relatedRegion: r,
@@ -101,7 +101,7 @@ export function useBodyMemories(
             emoji: "🌊",
             eventSeed: {
               type: "stress",
-              titleHint: `Stress affecting ${label}`,
+              titleHint: `Stress period — ${label}`,
               regions: [r],
               dateHint: "stress_period",
             },
@@ -120,15 +120,15 @@ export function useBodyMemories(
       });
     });
 
-    // 2. Connected region prompts — ankle injury → ask about knee
+    // 2. Connected region prompts — explore biomechanical connections
     const connectionMap: Partial<Record<BodyRegion, { ask: BodyRegion; prompt: string }[]>> = {
-      ankle_foot_left: [{ ask: "knee_left", prompt: "Many people notice earlier injuries when mapping their body story. Did anything happen to your left knee — perhaps connected to your ankle?" }],
-      ankle_foot_right: [{ ask: "knee_right", prompt: "Did you ever notice your right knee being affected, perhaps after your ankle experience?" }],
-      knee_left: [{ ask: "hip_left", prompt: "Sometimes knee discomfort connects to the hip. Have you noticed anything in your left hip over the years?" }],
-      knee_right: [{ ask: "hip_right", prompt: "Sometimes knee issues connect upward. Have you noticed anything in your right hip?" }],
-      neck: [{ ask: "head_jaw", prompt: "Neck tension sometimes connects to headaches or jaw tightness. Have you experienced either?" }],
-      lower_back: [{ ask: "hip_left", prompt: "Lower back discomfort can relate to the hips. Have you noticed anything in your hip area?" }],
-      upper_back: [{ ask: "neck", prompt: "Upper back tension often connects to the neck. Has your neck been affected too?" }],
+      ankle_foot_left: [{ ask: "knee_left", prompt: "Your left ankle and left knee are often connected. Have you noticed anything in your left knee over the years?" }],
+      ankle_foot_right: [{ ask: "knee_right", prompt: "Your right ankle and right knee are often connected. Have you noticed anything in your right knee?" }],
+      knee_left: [{ ask: "hip_left", prompt: "Your left knee and left hip are closely connected areas. Have you noticed anything in your left hip over the years?" }],
+      knee_right: [{ ask: "hip_right", prompt: "Your right knee and right hip are closely connected areas. Have you noticed anything in your right hip?" }],
+      neck: [{ ask: "head_jaw", prompt: "Your neck and head are closely connected areas. Have you experienced headaches or jaw tension?" }],
+      lower_back: [{ ask: "hip_left", prompt: "Your lower back and hips are closely connected areas. Have you noticed anything in your hip area?" }],
+      upper_back: [{ ask: "neck", prompt: "Your upper back and neck are closely connected areas. Have you noticed anything in your neck?" }],
     };
 
     Object.entries(connectionMap).forEach(([source, targets]) => {
@@ -139,7 +139,7 @@ export function useBodyMemories(
             memories.push({
               id: `mem-connect-${sourceRegion}-${ask}`,
               prompt,
-              context: `Your ${REGION_LABELS[sourceRegion].toLowerCase()} has recorded events. This area is often connected.`,
+              context: `You've recorded experiences in your ${REGION_LABELS[sourceRegion].toLowerCase()}. These areas are often related.`,
               triggerType: "pattern",
               relatedRegion: ask,
               responses: [
@@ -182,13 +182,13 @@ export function useBodyMemories(
 
     // 3. Stress-body connection prompts
     const hasStressEvents = events.some((e) => e.type === "stress");
-    const hasPhysicalSymptoms = events.some((e) => e.type === "symptom" || e.type === "injury");
+    const hasPhysicalExperiences = events.some((e) => e.type === "symptom" || e.type === "injury");
 
-    if (hasStressEvents && hasPhysicalSymptoms) {
+    if (hasStressEvents && hasPhysicalExperiences) {
       memories.push({
         id: "mem-stress-body",
-        prompt: "Was there a time in your life when stress affected your body more strongly?",
-        context: "You've recorded both stress periods and physical experiences. These often connect in ways we don't immediately notice.",
+        prompt: "Was there a time in your life when stress showed up in your body more strongly?",
+        context: "You've recorded both stress periods and physical experiences. These sometimes appear close together in ways worth noticing.",
         triggerType: "pattern",
         responses: [
           {
@@ -196,7 +196,7 @@ export function useBodyMemories(
             emoji: "🌊",
             eventSeed: {
               type: "stress",
-              titleHint: "Stress period — body impact",
+              titleHint: "Stress period — body response",
               regions: ["chest", "neck"],
               dateHint: "stress_period",
             },
@@ -206,7 +206,7 @@ export function useBodyMemories(
             emoji: "💼",
             eventSeed: {
               type: "stress",
-              titleHint: "Work/school stress — physical effects",
+              titleHint: "Work/school stress period",
               regions: ["neck", "upper_back"],
               dateHint: "earlier",
             },
@@ -216,7 +216,7 @@ export function useBodyMemories(
             emoji: "💔",
             eventSeed: {
               type: "stress",
-              titleHint: "Relationship stress — body response",
+              titleHint: "Relationship stress period",
               regions: ["chest", "abdomen"],
               dateHint: "earlier",
             },
@@ -240,7 +240,7 @@ export function useBodyMemories(
       memories.push({
         id: "mem-childhood-general",
         prompt: "Thinking back to childhood — did your body ever go through something you still remember?",
-        context: "Early body experiences sometimes shape patterns we notice later in life.",
+        context: "Early body experiences sometimes shape what we notice later in life.",
         triggerType: "general",
         responses: [
           {
@@ -254,11 +254,11 @@ export function useBodyMemories(
             },
           },
           {
-            label: "A recurring illness",
+            label: "A recurring experience",
             emoji: "🤧",
             eventSeed: {
               type: "symptom",
-              titleHint: "Childhood recurring illness",
+              titleHint: "Childhood recurring experience",
               regions: ["chest"],
               dateHint: "childhood",
             },
@@ -289,13 +289,13 @@ export function useBodyMemories(
 
     // 5. Treatment exploration prompt
     const treatmentCount = events.filter((e) => e.type === "treatment").length;
-    const symptomCount = events.filter((e) => e.type === "symptom" || e.type === "injury").length;
+    const experienceCount = events.filter((e) => e.type === "symptom" || e.type === "injury").length;
 
-    if (symptomCount >= 3 && treatmentCount === 0) {
+    if (experienceCount >= 3 && treatmentCount === 0) {
       memories.push({
         id: "mem-treatment-explore",
         prompt: "Have you explored any treatments or therapies for what you've noticed in your body?",
-        context: "Recording what you've tried can help you see your full body story.",
+        context: "Recording what you've tried can help you see more of your body story over time.",
         triggerType: "general",
         responses: [
           {

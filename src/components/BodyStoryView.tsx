@@ -310,10 +310,10 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                   transition={{ duration: 0.5 }}
                 >
                   <p className="text-[15px] font-serif text-foreground/80">
-                    {visibleEvents.length} experiences across {activeRegions.size} areas of your body
+                    {visibleEvents.length} recorded experiences across {activeRegions.size} areas
                   </p>
                   <p className="text-[12px] text-muted-foreground/50 leading-relaxed">
-                    Spanning {span} · {threads.length > 0 ? `${threads.length} connecting threads` : "patterns emerging"}
+                    Spanning {span} · from what you've mapped so far
                   </p>
 
                   {visibleInsights.length > 0 && (
@@ -373,7 +373,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
-              {topRegions.length} areas of your body have recorded events. The regions above appear most in your history.
+              {topRegions.length} areas appear in your record so far. The regions above are those you've recorded most.
             </p>
           </div>
         ) : (
@@ -490,13 +490,13 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               );
             })}
             <p className="text-[10px] text-muted-foreground/28 leading-relaxed">
-              Educational context only — not medical advice. Things you may wish to explore with a practitioner.
+              Based on what you've recorded so far. This is a reflection, not a medical assessment.
             </p>
           </div>
         ) : (
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12 text-center">
             <p className="text-[13px] text-muted-foreground/45">
-              {allInsights.length > 0 ? "All patterns dismissed." : "As you add more events, patterns may emerge here."}
+              {allInsights.length > 0 ? "All patterns dismissed." : "As you record more experiences, patterns may emerge here."}
             </p>
           </div>
         )}
@@ -576,7 +576,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
       >
         <p className="text-[15px] font-serif text-foreground/80 mb-1.5">You've been paying attention</p>
         <p className="text-[12px] text-muted-foreground/45 leading-[1.8]">
-          This record reflects care and self-awareness. That matters — regardless of what comes next.
+          This record reflects care and self-awareness, based on what you've chosen to share so far.
         </p>
       </motion.div>
 

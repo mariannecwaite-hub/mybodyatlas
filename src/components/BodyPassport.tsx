@@ -110,22 +110,22 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const symptomEvents = visibleEvents.filter((e) => e.type === "symptom");
 
   if (lowerBodyEvents.length >= 2) {
-    patternObservations.push("Several lower-body experiences appear across time. Earlier events may be worth exploring alongside current ones.");
+    patternObservations.push("Several lower-body experiences appear across time in your record. You may wish to explore whether earlier events are connected to current ones.");
   }
   if (upperBodyEvents.length >= 2 && stressEvents.length > 0) {
-    patternObservations.push("Periods of stress appear to overlap with upper body tension — neck, shoulders and back.");
+    patternObservations.push("Periods of stress and upper body experiences — neck, shoulders and back — appear close together in your timeline. This pattern might be worth noticing.");
   }
   if (stressEvents.length > 0 && symptomEvents.length > 0) {
-    patternObservations.push("Stress periods and physical sensations appear connected in your history.");
+    patternObservations.push("Stress periods and physical experiences appear close together in what you've recorded so far.");
   }
   if (ongoingCount >= 3) {
     patternObservations.push(`You're currently navigating ${ongoingCount} ongoing experiences. This context may be valuable to share with a practitioner.`);
   }
   if (threads.length >= 2) {
-    patternObservations.push(`${threads.length} body threads connect experiences across time — patterns that may be worth exploring.`);
+    patternObservations.push(`${threads.length} body threads connect recorded experiences across time — patterns that may be worth exploring.`);
   }
   if (treatments.length >= 2 && symptomEvents.length > 0) {
-    patternObservations.push("You've explored multiple approaches to care. Understanding which ones helped most can guide future decisions.");
+    patternObservations.push("You've recorded multiple approaches to care. Noticing which ones you found helpful can guide future decisions.");
   }
 
   return (
@@ -150,7 +150,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
               <div>
                 <h2 className="text-xl leading-tight">Body Passport</h2>
                 <p className="text-[11px] text-muted-foreground/40 mt-1 tracking-wide">
-                  A record of your body story across time
+                  Based on what you've recorded so far
                 </p>
               </div>
               <button onClick={onClose} className="modal-close">
@@ -306,7 +306,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
 
                                 {allRegions.length === 0 && (
                                   <p className="text-[12px] text-muted-foreground/40 text-center py-4">
-                                    No body regions recorded yet.
+                                    Nothing recorded yet.
                                   </p>
                                 )}
                               </div>
@@ -361,7 +361,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
 
                                 {sortedEvents.length === 0 && (
                                   <p className="text-[12px] text-muted-foreground/40 text-center py-4">
-                                    No events recorded yet.
+                                    Nothing recorded yet.
                                   </p>
                                 )}
                               </div>
@@ -386,7 +386,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                   ))
                                 ) : (
                                   <p className="text-[12px] text-muted-foreground/40 text-center py-4">
-                                    Add more events to discover patterns in your body story.
+                                    As you record more experiences, patterns may emerge here.
                                   </p>
                                 )}
 
@@ -423,7 +423,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                 )}
 
                                 <p className="text-[10px] text-muted-foreground/25 text-center pt-1">
-                                  Observations only — not medical advice
+                                  Based on what you've recorded so far. This is a reflection, not a medical assessment.
                                 </p>
                               </div>
                             )}
@@ -494,7 +494,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                       No treatments recorded yet.
                                     </p>
                                     <p className="text-[11px] text-muted-foreground/30 mt-1">
-                                      As you log treatments, they'll appear here in your care journey.
+                                      As you log treatments, they'll appear here.
                                     </p>
                                   </div>
                                 )}
@@ -521,7 +521,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                 Your body story belongs to you
               </p>
               <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
-                This passport is a reflection of your experiences across time.
+                This passport reflects what you've chosen to record so far.
                 Nothing is shared unless you choose to share it.
               </p>
             </motion.div>

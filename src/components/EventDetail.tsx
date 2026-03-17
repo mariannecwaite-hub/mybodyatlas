@@ -4,8 +4,8 @@ import { useBodyThreads } from "@/hooks/useBodyThreads";
 import { X, Archive, Trash2, Link2 } from "lucide-react";
 
 const typeLabels = {
-  injury: "Injury", symptom: "Something you noticed", stress: "Stress period",
-  treatment: "Treatment", "life-event": "Life event",
+  injury: "Injury", symptom: "Experience noticed", stress: "Stress period",
+  treatment: "Treatment", "life-event": "Life transition",
 };
 
 const EventDetail = () => {
