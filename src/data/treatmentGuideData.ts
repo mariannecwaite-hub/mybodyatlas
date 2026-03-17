@@ -78,7 +78,7 @@ export const treatments: TreatmentGuideEntry[] = [
   {
     id: "chiropractic",
     name: "Chiropractic Care",
-    description: "A manual therapy focused on the diagnosis and treatment of mechanical disorders of the spine and musculoskeletal system.",
+    description: "A manual therapy focused on the assessment and treatment of mechanical disorders of the spine and musculoskeletal system.",
     situations: ["Spinal discomfort or stiffness", "Posture-related issues", "Headaches linked to neck tension", "Joint mobility concerns"],
     practitioner: "Registered chiropractor (self-referral, regulated profession in the UK)",
     approach: "Assessment followed by spinal adjustments and manual techniques. May include advice on posture, exercise and lifestyle. Sessions are typically 15–30 minutes after initial assessment.",
