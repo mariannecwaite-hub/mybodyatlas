@@ -37,6 +37,7 @@ export interface BodyEvent {
   treatmentOutcome?: TreatmentOutcome;
   ongoing: boolean;
   archived?: boolean;
+  isPrivate?: boolean;
 }
 
 export interface Profile {
