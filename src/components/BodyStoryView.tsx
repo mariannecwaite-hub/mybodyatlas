@@ -373,7 +373,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
-              {topRegions.length} areas of your body have recorded events. The regions above appear most in your history.
+              {topRegions.length} areas appear in your record so far. The regions above are those you've recorded most.
             </p>
           </div>
         ) : (
