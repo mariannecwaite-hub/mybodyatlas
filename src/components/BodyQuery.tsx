@@ -261,7 +261,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
             onFocus={() => setFocused(true)}
             onBlur={() => { if (!query && !results) setFocused(false); }}
             onKeyDown={handleKeyDown}
-            placeholder="What is your body telling you right now?"
+            placeholder={isObservational ? "What's going on physically right now?" : "What is your body telling you right now?"}
             className="flex-1 bg-transparent text-[15px] text-foreground/80 placeholder:text-muted-foreground/40 focus:outline-none"
             style={{ fontFamily: "'DM Sans', sans-serif" }}
           />
