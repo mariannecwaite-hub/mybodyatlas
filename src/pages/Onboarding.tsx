@@ -246,6 +246,29 @@ const AcknowledgementScreen = ({ onContinue }: { onContinue: () => void }) => {
   );
 };
 
+/* ── Dismissal acknowledgement state ── */
+const DismissalAck = () => {
+  const [show, setShow] = useState(false);
+  
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.p
+          className="text-[15px] italic text-center mt-3 max-w-xs mx-auto"
+          style={{ color: "#6B6960", fontFamily: "'DM Serif Display', serif" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+          onAnimationComplete={() => setTimeout(() => setShow(false), 2000)}
+        >
+          This is worth recording. It is part of your body story.
+        </motion.p>
+      )}
+    </AnimatePresence>
+  );
+};
+
 /* ─── Component ─── */
 const Onboarding = () => {
   const [step, setStep] = useState(0);
