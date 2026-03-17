@@ -339,7 +339,7 @@ const Onboarding = () => {
             </div>
             )}
 
-            {/* ── Prompt cards — with colored dots instead of emojis ── */}
+            {/* ── Prompt cards — with colored dots (lavender for women's health) ── */}
             {current.phase === "prompt" && current.cards && (
               <motion.div
                 className="flex-1 overflow-y-auto pb-4 -mx-1 px-1"
@@ -351,6 +351,8 @@ const Onboarding = () => {
                   {current.cards.map((card, i) => {
                     const isSelected = selectedIds.has(card.id);
                     const year = customYears[card.id] ?? card.defaultYear;
+                    const isWomensHealth = current.id === "womens-health";
+                    const isSafetyCard = card.id === "wh15";
                     return (
                       <motion.button
                         key={card.id}
