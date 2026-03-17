@@ -3,15 +3,19 @@ import { BodyEvent, BodyRegion, REGION_LABELS } from "@/context/AppContext";
 
 export interface PatternInsight {
   id: string;
-  type: "origin_reframe" | "stress_body" | "recurring_pattern" | "care_gap" | "fallback";
+  type: "origin_reframe" | "stress_body" | "recurring_pattern" | "care_gap" | "fallback" | "unsafe_experience" | "dismissal";
   title: string;
   body: string;
-  tone: "sage" | "lavender" | "warm";
+  tone: "sage" | "lavender" | "warm" | "neutral";
   regionLabel: string;
   relatedRegions: BodyRegion[];
   relatedEventIds: string[];
   reflectiveQuestion: string;
   specificity: number;
+  /** For unsafe experience insight — timing description */
+  timingDescription?: string;
+  /** For dismissal insight — events that followed */
+  followingEventIds?: string[];
 }
 
 const BIOMECHANICAL_CHAINS: Record<string, BodyRegion[]> = {
