@@ -55,7 +55,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
       e.regions.some((r) => ["lower_back", "hip_left", "hip_right", "knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right"].includes(r))
     );
     if (lowerBodyEvents.length >= 2) {
-      return "Your lower-body experiences are part of a pattern that many women share. This area of the body tells a story across the Atlas.";
+      return "Your lower-body experiences are part of a pattern that many women share. This area of the body tells a story across the Collective.";
     }
     return "Your record is part of a growing picture. As more women contribute, the collective understanding deepens.";
   }, [isContributing, visibleEvents]);
