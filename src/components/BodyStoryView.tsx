@@ -323,8 +323,11 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
                     >
+                      <span className="inline-block px-2 py-0.5 rounded-full bg-sage/15 text-[9px] font-medium text-sage-foreground/50 tracking-wider uppercase mb-2">
+                        {visibleInsights[0].regionLabel}
+                      </span>
                       <p className="text-[13px] text-foreground/65 leading-[1.8] italic font-serif">
-                        "{visibleInsights[0].body}"
+                        {visibleInsights[0].body}
                       </p>
                     </motion.div>
                   )}
