@@ -554,8 +554,10 @@ const Onboarding = () => {
                     const isSelected = selectedIds.has(card.id);
                     const year = customYears[card.id] ?? card.defaultYear;
                     const isWomensHealth = current.id === "womens-health";
+                    const isSportInjury = current.id === "sport-injury";
                     const isSafetyCard = card.id === "wh15";
                     const isDismissalCard = card.id === "wh10";
+                    const isMaleTransition = card.id.startsWith("tm");
                     return (
                       <motion.button
                         key={card.id}
