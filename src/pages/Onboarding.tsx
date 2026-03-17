@@ -66,6 +66,15 @@ const transitionCards: SuggestionCard[] = [
   { id: "t6", title: "Becoming a parent", description: "The physical and emotional shift of caring for a new life.", type: "life-event", regions: ["lower_back", "wrist_hand_left", "shoulder_left"], defaultYear: 2021, severity: "moderate" },
   { id: "t7", title: "Hormonal changes", description: "Menopause, puberty, thyroid changes or hormonal shifts.", type: "life-event", regions: ["abdomen", "head_jaw"], defaultYear: 2022, severity: "moderate" },
   { id: "t8", title: "Mental health period", description: "Anxiety, depression or a period of emotional difficulty.", type: "stress", regions: ["chest", "head_jaw", "abdomen"], defaultYear: 2020, severity: "moderate" },
+  // Male-specific life transition cards — terracotta dots
+  { id: "tm1", title: "Becoming a father — the shift in identity and body", description: "Sleep deprivation, responsibility, and physical adjustment.", type: "life-event", regions: ["lower_back", "neck", "chest"], defaultYear: 2020, severity: "moderate" },
+  { id: "tm2", title: "Redundancy or professional failure", description: "The physical toll of losing your footing.", type: "stress", regions: ["chest", "head_jaw", "neck"], defaultYear: 2019, severity: "significant" },
+  { id: "tm3", title: "Bereavement — carrying a loss", description: "Grief sits in the body, not just the mind.", type: "life-event", regions: ["chest", "abdomen"], defaultYear: 2018, severity: "significant" },
+  { id: "tm4", title: "Relationship breakdown", description: "The physical weight of things falling apart.", type: "stress", regions: ["chest", "abdomen", "head_jaw"], defaultYear: 2019, severity: "moderate" },
+  { id: "tm5", title: "High-pressure period — when everything was on you", description: "Sustained demand with no recovery.", type: "stress", regions: ["neck", "shoulder_left", "shoulder_right", "lower_back"], defaultYear: 2020, severity: "significant" },
+  { id: "tm6", title: "Heart event or health scare", description: "The moment your body demanded attention.", type: "life-event", regions: ["chest"], defaultYear: 2021, severity: "significant" },
+  { id: "tm7", title: "Sleep stopped working — extended disruption", description: "Months or years of broken sleep.", type: "symptom", regions: ["head_jaw", "neck"], defaultYear: 2020, severity: "moderate", ongoing: true },
+  { id: "tm8", title: "Running on empty — sustained exhaustion with no clear cause", description: "Tiredness that doesn't make sense and doesn't resolve.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2021, severity: "moderate", ongoing: true },
 ];
 
 const treatmentCards: SuggestionCard[] = [
