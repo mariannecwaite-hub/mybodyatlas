@@ -24,6 +24,7 @@ const typeDotClass: Record<EventType, string> = {
   stress: "bg-body-tension",
   treatment: "bg-body-healing",
   "life-event": "bg-body-neutral",
+  "safety-experience": "bg-body-neutral",
 };
 
 const typeColor: Record<EventType, string> = {
