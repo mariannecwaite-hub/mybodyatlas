@@ -396,10 +396,9 @@ const Onboarding = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.6 }}
                   >
-                    <svg viewBox="10 0 80 100" className="w-28 h-40">
-                      <path d={miniSilhouettePath} fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
-                      <circle cx="50" cy="45" r="4" fill="hsl(var(--body-tension) / 0.7)" className="animate-soft-pulse" />
-                    </svg>
+                    <BodySilhouetteFigure className="w-28 h-40">
+                      <circle cx="100" cy="216" r="8" fill="hsl(var(--body-tension) / 0.7)" className="animate-soft-pulse" />
+                    </BodySilhouetteFigure>
                   </motion.div>
                 ) : (
                   <motion.div
