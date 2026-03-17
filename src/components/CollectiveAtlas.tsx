@@ -185,7 +185,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
                 </div>
               ) : (
                 <p className="text-[13px] italic text-center leading-relaxed" style={{ color: "#A8A59E" }}>
-                  Contribute your patterns to see how your experience relates to the collective →
+                  Contribute your patterns to see how your experience relates to the Collective →
                 </p>
               )}
             </motion.div>
