@@ -4,6 +4,8 @@ import { useApp, REGION_LABELS, EventType, BodyRegion, BodyEvent } from "@/conte
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import BodyThreads from "@/components/BodyThreads";
+import UnsafeExperienceInsight from "@/components/UnsafeExperienceInsight";
+import DismissalInsight from "@/components/DismissalInsight";
 import { Lock, FileText, Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
