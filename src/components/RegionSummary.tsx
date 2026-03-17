@@ -77,7 +77,7 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
 
         {regionEvents.length === 0 ? (
           <p className="text-[13px] text-muted-foreground/40 mb-6 leading-relaxed">
-            Nothing recorded here yet. That's perfectly fine.
+            Nothing recorded here yet.
           </p>
         ) : (
           <p className="text-[12px] text-muted-foreground/45 mb-6 tracking-wide">
