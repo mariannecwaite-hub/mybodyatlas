@@ -88,7 +88,6 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     const typeFilters = new Set<string>([...activeFilters].filter((f) => f !== "patterns"));
     return visibleEvents.filter((e) => typeFilters.has(e.type));
   }, [visibleEvents, activeFilters]);
-  }, [visibleEvents, activeFilters]);
   const showPatterns = activeFilters.has("patterns");
 
   const toggleSection = (s: Section) => {
