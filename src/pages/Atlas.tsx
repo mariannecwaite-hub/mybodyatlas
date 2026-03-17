@@ -5,7 +5,8 @@ import { useApp, BodyRegion, EventType, REGION_LABELS } from "@/context/AppConte
 import BodyMap from "@/components/BodyMap";
 import LayerToggles from "@/components/LayerToggles";
 import RegionSummary from "@/components/RegionSummary";
-import TimelineView from "@/components/TimelineView";
+import ParallelTimeline from "@/components/ParallelTimeline";
+import AhaMoment from "@/components/AhaMoment";
 import BodyStoryView from "@/components/BodyStoryView";
 import InsightCards from "@/components/InsightCards";
 import BodyRecord from "@/components/BodyRecord";
