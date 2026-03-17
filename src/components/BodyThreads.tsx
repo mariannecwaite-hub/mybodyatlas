@@ -36,6 +36,13 @@ const BodyThreads = () => {
           const isExpanded = expandedThread === thread.id;
           const threadEvents = visibleEvents.filter((e) => thread.eventIds.includes(e.id));
 
+          // Compute mini timeline data for collapsed view
+          const threadYears = threadEvents.map(e => new Date(e.date).getFullYear());
+          const uniqueYears = [...new Set(threadYears)].sort();
+          const minYear = Math.min(...threadYears);
+          const maxYear = Math.max(...threadYears);
+          const yearSpan = maxYear - minYear || 1;
+
           return (
             <motion.div
               key={thread.id}
@@ -52,27 +59,49 @@ const BodyThreads = () => {
                     highlightInsight(thread.id, thread.regions, thread.eventIds);
                   }
                 }}
-                className="w-full flex items-center gap-3 p-4 text-left hover:bg-secondary/20 transition-colors duration-200"
+                className="w-full flex flex-col gap-2 p-4 text-left hover:bg-secondary/20 transition-colors duration-200"
               >
-                {/* Thread indicator */}
-                <div className="w-1 h-5 rounded-full bg-sage/30 flex-shrink-0 mt-0.5" />
+                <div className="flex items-center gap-3 w-full">
+                  {/* Thread indicator */}
+                  <div className="w-1 h-5 rounded-full bg-sage/30 flex-shrink-0" />
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-[14px] font-serif text-foreground/80 truncate">{thread.label}</p>
-                    {thread.isOngoing && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-sage/60 animate-breathe flex-shrink-0" />
-                    )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="text-[14px] font-serif text-foreground/80 truncate">{thread.label}</p>
+                      {thread.isOngoing && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-sage/60 animate-breathe flex-shrink-0" />
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground/40 mt-0.5">
+                      {thread.eventCount} events · {thread.yearSpan}
+                    </p>
                   </div>
-                  <p className="text-[11px] text-muted-foreground/40 mt-0.5">
-                    {thread.eventCount} events · {thread.yearSpan}
-                  </p>
+
+                  {isExpanded ? (
+                    <ChevronUp className="w-4 h-4 text-muted-foreground/25 flex-shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground/25 flex-shrink-0" />
+                  )}
                 </div>
 
-                {isExpanded ? (
-                  <ChevronUp className="w-4 h-4 text-muted-foreground/25 flex-shrink-0" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-muted-foreground/25 flex-shrink-0" />
+                {/* Mini timeline — visible in collapsed state */}
+                {!isExpanded && uniqueYears.length > 1 && (
+                  <div className="relative h-5 w-full ml-4 mr-8">
+                    <div className="absolute top-1/2 left-6 right-6 h-px bg-border/25 -translate-y-1/2" />
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground/30">{minYear}</span>
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-[9px] text-muted-foreground/30">{maxYear}</span>
+                    {uniqueYears.map(year => {
+                      const pct = yearSpan > 0 ? ((year - minYear) / yearSpan) * 100 : 50;
+                      return (
+                        <div
+                          key={year}
+                          className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-sage/50 border border-sage/30"
+                          style={{ left: `calc(24px + ${Math.max(0, Math.min(100, pct))}% * (100% - 48px) / 100%)` }}
+                          title={`${year}`}
+                        />
+                      );
+                    })}
+                  </div>
                 )}
               </button>
 
@@ -89,34 +118,27 @@ const BodyThreads = () => {
                       {thread.description}
                     </p>
 
-                    {/* Mini year timeline */}
-                    {threadEvents.length > 1 && (() => {
-                      const threadYears = threadEvents.map(e => new Date(e.date).getFullYear());
-                      const minYear = Math.min(...threadYears);
-                      const maxYear = Math.max(...threadYears);
-                      const uniqueYears = [...new Set(threadYears)].sort();
-                      const yearSpan = maxYear - minYear || 1;
-                      return (
-                        <div className="relative h-8 mb-3 mx-1">
-                          <div className="absolute top-1/2 left-4 right-4 h-px bg-border/25 -translate-y-1/2" />
-                          <span className="absolute left-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{minYear}</span>
-                          {maxYear !== minYear && (
-                            <span className="absolute right-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{maxYear}</span>
-                          )}
-                          {uniqueYears.map(year => {
-                            const pct = yearSpan > 0 ? ((year - minYear) / yearSpan) * 100 : 50;
-                            return (
-                              <div
-                                key={year}
-                                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-sage/50 border border-sage/30"
-                                style={{ left: `${Math.max(5, Math.min(95, pct))}%` }}
-                                title={`${year}`}
-                              />
-                            );
-                          })}
-                        </div>
-                      );
-                    })()}
+                    {/* Expanded year timeline */}
+                    {uniqueYears.length > 1 && (
+                      <div className="relative h-8 mb-3 mx-1">
+                        <div className="absolute top-1/2 left-4 right-4 h-px bg-border/25 -translate-y-1/2" />
+                        <span className="absolute left-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{minYear}</span>
+                        {maxYear !== minYear && (
+                          <span className="absolute right-0 top-1/2 -translate-y-full text-[9px] text-muted-foreground/30 pb-1">{maxYear}</span>
+                        )}
+                        {uniqueYears.map(year => {
+                          const pct = yearSpan > 0 ? ((year - minYear) / yearSpan) * 100 : 50;
+                          return (
+                            <div
+                              key={year}
+                              className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-sage/50 border border-sage/30"
+                              style={{ left: `${Math.max(5, Math.min(95, pct))}%` }}
+                              title={`${year}`}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/* Thread regions */}
                     <div className="flex flex-wrap gap-1.5 mb-3">
