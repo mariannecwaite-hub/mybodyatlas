@@ -585,7 +585,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         <textarea
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
-          placeholder="What do you notice looking back at your body story?"
+          placeholder="What do you notice looking back at your record?"
           rows={3}
           className="field-input resize-none"
         />

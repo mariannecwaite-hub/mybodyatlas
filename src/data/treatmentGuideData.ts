@@ -143,7 +143,7 @@ export const treatments: TreatmentGuideEntry[] = [
   {
     id: "orthopaedic-surgeon",
     name: "Orthopaedic Surgeon",
-    description: "A medical specialist focused on the diagnosis and surgical treatment of conditions affecting bones, joints, ligaments, tendons and muscles.",
+    description: "A medical specialist focused on the assessment and surgical treatment of experiences affecting bones, joints, ligaments, tendons and muscles.",
     situations: ["Structural damage (e.g., torn ligament, fracture)", "Joint replacement for severe degeneration", "Spinal conditions requiring intervention", "When conservative approaches have been insufficient"],
     practitioner: "Consultant orthopaedic surgeon (via GP or specialist referral)",
     approach: "Involves consultation, imaging, pre-operative assessment and the procedure itself. Recovery programmes vary significantly. May also offer non-surgical management options.",
