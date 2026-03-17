@@ -636,7 +636,8 @@ const Onboarding = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Actions */}
+        {/* Actions — hidden on acknowledgement screen */}
+        {current.id !== "acknowledgement" && (
         <div className="pt-4 space-y-2.5 max-w-sm mx-auto w-full">
           <div className="flex gap-2.5">
             {step > 0 && (
@@ -662,6 +663,7 @@ const Onboarding = () => {
             </button>
           )}
         </div>
+        )}
       </div>
     </div>
   );
