@@ -36,8 +36,8 @@ const Welcome = () => {
 
         <div className="space-y-3">
           <h1 className="text-foreground">My Body Atlas</h1>
-          <p className="text-muted-foreground text-base leading-relaxed">
-            A lifetime map of your body and health
+          <p className="text-muted-foreground text-base leading-relaxed max-w-[280px] mx-auto">
+            Your body has been keeping its own record all along. This is the first place built to help you read it.
           </p>
         </div>
 

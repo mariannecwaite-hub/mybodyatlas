@@ -221,7 +221,7 @@ const Onboarding = () => {
   }, []);
 
   const finishOnboarding = () => {
-    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards];
+    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
     allCards.forEach((card) => {
       if (selectedIds.has(card.id)) {
         const year = customYears[card.id] ?? card.defaultYear;
