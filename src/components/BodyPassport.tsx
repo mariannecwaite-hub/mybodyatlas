@@ -337,7 +337,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: yi * 0.05 + ei * 0.03, duration: 0.35 }}
                                           >
-                                            <span className="text-[11px] mt-0.5 flex-shrink-0">{typeEmoji[event.type]}</span>
+                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-0.5 ${typeDotClass[event.type]}`} />
                                             <div className="min-w-0">
                                               <p className="text-[12px] text-foreground/70 leading-snug truncate">{event.title}</p>
                                               <div className="flex items-center gap-2 mt-0.5">
