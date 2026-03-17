@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useApp, BodyRegion, EventType, BodyEvent } from "@/context/AppContext";
@@ -24,6 +24,7 @@ const typeDotClass: Record<EventType, string> = {
   stress: "bg-body-tension",
   treatment: "bg-body-healing",
   "life-event": "bg-body-neutral",
+  "safety-experience": "bg-body-neutral",
 };
 
 const typeColor: Record<EventType, string> = {
@@ -32,6 +33,7 @@ const typeColor: Record<EventType, string> = {
   stress: "var(--body-tension)",
   treatment: "var(--body-healing)",
   "life-event": "var(--body-neutral)",
+  "safety-experience": "var(--body-neutral)",
 };
 
 /* ─── Pre-built suggestions per life stage ─── */
@@ -87,12 +89,37 @@ interface OnboardingStep {
   principle?: { icon: typeof Shield; label: string };
 }
 
+/* ── Women's health suggestion cards ── */
+const womensHealthCards: SuggestionCard[] = [
+  { id: "wh1", title: "Menstrual cycle changes or irregularities", description: "Changes in cycle length, flow, or regularity.", type: "symptom", regions: ["abdomen"], defaultYear: 2018, severity: "mild" },
+  { id: "wh2", title: "Perimenopause or menopause", description: "Hot flashes, sleep changes, mood shifts, or other transitions.", type: "life-event", regions: ["abdomen", "head_jaw"], defaultYear: 2022, severity: "moderate" },
+  { id: "wh3", title: "Pregnancy, postpartum or birth experience", description: "The physical and emotional journey of pregnancy and recovery.", type: "life-event", regions: ["abdomen", "lower_back"], defaultYear: 2020, severity: "moderate" },
+  { id: "wh4", title: "Miscarriage or pregnancy loss", description: "A loss that the body carries alongside the heart.", type: "life-event", regions: ["abdomen"], defaultYear: 2019, severity: "significant" },
+  { id: "wh5", title: "Fertility treatment or challenges", description: "IVF, hormonal treatments, or the physical toll of trying.", type: "treatment", regions: ["abdomen"], defaultYear: 2020, severity: "moderate" },
+  { id: "wh6", title: "Hormonal contraception and its effects", description: "The pill, IUD, implant — and what your body noticed.", type: "treatment", regions: ["abdomen", "head_jaw"], defaultYear: 2016, severity: "mild" },
+  { id: "wh7", title: "Endometriosis or suspected endometriosis", description: "Chronic pelvic discomfort, heavy periods, or a long path to understanding.", type: "symptom", regions: ["abdomen", "lower_back"], defaultYear: 2018, severity: "significant", ongoing: true },
+  { id: "wh8", title: "PCOS or hormonal conditions", description: "Hormonal patterns that affect many systems at once.", type: "symptom", regions: ["abdomen"], defaultYear: 2017, severity: "moderate", ongoing: true },
+  { id: "wh9", title: "Thyroid changes", description: "Overactive, underactive, or fluctuating — and what your body felt.", type: "symptom", regions: ["neck"], defaultYear: 2019, severity: "moderate" },
+  { id: "wh10", title: "Being dismissed or disbelieved by a healthcare professional", description: "An experience that changed how you sought care.", type: "life-event", regions: [], defaultYear: 2018, severity: "significant" },
+  { id: "wh11", title: "A diagnosis that took years to receive", description: "The weight of not knowing — and finally being heard.", type: "life-event", regions: [], defaultYear: 2020, severity: "significant" },
+  { id: "wh12", title: "Chronic fatigue or unexplained exhaustion", description: "Tiredness that rest doesn't resolve.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2021, severity: "moderate", ongoing: true },
+  { id: "wh13", title: "Fibromyalgia or widespread discomfort", description: "When your whole body speaks at once.", type: "symptom", regions: ["neck", "shoulder_left", "shoulder_right", "lower_back"], defaultYear: 2019, severity: "significant", ongoing: true },
+  { id: "wh14", title: "Hypermobility", description: "Flexibility that comes with its own set of experiences.", type: "symptom", regions: ["knee_left", "wrist_hand_left", "shoulder_left"], defaultYear: 2015, severity: "mild", ongoing: true },
+  { id: "wh15", title: "An experience that affected how safe you felt in your body", description: "You only need to record what feels right.", type: "life-event", regions: [], defaultYear: 2015, severity: "significant" },
+];
+
 const onboardingSteps: OnboardingStep[] = [
   {
     id: "intro",
     phase: "intro",
     title: "Your body has a story",
     subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
+  },
+  {
+    id: "acknowledgement",
+    phase: "intro",
+    title: "",
+    subtitle: "",
   },
   {
     id: "privacy",
@@ -121,6 +148,13 @@ const onboardingSteps: OnboardingStep[] = [
     title: "Life transitions",
     subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
     cards: transitionCards,
+  },
+  {
+    id: "womens-health",
+    phase: "prompt",
+    title: "Your body through womanhood",
+    subtitle: "Experiences that are often overlooked but matter deeply",
+    cards: womensHealthCards,
   },
   {
     id: "treatments",
@@ -157,6 +191,61 @@ const regionPositions: Partial<Record<BodyRegion, { x: number; y: number }>> = {
   ankle_foot_right: { x: 58, y: 90 },
 };
 
+/* ── Acknowledgement screen — a breath before asking anything ── */
+const AcknowledgementScreen = ({ onContinue }: { onContinue: () => void }) => {
+  const [showContinue, setShowContinue] = useState(false);
+
+  useState(() => {
+    const timer = setTimeout(() => setShowContinue(true), 1500);
+    return () => clearTimeout(timer);
+  });
+
+  // Use useEffect for the delayed continue button
+  React.useEffect(() => {
+    const timer = setTimeout(() => setShowContinue(true), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
+      <motion.h2
+        className="text-[28px] font-serif italic text-foreground/85 leading-[1.4] mb-8 max-w-xs"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      >
+        Everything your body has experienced is worth recording
+      </motion.h2>
+      <motion.div
+        className="max-w-[280px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.8 }}
+      >
+        <p className="text-[16px] leading-[1.75] text-center" style={{ color: "#6B6960", fontFamily: "'DM Sans', sans-serif" }}>
+          Many people who come to My Body Atlas have spent years feeling that their body wasn't fully understood — by the healthcare system, or sometimes even by themselves.
+        </p>
+        <p className="text-[16px] leading-[1.75] text-center mt-4 italic" style={{ color: "#6B6960", fontFamily: "'DM Sans', sans-serif" }}>
+          Nothing you've experienced is too small. Nothing is imagined. Your body has been responding to your life all along — this is simply the first time you've had somewhere to put it.
+        </p>
+      </motion.div>
+      <AnimatePresence>
+        {showContinue && (
+          <motion.button
+            onClick={onContinue}
+            className="mt-10 text-[14px] text-foreground/50 hover:text-foreground/70 transition-colors duration-300"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+          >
+            Continue →
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 /* ─── Component ─── */
 const Onboarding = () => {
   const [step, setStep] = useState(0);
@@ -189,7 +278,7 @@ const Onboarding = () => {
   }, []);
 
   const finishOnboarding = () => {
-    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards];
+    const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
     allCards.forEach((card) => {
       if (selectedIds.has(card.id)) {
         const year = customYears[card.id] ?? card.defaultYear;
@@ -226,7 +315,7 @@ const Onboarding = () => {
     navigate("/atlas");
   };
 
-  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards];
+  const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...womensHealthCards, ...treatmentCards];
   const selectedEvents = allCards.filter((c) => selectedIds.has(c.id));
   const affectedRegions = new Set(selectedEvents.flatMap((e) => e.regions));
 
@@ -271,6 +360,7 @@ const Onboarding = () => {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Header — no emojis, clean typography */}
+            {current.id !== "acknowledgement" && (
             <div className="text-center pt-6 pb-6">
               {current.principle && (
                 <motion.div
@@ -298,9 +388,15 @@ const Onboarding = () => {
                   For people who've felt their health history has never quite been understood.
                 </p>
               )}
+              {current.id === "womens-health" && (
+                <p className="text-muted-foreground/50 text-[13px] leading-relaxed mt-3 max-w-xs mx-auto italic" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                  Women's health experiences are among the most underrecorded. All of these are worth having in your body story.
+                </p>
+              )}
             </div>
+            )}
 
-            {/* ── Prompt cards — with colored dots instead of emojis ── */}
+            {/* ── Prompt cards — with colored dots (lavender for women's health) ── */}
             {current.phase === "prompt" && current.cards && (
               <motion.div
                 className="flex-1 overflow-y-auto pb-4 -mx-1 px-1"
@@ -312,6 +408,8 @@ const Onboarding = () => {
                   {current.cards.map((card, i) => {
                     const isSelected = selectedIds.has(card.id);
                     const year = customYears[card.id] ?? card.defaultYear;
+                    const isWomensHealth = current.id === "womens-health";
+                    const isSafetyCard = card.id === "wh15";
                     return (
                       <motion.button
                         key={card.id}
@@ -345,8 +443,8 @@ const Onboarding = () => {
                           )}
                         </AnimatePresence>
 
-                        {/* Colored dot for event type */}
-                        <div className={`w-3 h-3 rounded-full ${typeDotClass[card.type]} mb-2`} />
+                        {/* Colored dot — lavender for women's health */}
+                        <div className={`w-3 h-3 rounded-full mb-2 ${isWomensHealth ? "bg-lavender" : typeDotClass[card.type]}`} />
 
                         <p className="text-[13px] font-medium text-foreground/80 leading-snug mb-1 pr-6">
                           {card.title}
@@ -391,8 +489,13 @@ const Onboarding = () => {
               </motion.div>
             )}
 
+            {/* ── Acknowledgement screen ── */}
+            {current.id === "acknowledgement" && (
+              <AcknowledgementScreen onContinue={next} />
+            )}
+
             {/* ── Intro content ── */}
-            {current.phase === "intro" && (
+            {current.phase === "intro" && current.id !== "acknowledgement" && (
               <div className="flex-1 flex items-center justify-center">
                 {current.id === "intro" ? (
                   <motion.div
@@ -533,7 +636,8 @@ const Onboarding = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Actions */}
+        {/* Actions — hidden on acknowledgement screen */}
+        {current.id !== "acknowledgement" && (
         <div className="pt-4 space-y-2.5 max-w-sm mx-auto w-full">
           <div className="flex gap-2.5">
             {step > 0 && (
@@ -559,6 +663,7 @@ const Onboarding = () => {
             </button>
           )}
         </div>
+        )}
       </div>
     </div>
   );

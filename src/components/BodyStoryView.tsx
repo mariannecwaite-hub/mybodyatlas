@@ -13,6 +13,7 @@ const typeDotColors: Record<EventType, string> = {
   stress: "bg-body-tension",
   treatment: "bg-body-healing",
   "life-event": "bg-body-neutral",
+  "safety-experience": "bg-body-neutral",
 };
 
 const storyRegionPositions: Record<string, { cx: number; cy: number }> = {
@@ -158,8 +159,11 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
   return (
     <div className="pt-8 pb-12 space-y-10" role="region" aria-label="Your Body Story">
-      {/* Header */}
+      {/* Philosophical framing */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
+        <p className="text-[18px] font-serif italic text-center leading-[1.8] max-w-[295px] mx-auto mb-8" style={{ color: "#6B6960" }}>
+          Your body has been responding to your life — to what has happened, what has been felt, and what has been carried. This is what it has recorded.
+        </p>
         <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story</h2>
         <p className="text-[13px] text-muted-foreground/45 mt-2 text-center leading-relaxed italic font-serif">
           For many people, this is the first time their body history has been held in one place.
@@ -301,13 +305,13 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
       {/* Closing line */}
       <motion.div
-        className="text-center py-6"
+        className="text-center py-10"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.6 }}
       >
-        <p className="text-[20px] font-serif italic text-foreground/70 leading-[1.8] max-w-sm mx-auto">
-          This is what you've mapped so far. Your story is still being written.
+        <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
+          None of this is malfunction. Your body has been doing exactly what bodies do — responding, adapting, remembering. The question is never what is wrong with your body. It is what your body has been trying to say.
         </p>
       </motion.div>
 

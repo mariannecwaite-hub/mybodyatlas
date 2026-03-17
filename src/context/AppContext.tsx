@@ -18,7 +18,7 @@ export type BodyRegion =
   | "wrist_hand_left"
   | "wrist_hand_right";
 
-export type EventType = "injury" | "symptom" | "stress" | "treatment" | "life-event";
+export type EventType = "injury" | "symptom" | "stress" | "treatment" | "life-event" | "safety-experience";
 
 export type EventSeverity = "mild" | "moderate" | "significant";
 
@@ -37,6 +37,7 @@ export interface BodyEvent {
   treatmentOutcome?: TreatmentOutcome;
   ongoing: boolean;
   archived?: boolean;
+  isPrivate?: boolean;
 }
 
 export interface Profile {

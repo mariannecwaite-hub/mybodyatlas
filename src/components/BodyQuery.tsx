@@ -278,6 +278,21 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
             </button>
           )}
         </div>
+        {/* Framing line in focused state */}
+        <AnimatePresence>
+          {focused && !results && (
+            <motion.p
+              className="text-[13px] italic text-center mt-2"
+              style={{ color: "#A8A59E", fontFamily: "'DM Sans', sans-serif" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              Your body has said something like this before. Let's look back together.
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ── Results ── */}
@@ -300,7 +315,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                 className="text-center py-10 space-y-4"
               >
                 <p className="text-[14px] text-foreground/60 leading-relaxed max-w-xs mx-auto">
-                  We weren't sure which part of your body you meant — tap the area on your map and we'll look back from there.
+                  Your body is speaking. Your record doesn't hold this yet — but logging it now means you'll be able to hear the pattern when it speaks again.
                 </p>
                 <button
                   onClick={() => { handleClose(); onSelectRegionOnMap(); }}
@@ -320,7 +335,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                 className="text-center py-10 space-y-4"
               >
                 <p className="text-[14px] text-foreground/60 leading-relaxed max-w-sm mx-auto">
-                  Nothing recorded here yet. If you log this episode and what you try, you'll have it for next time.
+                  Your body has been here before. You haven't recorded what helped yet — adding that now means your record will have it next time.
                 </p>
                 <button
                   onClick={() => { onOpenAddEvent(results.matchedRegions[0]); handleClose(); }}

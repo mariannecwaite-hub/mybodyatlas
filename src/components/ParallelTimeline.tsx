@@ -8,6 +8,7 @@ const typeDotColors: Record<EventType, string> = {
   stress: "bg-body-tension",
   treatment: "bg-body-healing",
   "life-event": "bg-body-neutral",
+  "safety-experience": "bg-body-neutral",
 };
 
 const typeLabels: Record<EventType, string> = {
@@ -16,6 +17,7 @@ const typeLabels: Record<EventType, string> = {
   stress: "Stress",
   treatment: "Treatment",
   "life-event": "Transition",
+  "safety-experience": "Experience",
 };
 
 const THREE_MONTHS = 90 * 24 * 60 * 60 * 1000;

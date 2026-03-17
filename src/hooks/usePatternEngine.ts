@@ -75,7 +75,7 @@ export function usePatternEngine(
       regionYears[r] = new Set(evts.map((e) => new Date(e.date).getFullYear()));
     });
 
-    const stressAndLifeEvents = events.filter((e) => e.type === "stress" || e.type === "life-event");
+    const stressAndLifeEvents = events.filter((e) => e.type === "stress" || e.type === "life-event" || e.type === "safety-experience");
     const treatmentEvents = events.filter((e) => e.type === "treatment");
 
     // ── Type 1: Origin Reframe — now with specific event names ──
@@ -104,7 +104,7 @@ export function usePatternEngine(
           insights.push({
             id: `origin-${currentRegion}-${originRegion}`,
             type: "origin_reframe",
-            title: "An earlier chapter",
+            title: "Your body has been returning to this",
             body: `Your ${regionLabel(currentRegion)} story may start earlier than you think. In ${originYear}, you recorded "${earliestOrigin.title.toLowerCase()}" — and in ${currentYear}, "${earliestCurrent.title.toLowerCase()}" appeared. These two areas are often connected, and it may be worth wondering whether they're part of the same story. Based on what you've recorded so far.`,
             tone: "sage",
             regionLabel: REGION_LABELS[currentRegion] ?? currentRegion,
@@ -141,7 +141,7 @@ export function usePatternEngine(
         insights.push({
           id: "stress-body",
           type: "stress_body",
-          title: "Your body and your life",
+          title: "Your nervous system may still be holding some of this",
           body: `In ${stressYear}, "${bestStress.title.toLowerCase()}" was happening — and "${bestPhysical.title.toLowerCase()}" appeared around the same time. Some of these arrived during harder times — your body often carries what life brings. Based on what you've recorded so far.`,
           tone: "lavender",
           regionLabel: "Stress & body",
@@ -168,8 +168,8 @@ export function usePatternEngine(
       insights.push({
         id: `recurring-${region}`,
         type: "recurring_pattern",
-        title: "A thread through time",
-        body: `Your ${regionLabel(region)} story starts in ${sortedYears[0]} with "${firstEvt.title.toLowerCase()}" and reaches ${sortedYears[sortedYears.length - 1]} — "${lastEvt.title.toLowerCase()}". Your body has been saying something here for a while. Based on what you've recorded so far.`,
+        title: "Your body has been saying something here for a while",
+        body: `Your ${regionLabel(region)} has a story — it starts in ${sortedYears[0]} with "${firstEvt.title.toLowerCase()}" and reaches ${sortedYears[sortedYears.length - 1]} — "${lastEvt.title.toLowerCase()}". This area has been speaking up. Based on what you've recorded so far.`,
         tone: "warm",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
@@ -195,8 +195,8 @@ export function usePatternEngine(
       insights.push({
         id: `care-gap-${region}`,
         type: "care_gap",
-        title: "Worth exploring",
-        body: `Your ${regionLabel(region)} has been part of your record since ${firstYear} — starting with "${firstEvt.title.toLowerCase()}" — but doesn't yet have any treatment logged alongside it. That might be worth exploring. Based on what you've recorded so far.`,
+        title: "This area has a story",
+        body: `Your ${regionLabel(region)} has been speaking up since ${firstYear} — starting with "${firstEvt.title.toLowerCase()}" — but doesn't yet have any treatment logged alongside it. That might be worth exploring when you're ready. Based on what you've recorded so far.`,
         tone: "sage",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
@@ -212,7 +212,7 @@ export function usePatternEngine(
         id: "growing",
         type: "fallback",
         title: "Your map is growing",
-        body: "As you add more experiences, we may gently surface connections you might not have noticed. There's no rush.",
+        body: "As you add more experiences, your body's patterns may gently surface here. There's no rush — your record will hold everything.",
         tone: "sage",
         regionLabel: "Getting started",
         relatedRegions: [],

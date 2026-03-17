@@ -27,6 +27,7 @@ const typeLabels: Record<EventType, string> = {
   stress: "Stress periods",
   treatment: "Treatments explored",
   "life-event": "Life transitions",
+  "safety-experience": "Experiences",
 };
 
 type Step = "story" | "configure" | "preview";

@@ -3,7 +3,7 @@ import { useApp, BodyRegion, REGION_LABELS, EventType, REGION_A11Y } from "@/con
 import { X, Plus, Link2 } from "lucide-react";
 
 const typeIcons: Record<EventType, string> = {
-  injury: "🩹", symptom: "💭", stress: "🌊", treatment: "🌿", "life-event": "⭐",
+  injury: "🩹", symptom: "💭", stress: "🌊", treatment: "🌿", "life-event": "⭐", "safety-experience": "⭐",
 };
 
 /** Biomechanical connections between regions */
