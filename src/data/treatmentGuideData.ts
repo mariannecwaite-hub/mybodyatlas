@@ -134,10 +134,10 @@ export const treatments: TreatmentGuideEntry[] = [
   {
     id: "gp",
     name: "General Practitioner",
-    description: "A doctor who provides primary healthcare, manages a wide range of conditions and coordinates referrals to specialists when needed.",
-    situations: ["First point of contact for new symptoms", "Ongoing management of health conditions", "Medication review and prescribing", "Referrals to specialist care"],
+    description: "A doctor who provides primary healthcare, manages a wide range of experiences and coordinates referrals to specialists when needed.",
+    situations: ["First point of contact for new sensations", "Ongoing management of health experiences", "Medication review and prescribing", "Referrals to specialist care"],
     practitioner: "NHS or private GP",
-    approach: "Consultation-based care involving assessment, diagnosis, treatment and referral. Appointments typically 10–15 minutes. May include examination, blood tests, prescriptions or onward referral.",
+    approach: "Consultation-based care involving assessment, observation, treatment and referral. Appointments typically 10–15 minutes. May include examination, blood tests, prescriptions or onward referral.",
     category: "Medical Specialists",
   },
   {
