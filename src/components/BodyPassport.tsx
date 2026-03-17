@@ -609,10 +609,11 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                 Your body story belongs to you
               </p>
               <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
-                This passport reflects what you've chosen to record so far.
-                Nothing is shared unless you choose to share it.
+                You chose what to include. Nothing is shared without your decision.
               </p>
             </motion.div>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}
