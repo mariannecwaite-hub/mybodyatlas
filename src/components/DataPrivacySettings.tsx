@@ -137,7 +137,7 @@ const DataPrivacySettings = ({ open, onClose }: DataPrivacySettingsProps) => {
                       exit={{ opacity: 0, height: 0 }}
                     >
                       <p className="text-[12px] text-foreground/65 leading-relaxed">
-                        You can choose to contribute anonymised insights to help researchers understand long-term health patterns.
+                        You can choose to contribute anonymised patterns to help build collective understanding of women's health experiences.
                       </p>
                       <p className="text-[11px] text-muted-foreground/40 mt-2 leading-relaxed">
                         Your identity is never shared. Only aggregated, anonymous patterns are used. You can withdraw at any time.
