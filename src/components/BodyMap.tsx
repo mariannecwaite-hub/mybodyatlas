@@ -173,37 +173,32 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
       <div className="relative w-full max-w-[300px] sm:max-w-[320px] mx-auto">
         <div className="absolute -inset-10 body-ambient rounded-full pointer-events-none opacity-60" />
 
-        <svg
-          viewBox="20 -2 160 460"
+        <BodySilhouetteFigure
           className="relative z-10 w-full"
           style={{ filter: "drop-shadow(0 8px 32px hsl(158 16% 88% / 0.15))" }}
           role="group"
           aria-label={`Body map — ${view} view`}
+          extraDefs={
+            <>
+              <linearGradient id="regionHover" x1="0.5" y1="0" x2="0.5" y2="1">
+                <stop offset="0%" stopColor="hsl(40 10% 88%)" />
+                <stop offset="100%" stopColor="hsl(40 8% 84%)" />
+              </linearGradient>
+              <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="7" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+              <filter id="selectedGlow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="12" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+              <filter id="connectionGlow" x="-100%" y="-100%" width="300%" height="300%">
+                <feGaussianBlur stdDeviation="4" result="b" />
+                <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+              </filter>
+            </>
+          }
         >
-          <defs>
-            <linearGradient id="bodyFill2" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(40 10% 93%)" />
-              <stop offset="100%" stopColor="hsl(40 8% 88%)" />
-            </linearGradient>
-            <linearGradient id="regionHover" x1="0.5" y1="0" x2="0.5" y2="1">
-              <stop offset="0%" stopColor="hsl(40 10% 88%)" />
-              <stop offset="100%" stopColor="hsl(40 8% 84%)" />
-            </linearGradient>
-            <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="7" result="b" />
-              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="selectedGlow" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="12" result="b" />
-              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-            <filter id="connectionGlow" x="-100%" y="-100%" width="300%" height="300%">
-              <feGaussianBlur stdDeviation="4" result="b" />
-              <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
-            </filter>
-          </defs>
-
-          <path d={bodySilhouetteFront} fill="url(#bodyFill2)" stroke="hsl(var(--body-stroke))" strokeWidth="0.4" strokeLinejoin="round" />
 
 
           {view === "front" && (
