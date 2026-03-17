@@ -4,6 +4,7 @@ import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
+import CollectivePatternNote from "@/components/CollectivePatternNote";
 
 const MAX_INSIGHTS = 2;
 
