@@ -337,7 +337,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                         const pos = regionPos[regionId];
                                         if (!pos) return null;
                                         const count = regionCounts[regionId] || 0;
-                                        const evts = visibleEvents.filter((e) => e.regions.includes(regionId as BodyRegion));
+                                        const evts = filteredEvents.filter((e) => e.regions.includes(regionId as BodyRegion));
                                         const primaryType = evts[0]?.type || "symptom";
                                         return (
                                           <motion.div
