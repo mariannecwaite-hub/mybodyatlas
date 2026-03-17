@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
