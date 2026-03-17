@@ -74,7 +74,7 @@ export function useBodyThreads(events: BodyEvent[]): BodyThread[] {
         threads.push({
           id: `thread-${groupId}`,
           label: group.label,
-          description: `${groupEvents.length} experiences across your ${regionNames.join(", ")}${touchedRegions.length > 3 ? ` and ${touchedRegions.length - 3} more areas` : ""}.`,
+          description: `${groupEvents.length} recorded experiences across your ${regionNames.join(", ")}${touchedRegions.length > 3 ? ` and ${touchedRegions.length - 3} more areas` : ""}.`,
           eventIds: groupEvents.map((e) => e.id),
           regions: touchedRegions,
           yearSpan: getYearSpan(groupEvents),
@@ -84,18 +84,18 @@ export function useBodyThreads(events: BodyEvent[]): BodyThread[] {
       }
     }
 
-    // 2. Stress-body thread — stress events temporally near symptom events
+    // 2. Stress-body thread — stress events temporally near physical experiences
     const stressEvents = events.filter((e) => e.type === "stress");
-    const symptomEvents = events.filter((e) => e.type === "symptom");
+    const experienceEvents = events.filter((e) => e.type === "symptom");
 
-    if (stressEvents.length >= 1 && symptomEvents.length >= 1) {
+    if (stressEvents.length >= 1 && experienceEvents.length >= 1) {
       const stressRanges = stressEvents.map((e) => ({
         start: new Date(e.date).getTime(),
         end: e.ongoing ? Date.now() : new Date(e.date).getTime() + 180 * 86400000,
         event: e,
       }));
 
-      const overlapping = symptomEvents.filter((s) => {
+      const overlapping = experienceEvents.filter((s) => {
         const t = new Date(s.date).getTime();
         return stressRanges.some((sr) => t >= sr.start - 30 * 86400000 && t <= sr.end);
       });
@@ -107,7 +107,7 @@ export function useBodyThreads(events: BodyEvent[]): BodyThread[] {
         threads.push({
           id: "thread-stress-body",
           label: "Stress & Body Response",
-          description: `Sensations that appeared during or near periods of life stress.`,
+          description: `Experiences that appeared during or near periods of stress in your record.`,
           eventIds: allThreadEvents.map((e) => e.id),
           regions: allRegions,
           yearSpan: getYearSpan(allThreadEvents),
@@ -124,7 +124,7 @@ export function useBodyThreads(events: BodyEvent[]): BodyThread[] {
       threads.push({
         id: "thread-care-journey",
         label: "Your Care Journey",
-        description: `${treatmentEvents.length} different approaches you've explored over time.`,
+        description: `${treatmentEvents.length} different approaches you've recorded exploring over time.`,
         eventIds: treatmentEvents.map((e) => e.id),
         regions: relatedRegions,
         yearSpan: getYearSpan(treatmentEvents),
@@ -140,7 +140,7 @@ export function useBodyThreads(events: BodyEvent[]): BodyThread[] {
       threads.push({
         id: "thread-life-transitions",
         label: "Life Transitions",
-        description: `${lifeEvents.length} significant moments that shaped your body's story.`,
+        description: `${lifeEvents.length} moments you've recorded that may have shaped your body's story.`,
         eventIds: lifeEvents.map((e) => e.id),
         regions: relatedRegions,
         yearSpan: getYearSpan(lifeEvents),
