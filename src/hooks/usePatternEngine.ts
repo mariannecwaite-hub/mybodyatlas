@@ -195,8 +195,8 @@ export function usePatternEngine(
       insights.push({
         id: `care-gap-${region}`,
         type: "care_gap",
-        title: "Worth exploring",
-        body: `Your ${regionLabel(region)} has been part of your record since ${firstYear} — starting with "${firstEvt.title.toLowerCase()}" — but doesn't yet have any treatment logged alongside it. That might be worth exploring. Based on what you've recorded so far.`,
+        title: "This area has a story",
+        body: `Your ${regionLabel(region)} has been speaking up since ${firstYear} — starting with "${firstEvt.title.toLowerCase()}" — but doesn't yet have any treatment logged alongside it. That might be worth exploring when you're ready. Based on what you've recorded so far.`,
         tone: "sage",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
