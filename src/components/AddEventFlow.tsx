@@ -116,13 +116,26 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
             </div>
 
             <div className="space-y-6">
+              {/* Safety experience acknowledgement */}
+              {isSafetyExperience && (
+                <motion.p
+                  className="text-[16px] italic leading-[1.75] text-center max-w-sm mx-auto"
+                  style={{ color: "#6B6960", fontFamily: "'DM Serif Display', serif" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  These experiences can have lasting effects on the body and nervous system. You only need to record what feels right. You can be as specific or as general as you choose — or simply mark that it happened.
+                </motion.p>
+              )}
+
               <div>
                 <label className="section-label mb-2.5 block">What kind?</label>
                 <div className="flex flex-wrap gap-2">
                   {eventTypes.map((et) => (
                     <button key={et.type} onClick={() => setType(et.type)}
-                      className={`chip ${type === et.type ? "chip-active" : "chip-inactive"}`}>
-                      <span className="text-sm">{et.icon}</span> {et.label}
+                      className={`chip ${type === et.type ? "chip-active" : "chip-inactive"} ${et.type === "safety-experience" ? "text-[11px] col-span-2" : ""}`}>
+                      {et.icon && <span className="text-sm">{et.icon}</span>} {et.label}
                     </button>
                   ))}
                 </div>
