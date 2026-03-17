@@ -386,7 +386,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                   ))
                                 ) : (
                                   <p className="text-[12px] text-muted-foreground/40 text-center py-4">
-                                    Add more events to discover patterns in your body story.
+                                    As you record more experiences, patterns may emerge here.
                                   </p>
                                 )}
 
