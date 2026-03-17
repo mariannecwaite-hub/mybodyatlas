@@ -494,7 +494,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                       No treatments recorded yet.
                                     </p>
                                     <p className="text-[11px] text-muted-foreground/30 mt-1">
-                                      As you log treatments, they'll appear here in your care journey.
+                                      As you log treatments, they'll appear here.
                                     </p>
                                   </div>
                                 )}
