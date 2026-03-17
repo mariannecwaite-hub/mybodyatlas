@@ -141,7 +141,7 @@ export function usePatternEngine(
         insights.push({
           id: "stress-body",
           type: "stress_body",
-          title: "Your body and your life",
+          title: "Your nervous system may still be holding some of this",
           body: `In ${stressYear}, "${bestStress.title.toLowerCase()}" was happening — and "${bestPhysical.title.toLowerCase()}" appeared around the same time. Some of these arrived during harder times — your body often carries what life brings. Based on what you've recorded so far.`,
           tone: "lavender",
           regionLabel: "Stress & body",
