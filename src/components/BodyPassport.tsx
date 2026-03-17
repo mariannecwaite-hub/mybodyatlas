@@ -29,6 +29,7 @@ const typeColor: Record<EventType, string> = {
   stress: "var(--body-tension)",
   treatment: "var(--body-healing)",
   "life-event": "var(--body-neutral)",
+  "safety-experience": "var(--body-neutral)",
 };
 
 const typeDotClass: Record<EventType, string> = {
@@ -37,11 +38,12 @@ const typeDotClass: Record<EventType, string> = {
   stress: "bg-body-tension",
   treatment: "bg-body-healing",
   "life-event": "bg-body-neutral",
+  "safety-experience": "bg-body-neutral",
 };
 
 const typeLabel: Record<EventType, string> = {
   injury: "Injury", symptom: "Sensation", stress: "Stress period",
-  treatment: "Treatment", "life-event": "Life transition",
+  treatment: "Treatment", "life-event": "Life transition", "safety-experience": "Experience",
 };
 
 type Section = "map" | "timeline" | "patterns" | "care";

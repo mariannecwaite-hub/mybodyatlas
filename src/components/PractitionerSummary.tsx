@@ -56,6 +56,7 @@ const PractitionerSummary = ({ open, onClose }: PractitionerSummaryProps) => {
         stress: "Stress period",
         treatment: "Treatment",
         "life-event": "Life transition",
+        "safety-experience": "Experience",
       };
       return { age, year, title: e.title, type: typeLabel[e.type] || e.type };
     });
