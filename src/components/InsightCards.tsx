@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useApp, REGION_LABELS } from "@/context/AppContext";
+import { useApp, REGION_LABELS, BodyRegion } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
 import CollectivePatternNote from "@/components/CollectivePatternNote";
+import UnsafeExperienceInsight from "@/components/UnsafeExperienceInsight";
+import DismissalInsight from "@/components/DismissalInsight";
 
 const MAX_INSIGHTS = 2;
 
