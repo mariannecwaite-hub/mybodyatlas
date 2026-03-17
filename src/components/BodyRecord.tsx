@@ -45,7 +45,7 @@ const BodyRecord = () => {
     },
     {
       icon: Lightbulb,
-      label: "Patterns found",
+      label: "Patterns noticed",
       value: meaningfulInsights.length,
       sub: "worth noticing",
       tone: "bg-lavender/12 border-lavender/18",
