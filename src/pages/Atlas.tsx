@@ -323,6 +323,7 @@ const Atlas = () => {
       <TreatmentGuide open={showTreatmentGuide} onClose={() => setShowTreatmentGuide(false)} />
       <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
       <ReturnPrompt />
+      <AhaMoment />
     </div>
   );
 };
