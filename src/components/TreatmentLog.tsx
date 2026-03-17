@@ -110,6 +110,7 @@ const TreatmentLog = ({ open, onClose }: TreatmentLogProps) => {
                     </div>
                   </div>
 
+                  <button onClick={handleSave} disabled={!selectedEventId || !entry.trim()} className="btn-primary">
                     Save treatment log
                   </button>
                 </div>
