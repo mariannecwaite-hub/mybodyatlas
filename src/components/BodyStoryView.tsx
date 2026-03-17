@@ -310,10 +310,10 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                   transition={{ duration: 0.5 }}
                 >
                   <p className="text-[15px] font-serif text-foreground/80">
-                    {visibleEvents.length} experiences across {activeRegions.size} areas of your body
+                    {visibleEvents.length} recorded experiences across {activeRegions.size} areas
                   </p>
                   <p className="text-[12px] text-muted-foreground/50 leading-relaxed">
-                    Spanning {span} · {threads.length > 0 ? `${threads.length} connecting threads` : "patterns emerging"}
+                    Spanning {span} · from what you've mapped so far
                   </p>
 
                   {visibleInsights.length > 0 && (
