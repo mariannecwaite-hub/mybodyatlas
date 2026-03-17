@@ -4,6 +4,8 @@ import { useApp, REGION_LABELS, EventType, BodyRegion, BodyEvent } from "@/conte
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import BodyThreads from "@/components/BodyThreads";
+import UnsafeExperienceInsight from "@/components/UnsafeExperienceInsight";
+import DismissalInsight from "@/components/DismissalInsight";
 import { Lock, FileText, Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
@@ -358,6 +360,34 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         {visibleInsights.length > 0 ? (
           <div className="space-y-3">
             {visibleInsights.map((insight, idx) => {
+              // ── Unsafe experience — distinct treatment ──
+              if (insight.type === "unsafe_experience") {
+                return (
+                  <UnsafeExperienceInsight
+                    key={insight.id}
+                    regions={insight.relatedRegions}
+                    timingDescription={insight.timingDescription || "appeared around this time"}
+                  />
+                );
+              }
+
+              // ── Dismissal insight ──
+              if (insight.type === "dismissal") {
+                const dismissalEventId = insight.relatedEventIds[0];
+                const dismissalEvent = visibleEvents.find((e) => e.id === dismissalEventId);
+                if (!dismissalEvent) return null;
+                const followingEvents = visibleEvents.filter((e) =>
+                  insight.followingEventIds?.includes(e.id)
+                );
+                return (
+                  <DismissalInsight
+                    key={insight.id}
+                    dismissalEvent={dismissalEvent}
+                    followingEvents={followingEvents}
+                  />
+                );
+              }
+
               const isSaved = savedPatterns.includes(insight.id);
               const isActive = state.activeInsightId === insight.id;
               const isEditingThis = editingNote === insight.id;

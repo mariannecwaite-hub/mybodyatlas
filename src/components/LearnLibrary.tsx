@@ -6,6 +6,7 @@ import TreatmentGuide from "@/components/TreatmentGuide";
 interface LearnLibraryProps { open: boolean; onClose: () => void; }
 
 const articles = [
+  { title: "Why your body remembers what your mind has moved on from", summary: "Experiences that affect how safe you feel can leave lasting traces in the nervous system and physical body — even years later. Understanding this can be a first step.", category: "Body & Safety", readTime: "4 min" },
   { title: "Understanding body patterns", summary: "Our bodies often communicate through repeating patterns. Learning to notice them can be a gentle first step.", category: "Awareness", readTime: "3 min" },
   { title: "Stress and the nervous system", summary: "Stress doesn't just live in our minds. Here's how it can show up physically — and what that might mean for you.", category: "Connection", readTime: "4 min" },
   { title: "The value of tracking", summary: "Keeping a record isn't about perfection. It's about giving your future self context and compassion.", category: "Practice", readTime: "2 min" },

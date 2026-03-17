@@ -227,12 +227,6 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
               <div>
                 <label className="section-label mb-2 block">Personal notes <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
                 <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Anything else you'd like to note..." rows={2} className="field-input resize-none" />
-              </div>
-
-              <div>
-                <label className="section-label mb-2 block">Personal notes <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
-                <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
                   placeholder={isSafetyExperience ? "Whatever you want to record..." : "Anything else you'd like to note..."} rows={2} className="field-input resize-none" />
               </div>
 

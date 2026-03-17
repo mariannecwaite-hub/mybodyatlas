@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { useApp, REGION_LABELS, BodyRegion } from "@/context/AppContext";
 import { ContributionSettings } from "./CollectiveConsent";
+import AtlasSymbol from "@/components/AtlasSymbol";
 
 interface CollectiveAtlasProps {
   open: boolean;
@@ -124,6 +125,9 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.6 }}
             >
+              <div className="flex items-center gap-3 mb-3">
+                <AtlasSymbol size={24} />
+              </div>
               <h2 className="text-[28px] font-serif leading-tight" style={{ color: "#2A2A28" }}>
                 What we're learning together
               </h2>

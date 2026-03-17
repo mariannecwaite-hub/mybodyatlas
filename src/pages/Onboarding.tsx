@@ -251,6 +251,7 @@ const Onboarding = () => {
   const [step, setStep] = useState(0);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customYears, setCustomYears] = useState<Record<string, number>>({});
+  const [dismissalAck, setDismissalAck] = useState(false);
   const navigate = useNavigate();
   const { addEvent, completeOnboarding } = useApp();
 
@@ -410,10 +411,18 @@ const Onboarding = () => {
                     const year = customYears[card.id] ?? card.defaultYear;
                     const isWomensHealth = current.id === "womens-health";
                     const isSafetyCard = card.id === "wh15";
+                    const isDismissalCard = card.id === "wh10";
                     return (
                       <motion.button
                         key={card.id}
-                        onClick={() => toggleCard(card)}
+                        onClick={() => {
+                          toggleCard(card);
+                          // Dismissal acknowledgement
+                          if (isDismissalCard && !selectedIds.has(card.id)) {
+                            setDismissalAck(true);
+                            setTimeout(() => setDismissalAck(false), 2500);
+                          }
+                        }}
                         className={`relative text-left p-4 rounded-2xl border transition-colors duration-300 ${
                           isSelected
                             ? "bg-sage/15 border-sage/30"
@@ -486,6 +495,21 @@ const Onboarding = () => {
                     );
                   })}
                 </div>
+                {/* Dismissal acknowledgement */}
+                <AnimatePresence>
+                  {dismissalAck && (
+                    <motion.p
+                      className="text-[15px] italic text-center mt-4 max-w-xs mx-auto"
+                      style={{ color: "#6B6960", fontFamily: "'DM Serif Display', serif" }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      This is worth recording. It is part of your body story.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
 

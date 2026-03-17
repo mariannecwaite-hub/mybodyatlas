@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "@/context/AppContext";
 import { Switch } from "@/components/ui/switch";
+import AtlasSymbol from "@/components/AtlasSymbol";
 
 interface CollectiveConsentProps {
   open: boolean;
@@ -53,6 +54,9 @@ const CollectiveConsent = ({ open, onClose, onContribute }: CollectiveConsentPro
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
+            {/* Atlas symbol */}
+            <AtlasSymbol size={32} className="mb-4" />
+
             {/* Small label */}
             <p className="text-[11px] font-medium uppercase tracking-[0.25em] mb-8" style={{ color: "#A8A59E" }}>
               Something bigger
@@ -102,14 +106,15 @@ const CollectiveConsent = ({ open, onClose, onContribute }: CollectiveConsentPro
               <button
                 onClick={handleContribute}
                 disabled={!anyEnabled}
-                className="w-full py-3.5 rounded-full border-2 text-[14px] font-medium transition-all duration-300 disabled:opacity-30"
+                className="w-full py-3.5 rounded-full border-2 text-[14px] font-medium transition-all duration-300 disabled:opacity-30 flex items-center justify-center gap-2"
                 style={{
                   borderColor: "hsl(158, 18%, 30%)",
                   color: "hsl(158, 18%, 30%)",
                   background: "transparent",
                 }}
               >
-                Add my patterns to the collective
+                <AtlasSymbol size={16} />
+                Contribute to the Atlas
               </button>
               <button
                 onClick={handleDismiss}

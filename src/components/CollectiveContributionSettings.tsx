@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { ContributionSettings } from "./CollectiveConsent";
+import AtlasSymbol from "@/components/AtlasSymbol";
 
 interface CollectiveContributionSettingsProps {
   className?: string;
@@ -42,7 +43,10 @@ const CollectiveContributionSettings = ({ className }: CollectiveContributionSet
   if (!isContributing) {
     return (
       <div className={className}>
-        <p className="section-label mb-2">Collective Atlas contribution</p>
+        <div className="flex items-center gap-2 mb-2">
+          <AtlasSymbol size={16} />
+          <p className="section-label">Contribute to the Atlas</p>
+        </div>
         <p className="text-[12px] text-muted-foreground/45 leading-relaxed">
           You haven't contributed to the Collective Atlas yet. This option will appear once you choose to add your patterns.
         </p>
@@ -52,7 +56,10 @@ const CollectiveContributionSettings = ({ className }: CollectiveContributionSet
 
   return (
     <div className={className}>
-      <p className="section-label mb-3">Collective Atlas contribution</p>
+      <div className="flex items-center gap-2 mb-3">
+        <AtlasSymbol size={16} />
+        <p className="section-label">Contribute to the Atlas</p>
+      </div>
       <div className="space-y-3">
         <SettingToggle label="Body region patterns" checked={settings.regionPatterns} onChange={(v) => updateSetting("regionPatterns", v)} />
         <SettingToggle label="Life transitions and timing" checked={settings.lifeTransitions} onChange={(v) => updateSetting("lifeTransitions", v)} />

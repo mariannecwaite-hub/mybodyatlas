@@ -77,6 +77,19 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     new Set(["injury", "symptom", "treatment", "stress", "life-event", "patterns"])
   );
   const [hasConfirmedFilters, setHasConfirmedFilters] = useState(false);
+  const [includeDismissalContext, setIncludeDismissalContext] = useState(false);
+  const [showDismissalPrompt, setShowDismissalPrompt] = useState(false);
+
+  // Detect dismissal events in the record
+  const hasDismissalEvent = useMemo(() =>
+    visibleEvents.some((e) =>
+      e.title.toLowerCase().includes("dismissed") ||
+      e.title.toLowerCase().includes("disbelieved") ||
+      e.title.toLowerCase().includes("not taken seriously") ||
+      e.description?.toLowerCase().includes("dismissed")
+    ),
+    [visibleEvents]
+  );
 
   const toggleFilter = (f: PassportFilter) => {
     setActiveFilters((prev) => {
@@ -227,6 +240,33 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                     </button>
                   ))}
                 </div>
+                {/* Dismissal context prompt */}
+                {hasDismissalEvent && (
+                  <div className="rounded-2xl p-4 bg-warm/8 border border-warm/15 space-y-3">
+                    <p className="text-[13px] text-foreground/65 leading-relaxed">
+                      Your record includes an experience of being dismissed or disbelieved. Would you like to include a brief note of context for the practitioner you're sharing this with?
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setIncludeDismissalContext(true)}
+                        className={`flex-1 py-2.5 rounded-xl text-[12px] font-medium transition-all duration-200 ${
+                          includeDismissalContext ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-foreground/60"
+                        }`}
+                      >
+                        Yes, include context
+                      </button>
+                      <button
+                        onClick={() => setIncludeDismissalContext(false)}
+                        className={`flex-1 py-2.5 rounded-xl text-[12px] font-medium transition-all duration-200 ${
+                          !includeDismissalContext ? "bg-secondary/80 text-foreground/60" : "bg-secondary/40 text-muted-foreground/50"
+                        }`}
+                      >
+                        No thank you
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <button
                   onClick={() => setHasConfirmedFilters(true)}
                   className="btn-primary"
@@ -599,6 +639,23 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                 );
               })}
             </div>
+
+            {/* Dismissal context — in the user's voice */}
+            {includeDismissalContext && hasDismissalEvent && (
+              <motion.div
+                className="rounded-2xl p-5 bg-warm/8 border border-warm/15"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55, duration: 0.5 }}
+              >
+                <p className="text-[10px] text-muted-foreground/40 uppercase tracking-wider font-medium mb-3">
+                  A note on my care history
+                </p>
+                <p className="text-[14px] font-serif italic text-foreground/70 leading-[1.8]">
+                  My body history includes a period when my experiences were not taken seriously by a healthcare professional. I am sharing this record because I believe a fuller picture of my history will help make our conversation more useful. I welcome being listened to.
+                </p>
+              </motion.div>
+            )}
 
             {/* Footer */}
             <motion.div
