@@ -75,7 +75,7 @@ export function usePatternEngine(
       regionYears[r] = new Set(evts.map((e) => new Date(e.date).getFullYear()));
     });
 
-    const stressAndLifeEvents = events.filter((e) => e.type === "stress" || e.type === "life-event");
+    const stressAndLifeEvents = events.filter((e) => e.type === "stress" || e.type === "life-event" || e.type === "safety-experience");
     const treatmentEvents = events.filter((e) => e.type === "treatment");
 
     // ── Type 1: Origin Reframe — now with specific event names ──
