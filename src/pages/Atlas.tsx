@@ -246,7 +246,7 @@ const Atlas = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <TimelineView onNavigateToBody={() => setActiveTab("body")} onNavigateToStory={() => setActiveTab("story")} />
+              <ParallelTimeline onNavigateToBody={() => setActiveTab("body")} onNavigateToStory={() => setActiveTab("story")} />
             </motion.div>
           )}
 
