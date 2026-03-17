@@ -456,7 +456,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                             )}
 
                             {/* ── 3. Patterns Worth Noticing ── */}
-                            {section.id === "patterns" && (
+                            {section.id === "patterns" && showPatterns && (
                               <div className="space-y-3">
                                 {patternObservations.length > 0 ? (
                                   patternObservations.map((obs, i) => (
