@@ -168,8 +168,8 @@ export function usePatternEngine(
       insights.push({
         id: `recurring-${region}`,
         type: "recurring_pattern",
-        title: "A thread through time",
-        body: `Your ${regionLabel(region)} story starts in ${sortedYears[0]} with "${firstEvt.title.toLowerCase()}" and reaches ${sortedYears[sortedYears.length - 1]} — "${lastEvt.title.toLowerCase()}". Your body has been saying something here for a while. Based on what you've recorded so far.`,
+        title: "Your body has been saying something here for a while",
+        body: `Your ${regionLabel(region)} has a story — it starts in ${sortedYears[0]} with "${firstEvt.title.toLowerCase()}" and reaches ${sortedYears[sortedYears.length - 1]} — "${lastEvt.title.toLowerCase()}". This area has been speaking up. Based on what you've recorded so far.`,
         tone: "warm",
         regionLabel: REGION_LABELS[region] ?? region,
         relatedRegions: [region],
