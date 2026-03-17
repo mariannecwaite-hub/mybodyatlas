@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { ContributionSettings } from "./CollectiveConsent";
+import AtlasSymbol from "@/components/AtlasSymbol";
 
 interface CollectiveContributionSettingsProps {
   className?: string;
