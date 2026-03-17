@@ -360,7 +360,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                     transition={{ delay: 0.15 }}
                   >
                     <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-muted-foreground/45 mb-4">
-                      What helped last time
+                       WHAT HELPED LAST TIME
                     </h3>
                     <div className="space-y-3">
                       {results.helped.map((e) => (
