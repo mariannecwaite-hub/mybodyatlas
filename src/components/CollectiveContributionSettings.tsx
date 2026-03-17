@@ -48,7 +48,7 @@ const CollectiveContributionSettings = ({ className }: CollectiveContributionSet
           <p className="section-label">The Collective</p>
         </div>
         <p className="text-[12px] text-muted-foreground/45 leading-relaxed">
-          You haven't contributed to the Collective Atlas yet. This option will appear once you choose to add your patterns.
+          You haven't contributed to the Collective yet. This option will appear once you choose to contribute your patterns.
         </p>
       </div>
     );
