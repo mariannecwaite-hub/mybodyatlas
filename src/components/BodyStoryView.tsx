@@ -593,27 +593,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         />
       </motion.section>
 
-      {/* Privacy notice */}
-      <AnimatePresence>
-        {!privacyDismissed && (
-          <motion.div
-            className="flex items-center gap-2 px-3 py-2 rounded-full bg-sage/8 border border-sage/12 w-fit mx-auto"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ delay: 0.5, duration: 0.4 }}
-          >
-            <Lock className="w-3 h-3 text-sage-foreground/35" />
-            <span className="text-[10px] text-muted-foreground/45">Your body story is private</span>
-            <button
-              onClick={() => { setPrivacyDismissed(true); try { localStorage.setItem("body-story-privacy-seen", "true"); } catch {} }}
-              className="ml-1 p-0.5 rounded-full hover:bg-secondary/40 transition-colors"
-            >
-              <XIcon className="w-2.5 h-2.5 text-muted-foreground/25" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      
 
       {/* Collective Atlas link */}
       {onOpenCollective && (
