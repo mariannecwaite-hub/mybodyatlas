@@ -200,23 +200,6 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
           }
         >
 
-
-          {view === "front" && (
-            <>
-              <path d="M72,92 Q100,86 128,92" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.18" />
-              <line x1="100" y1="92" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.08" />
-            </>
-          )}
-          {view === "back" && (
-            <>
-              <line x1="100" y1="80" x2="100" y2="240" stroke="hsl(var(--body-stroke))" strokeWidth="0.25" opacity="0.14" />
-              <path d="M76,104 Q84,114 80,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
-              <path d="M124,104 Q116,114 120,130" fill="none" stroke="hsl(var(--body-stroke))" strokeWidth="0.2" opacity="0.12" />
-            </>
-          )}
-
-          <line x1="66" y1="160" x2="134" y2="160" stroke="hsl(var(--body-stroke))" strokeWidth="0.15" opacity="0.1" />
-
           {/* Connection lines between highlighted regions */}
           {activeConnections.map(([a, b], i) => {
             const ra = regionMap.get(a);
