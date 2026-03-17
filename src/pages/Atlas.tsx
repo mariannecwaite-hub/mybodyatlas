@@ -81,6 +81,30 @@ const Atlas = () => {
   const [showTreatmentGuide, setShowTreatmentGuide] = useState(false);
   const [showPassport, setShowPassport] = useState(false);
   const [preselectedRegion, setPreselectedRegion] = useState<BodyRegion | undefined>();
+  const [showCollectiveConsent, setShowCollectiveConsent] = useState(false);
+  const [showCollectiveAtlas, setShowCollectiveAtlas] = useState(false);
+  const [hasViewedStory, setHasViewedStory] = useState(false);
+
+  // Track story views for consent trigger
+  useEffect(() => {
+    if (activeTab === "story") setHasViewedStory(true);
+  }, [activeTab]);
+
+  // Trigger collective consent: 5+ events, viewed story, not yet shown
+  useEffect(() => {
+    if (!hasViewedStory) return;
+    if (state.events.length < 5) return;
+    try {
+      if (localStorage.getItem("collective-atlas-consented") === "true") return;
+      if (localStorage.getItem("collective-atlas-dismissed") === "true") return;
+      if (localStorage.getItem("collective-atlas-shown") === "true") return;
+    } catch {}
+    const timer = setTimeout(() => {
+      localStorage.setItem("collective-atlas-shown", "true");
+      setShowCollectiveConsent(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [hasViewedStory, state.events.length]);
 
   const handleRegionSelect = (region: BodyRegion) => {
     if (state.selectedRegion === region) {
