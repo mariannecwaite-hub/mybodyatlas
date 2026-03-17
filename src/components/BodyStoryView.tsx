@@ -506,6 +506,23 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
           <p className="section-label mb-3">Treatments explored</p>
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12">
+            {/* Treatment outcome summary */}
+            {(() => {
+              const withOutcome = treatments.filter((t) => t.treatmentOutcome && t.treatmentOutcome !== "not-sure");
+              const helped = treatments.filter((t) => t.treatmentOutcome === "helped").length;
+              if (withOutcome.length > 0) {
+                return (
+                  <div className="mb-4 pb-3 border-b border-sage/15">
+                    <p className="text-[13px] text-foreground/65 leading-relaxed italic font-serif">
+                      Of the {treatments.length} treatment{treatments.length > 1 ? "s" : ""} you've explored
+                      {helped > 0 ? `, ${helped} appear${helped === 1 ? "s" : ""} to have helped` : ""}
+                      {helped > 0 && withOutcome.length > helped ? ` — based on what you've recorded so far` : ""}.
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
             <div className="space-y-3">
               {treatments.map((t) => (
                 <div
@@ -520,6 +537,15 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                     <p className="text-[11px] text-muted-foreground/40 mt-0.5">
                       {new Date(t.date).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
                       {t.ongoing && <span className="ml-1.5 text-sage-foreground/50">· ongoing</span>}
+                      {t.treatmentOutcome && t.treatmentOutcome !== "not-sure" && (
+                        <span className={`ml-1.5 ${
+                          t.treatmentOutcome === "helped" ? "text-sage-foreground/55" :
+                          t.treatmentOutcome === "worse" ? "text-body-pain/60" :
+                          "text-muted-foreground/35"
+                        }`}>
+                          · {t.treatmentOutcome === "helped" ? "Helped" : t.treatmentOutcome === "no-change" ? "No change" : "Made things worse"}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
