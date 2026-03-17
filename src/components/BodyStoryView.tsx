@@ -167,11 +167,17 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
       {/* Philosophical framing */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
         <p className="text-[18px] font-serif italic text-center leading-[1.8] max-w-[295px] mx-auto mb-8" style={{ color: "#6B6960" }}>
-          Your body has been responding to your life — to what has happened, what has been felt, and what has been carried. This is what it has recorded.
+          {isObservational
+            ? "This is what your body has been through — what's happened, what's built up, and what's still present. It's all here now."
+            : "Your body has been responding to your life — to what has happened, what has been felt, and what has been carried. This is what it has recorded."}
         </p>
-        <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story</h2>
+        <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">
+          {isObservational ? "Your Body Record" : "Your Body Story"}
+        </h2>
         <p className="text-[13px] text-muted-foreground/45 mt-2 text-center leading-relaxed italic font-serif">
-          For many people, this is the first time their body history has been held in one place.
+          {isObservational
+            ? "For many people, this is the first time their physical history has been held in one place."
+            : "For many people, this is the first time their body history has been held in one place."}
         </p>
       </motion.div>
 
