@@ -87,12 +87,37 @@ interface OnboardingStep {
   principle?: { icon: typeof Shield; label: string };
 }
 
+/* ── Women's health suggestion cards ── */
+const womensHealthCards: SuggestionCard[] = [
+  { id: "wh1", title: "Menstrual cycle changes or irregularities", description: "Changes in cycle length, flow, or regularity.", type: "symptom", regions: ["abdomen"], defaultYear: 2018, severity: "mild" },
+  { id: "wh2", title: "Perimenopause or menopause", description: "Hot flashes, sleep changes, mood shifts, or other transitions.", type: "life-event", regions: ["abdomen", "head_jaw"], defaultYear: 2022, severity: "moderate" },
+  { id: "wh3", title: "Pregnancy, postpartum or birth experience", description: "The physical and emotional journey of pregnancy and recovery.", type: "life-event", regions: ["abdomen", "lower_back"], defaultYear: 2020, severity: "moderate" },
+  { id: "wh4", title: "Miscarriage or pregnancy loss", description: "A loss that the body carries alongside the heart.", type: "life-event", regions: ["abdomen"], defaultYear: 2019, severity: "significant" },
+  { id: "wh5", title: "Fertility treatment or challenges", description: "IVF, hormonal treatments, or the physical toll of trying.", type: "treatment", regions: ["abdomen"], defaultYear: 2020, severity: "moderate" },
+  { id: "wh6", title: "Hormonal contraception and its effects", description: "The pill, IUD, implant — and what your body noticed.", type: "treatment", regions: ["abdomen", "head_jaw"], defaultYear: 2016, severity: "mild" },
+  { id: "wh7", title: "Endometriosis or suspected endometriosis", description: "Chronic pelvic discomfort, heavy periods, or a long path to understanding.", type: "symptom", regions: ["abdomen", "lower_back"], defaultYear: 2018, severity: "significant", ongoing: true },
+  { id: "wh8", title: "PCOS or hormonal conditions", description: "Hormonal patterns that affect many systems at once.", type: "symptom", regions: ["abdomen"], defaultYear: 2017, severity: "moderate", ongoing: true },
+  { id: "wh9", title: "Thyroid changes", description: "Overactive, underactive, or fluctuating — and what your body felt.", type: "symptom", regions: ["neck"], defaultYear: 2019, severity: "moderate" },
+  { id: "wh10", title: "Being dismissed or disbelieved by a healthcare professional", description: "An experience that changed how you sought care.", type: "life-event", regions: [], defaultYear: 2018, severity: "significant" },
+  { id: "wh11", title: "A diagnosis that took years to receive", description: "The weight of not knowing — and finally being heard.", type: "life-event", regions: [], defaultYear: 2020, severity: "significant" },
+  { id: "wh12", title: "Chronic fatigue or unexplained exhaustion", description: "Tiredness that rest doesn't resolve.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2021, severity: "moderate", ongoing: true },
+  { id: "wh13", title: "Fibromyalgia or widespread discomfort", description: "When your whole body speaks at once.", type: "symptom", regions: ["neck", "shoulder_left", "shoulder_right", "lower_back"], defaultYear: 2019, severity: "significant", ongoing: true },
+  { id: "wh14", title: "Hypermobility", description: "Flexibility that comes with its own set of experiences.", type: "symptom", regions: ["knee_left", "wrist_hand_left", "shoulder_left"], defaultYear: 2015, severity: "mild", ongoing: true },
+  { id: "wh15", title: "An experience that affected how safe you felt in your body", description: "You only need to record what feels right.", type: "life-event", regions: [], defaultYear: 2015, severity: "significant" },
+];
+
 const onboardingSteps: OnboardingStep[] = [
   {
     id: "intro",
     phase: "intro",
     title: "Your body has a story",
     subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
+  },
+  {
+    id: "acknowledgement",
+    phase: "intro",
+    title: "",
+    subtitle: "",
   },
   {
     id: "privacy",
@@ -121,6 +146,13 @@ const onboardingSteps: OnboardingStep[] = [
     title: "Life transitions",
     subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
     cards: transitionCards,
+  },
+  {
+    id: "womens-health",
+    phase: "prompt",
+    title: "Your body through womanhood",
+    subtitle: "Experiences that are often overlooked but matter deeply",
+    cards: womensHealthCards,
   },
   {
     id: "treatments",
