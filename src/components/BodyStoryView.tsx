@@ -315,9 +315,24 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.6 }}
       >
-        <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
-          None of this is malfunction. Your body has been doing exactly what bodies do — responding, adapting, remembering. The question is never what is wrong with your body. It is what your body has been trying to say.
-        </p>
+        {useGroundedClosing ? (
+          <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
+            This is your physical history. The patterns in it are real. Understanding them is worth your time.
+          </p>
+        ) : (
+          <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
+            None of this is malfunction. Your body has been doing exactly what bodies do — responding, adapting, remembering. The question is never what is wrong with your body. It is what your body has been trying to say.
+          </p>
+        )}
+        {isObservational && (
+          <button
+            onClick={() => setUseGroundedClosing(!useGroundedClosing)}
+            className="mt-4 text-[11px] transition-colors duration-200"
+            style={{ color: "#A8A59E", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            {useGroundedClosing ? "Use original tone" : "Prefer a different tone?"}
+          </button>
+        )}
       </motion.div>
 
       {/* Body Map Overview */}
