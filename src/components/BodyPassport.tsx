@@ -98,9 +98,9 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     });
   };
 
-  // ── Computed data ──
-  const allRegions = [...new Set(visibleEvents.flatMap((e) => e.regions))];
-  const regionCounts = visibleEvents.flatMap((e) => e.regions).reduce((acc, r) => {
+  // ── Computed data (uses filteredEvents for user-controlled content) ──
+  const allRegions = [...new Set(filteredEvents.flatMap((e) => e.regions))];
+  const regionCounts = filteredEvents.flatMap((e) => e.regions).reduce((acc, r) => {
     acc[r] = (acc[r] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
@@ -108,10 +108,10 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const topRegions = Object.entries(regionCounts)
     .sort(([, a], [, b]) => b - a);
 
-  const years = [...new Set(visibleEvents.map((e) => new Date(e.date).getFullYear()))].sort();
+  const years = [...new Set(filteredEvents.map((e) => new Date(e.date).getFullYear()))].sort();
   const span = years.length > 1 ? `${years[0]}–${years[years.length - 1]}` : years[0]?.toString() || "—";
 
-  const sortedEvents = [...visibleEvents].sort(
+  const sortedEvents = [...filteredEvents].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
@@ -123,11 +123,11 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
     return acc;
   }, {} as Record<number, typeof sortedEvents>);
 
-  const treatments = visibleEvents.filter((e) => e.type === "treatment");
+  const treatments = filteredEvents.filter((e) => e.type === "treatment");
   const ongoingTreatments = treatments.filter((e) => e.ongoing);
   const pastTreatments = treatments.filter((e) => !e.ongoing);
 
-  const ongoingCount = visibleEvents.filter((e) => e.ongoing).length;
+  const ongoingCount = filteredEvents.filter((e) => e.ongoing).length;
 
   // Pattern observations
   const patternObservations: string[] = [];
