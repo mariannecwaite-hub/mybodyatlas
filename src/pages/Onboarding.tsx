@@ -210,7 +210,7 @@ function buildOnboardingSteps(isObservational: boolean): OnboardingStep[] {
       id: "reveal",
       phase: "reveal",
       title: isObservational ? "Your Body Record So Far" : "Your Body Story So Far",
-      subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
+      subtitle: "Here's what you've mapped so far. Your body story is just beginning.",
     },
   );
 
