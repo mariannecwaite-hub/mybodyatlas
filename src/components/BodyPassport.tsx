@@ -242,9 +242,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                 {allRegions.length > 0 && (
                                   <div className="flex justify-center">
                                   <div className="relative w-[120px] h-[170px]">
-                                      <svg viewBox="10 0 80 100" className="w-full h-full opacity-15">
-                                        <path d={miniSilhouettePath} fill="hsl(var(--foreground))" />
-                                      </svg>
+                                      <BodySilhouetteFigure className="w-full h-full opacity-15" />
                                       {allRegions.map((regionId, i) => {
                                         const pos = regionPos[regionId];
                                         if (!pos) return null;

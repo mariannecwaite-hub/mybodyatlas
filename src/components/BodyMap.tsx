@@ -350,9 +350,6 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </motion.p>
       )}
 
-      <p className="text-[10px] text-muted-foreground/30 mt-3 tracking-[0.2em] uppercase" aria-hidden="true">
-        {activeRegion ? "Tap to deselect" : "Tap to explore"}
-      </p>
     </div>
   );
 };
