@@ -80,7 +80,7 @@ const transitionCards: SuggestionCard[] = [
 const treatmentCards: SuggestionCard[] = [
   { id: "tr1", title: "Physiotherapy", description: "Structured rehabilitation with a physiotherapist.", type: "treatment", regions: ["knee_left", "lower_back"], defaultYear: 2020, severity: "mild" },
   { id: "tr2", title: "Osteopathy or chiropractic", description: "Manual therapy for alignment and movement.", type: "treatment", regions: ["lower_back", "upper_back", "neck"], defaultYear: 2019, severity: "mild" },
-  { id: "tr3", title: "Ongoing medication", description: "Regular medication for a chronic or recurring condition.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
+  { id: "tr3", title: "Ongoing medication", description: "Regular medication for a recurring area of attention.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
   { id: "tr4", title: "Massage therapy", description: "Regular or occasional massage for tension or recovery.", type: "treatment", regions: ["upper_back", "neck", "shoulder_left"], defaultYear: 2021, severity: "mild" },
   { id: "tr5", title: "Yoga or Pilates", description: "Movement practice for strength, flexibility or recovery.", type: "treatment", regions: ["lower_back", "abdomen"], defaultYear: 2022, severity: "mild", ongoing: true },
   { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for pain or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
