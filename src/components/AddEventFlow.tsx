@@ -151,6 +151,20 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                 </div>
               )}
 
+              {type === "treatment" && (
+                <div>
+                  <label className="section-label mb-2.5 block">How did it go?</label>
+                  <div className="flex flex-wrap gap-2">
+                    {outcomeOptions.map((opt) => (
+                      <button key={opt.value} onClick={() => setTreatmentOutcome(opt.value)}
+                        className={`chip ${treatmentOutcome === opt.value ? "chip-active" : "chip-inactive"}`}>
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="section-label mb-2 block">Personal notes <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
                 <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
