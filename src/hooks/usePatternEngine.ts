@@ -212,7 +212,7 @@ export function usePatternEngine(
         id: "growing",
         type: "fallback",
         title: "Your map is growing",
-        body: "As you add more experiences, we may gently surface connections you might not have noticed. There's no rush.",
+        body: "As you add more experiences, your body's patterns may gently surface here. There's no rush — your record will hold everything.",
         tone: "sage",
         regionLabel: "Getting started",
         relatedRegions: [],

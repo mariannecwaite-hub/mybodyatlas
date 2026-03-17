@@ -33,10 +33,10 @@ const InsightCards = () => {
           transition={{ duration: 0.5 }}
         >
           <p className="text-[14px] font-serif text-foreground/80 mb-2">
-            We've noticed some patterns
+            Your body may be ready to show you something
           </p>
           <p className="text-[13px] text-muted-foreground/55 leading-[1.8] mb-5">
-            Based on what you've recorded, there are a few gentle observations we can share. Only when you're ready.
+            Based on what you've recorded, there are patterns your body has been carrying. Only when you're ready.
           </p>
           <button
             onClick={revealInsights}
