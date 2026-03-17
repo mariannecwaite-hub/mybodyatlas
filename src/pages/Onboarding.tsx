@@ -421,13 +421,13 @@ const Onboarding = () => {
 
             {/* ── Prompt cards — with colored dots (lavender for women's health) ── */}
             {current.phase === "prompt" && current.cards && (
-              <OnboardingCards
+              <PromptCards
+                currentId={current.id}
                 cards={current.cards}
                 selectedIds={selectedIds}
                 toggleCard={toggleCard}
                 customYears={customYears}
                 adjustYear={adjustYear}
-                isWomensHealth={current.id === "womens-health"}
               />
             )}
 
