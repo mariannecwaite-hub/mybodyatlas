@@ -341,7 +341,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
 
       {/* Body Map Overview */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
-        <p className="section-label mb-3">Body map overview</p>
+        <p className="section-label mb-3">YOUR BODY RECORD</p>
         {topRegions.length > 0 ? (
           <div className="rounded-2xl p-5 bg-card border border-border/20" style={{ boxShadow: "var(--shadow-xs)" }}>
             <div className="flex flex-wrap gap-2 mb-4">
