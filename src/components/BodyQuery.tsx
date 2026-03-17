@@ -315,7 +315,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                 className="text-center py-10 space-y-4"
               >
                 <p className="text-[14px] text-foreground/60 leading-relaxed max-w-xs mx-auto">
-                  We weren't sure which part of your body you meant — tap the area on your map and we'll look back from there.
+                  Your body is speaking. Your record doesn't hold this yet — but logging it now means you'll be able to hear the pattern when it speaks again.
                 </p>
                 <button
                   onClick={() => { handleClose(); onSelectRegionOnMap(); }}
