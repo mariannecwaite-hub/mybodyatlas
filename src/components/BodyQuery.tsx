@@ -432,7 +432,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                   transition={{ delay: 0.35 }}
                 >
                   <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-muted-foreground/45 mb-3">
-                    What your record shows about this area
+                    WHAT YOUR RECORD SHOWS
                   </h3>
                   <p className="text-[14px] text-foreground/60 leading-[1.75]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                     {buildContextSummary(results.allMatched, results.matchedRegions)}
