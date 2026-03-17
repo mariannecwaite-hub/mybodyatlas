@@ -274,6 +274,7 @@ const Onboarding = () => {
   const [step, setStep] = useState(0);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customYears, setCustomYears] = useState<Record<string, number>>({});
+  const [dismissalAck, setDismissalAck] = useState(false);
   const navigate = useNavigate();
   const { addEvent, completeOnboarding } = useApp();
 
