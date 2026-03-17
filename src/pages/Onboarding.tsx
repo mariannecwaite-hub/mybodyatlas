@@ -797,7 +797,7 @@ const Onboarding = () => {
                     <div className="text-center space-y-3">
                       <p className="text-[14px] font-serif text-foreground/70">No events mapped yet</p>
                       <p className="text-[12px] text-muted-foreground/40">
-                        That's perfectly fine — you can add events anytime from the atlas.
+                        That's perfectly fine — you can add events anytime from the Body Map.
                       </p>
                     </div>
                   </motion.div>
