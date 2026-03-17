@@ -490,7 +490,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               );
             })}
             <p className="text-[10px] text-muted-foreground/28 leading-relaxed">
-              Educational context only — not medical advice. Things you may wish to explore with a practitioner.
+              Based on what you've recorded so far. This is a reflection, not a medical assessment.
             </p>
           </div>
         ) : (
