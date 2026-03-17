@@ -5,7 +5,7 @@ import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import BodyThreads from "@/components/BodyThreads";
 import { Lock, FileText, Bookmark, X as XIcon, BookOpen } from "lucide-react";
-import { miniSilhouettePath } from "@/components/BodySilhouette";
+import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 const typeLabels: Record<EventType, string> = {
   injury: "Injuries",

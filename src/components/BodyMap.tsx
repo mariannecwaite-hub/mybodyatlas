@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, BodyRegion, EventType, REGION_LABELS, REGION_A11Y } from "@/context/AppContext";
-import { mainSilhouettePath } from "@/components/BodySilhouette";
+import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 type BodyView = "front" | "back";
 

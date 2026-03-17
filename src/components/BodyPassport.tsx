@@ -4,7 +4,7 @@ import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppConte
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import { X, MapPin, Clock, Lightbulb, Heart, ChevronDown, ChevronUp } from "lucide-react";
-import { miniSilhouettePath } from "@/components/BodySilhouette";
+import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 interface BodyPassportProps {
   open: boolean;
