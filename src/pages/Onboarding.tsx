@@ -129,68 +129,93 @@ const womensHealthCards: SuggestionCard[] = [
   { id: "wh15", title: "An experience that affected how safe you felt in your body", description: "You only need to record what feels right.", type: "life-event", regions: [], defaultYear: 2015, severity: "significant" },
 ];
 
-const onboardingSteps: OnboardingStep[] = [
-  {
-    id: "intro",
-    phase: "intro",
-    title: "Your body has a story",
-    subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
-  },
-  {
-    id: "acknowledgement",
-    phase: "intro",
-    title: "",
-    subtitle: "",
-  },
-  {
-    id: "privacy",
-    phase: "intro",
-    title: "Everything stays yours",
-    subtitle: "Your body story is private. Nothing is shared unless you choose to share it. You can skip anything, anytime.",
-    principle: { icon: Shield, label: "Private by default" },
-  },
-  {
-    id: "childhood",
-    phase: "prompt",
-    title: "Childhood body memories",
-    subtitle: "Think back to your earliest body experiences — injuries, illnesses, or things that stood out. Tap any that feel familiar.",
-    cards: childhoodCards,
-  },
-  {
-    id: "adult",
-    phase: "prompt",
-    title: "Your body now",
-    subtitle: "What has your body been telling you in recent years? Aches, tensions, changes you've noticed.",
-    cards: adultCards,
-  },
-  {
-    id: "transitions",
-    phase: "prompt",
-    title: "Life transitions",
-    subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
-    cards: transitionCards,
-  },
-  {
-    id: "womens-health",
-    phase: "prompt",
-    title: "Your body through womanhood",
-    subtitle: "Experiences that are often overlooked but matter deeply",
-    cards: womensHealthCards,
-  },
-  {
-    id: "treatments",
-    phase: "prompt",
-    title: "What you've explored",
-    subtitle: "Treatments, therapies or practices you've tried — even briefly.",
-    cards: treatmentCards,
-  },
-  {
-    id: "reveal",
-    phase: "reveal",
-    title: "Your Body Story So Far",
-    subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
-  },
-];
+/** Build steps dynamically based on body relationship */
+function buildOnboardingSteps(isObservational: boolean): OnboardingStep[] {
+  const steps: OnboardingStep[] = [
+    {
+      id: "intro",
+      phase: "intro",
+      title: isObservational ? "Your physical history" : "Your body has a story",
+      subtitle: "We'll guide you through a few life stages — just tap anything that feels familiar. It takes about 2–3 minutes.",
+    },
+    {
+      id: "acknowledgement",
+      phase: "intro",
+      title: "",
+      subtitle: "",
+    },
+    {
+      id: "privacy",
+      phase: "intro",
+      title: "Everything stays yours",
+      subtitle: isObservational
+        ? "Your body record is private. Nothing is shared unless you choose to share it. You can skip anything, anytime."
+        : "Your body story is private. Nothing is shared unless you choose to share it. You can skip anything, anytime.",
+      principle: { icon: Shield, label: "Private by default" },
+    },
+  ];
+
+  // Observational users get sport/injury step first
+  if (isObservational) {
+    steps.push({
+      id: "sport-injury",
+      phase: "prompt",
+      title: "Your physical history",
+      subtitle: "Injuries, strains, and things that never quite resolved",
+      cards: sportInjuryCards,
+    });
+  }
+
+  steps.push(
+    {
+      id: "childhood",
+      phase: "prompt",
+      title: isObservational ? "Childhood physical history" : "Childhood body memories",
+      subtitle: isObservational
+        ? "What was your body doing during this period? Injuries, illnesses, or things that stood out."
+        : "Think back to your earliest body experiences — injuries, illnesses, or things that stood out. Tap any that feel familiar.",
+      cards: childhoodCards,
+    },
+    {
+      id: "adult",
+      phase: "prompt",
+      title: isObservational ? "Your body now" : "Your body now",
+      subtitle: isObservational
+        ? "What have you noticed physically in recent years? Aches, tensions, changes."
+        : "What has your body been telling you in recent years? Aches, tensions, changes you've noticed.",
+      cards: adultCards,
+    },
+    {
+      id: "transitions",
+      phase: "prompt",
+      title: "Life transitions",
+      subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
+      cards: transitionCards,
+    },
+    {
+      id: "womens-health",
+      phase: "prompt",
+      title: "Your body through womanhood",
+      subtitle: "Experiences that are often overlooked but matter deeply",
+      cards: womensHealthCards,
+    },
+    {
+      id: "treatments",
+      phase: "prompt",
+      title: "What you've explored",
+      subtitle: "Treatments, therapies or practices you've tried — even briefly.",
+      cards: treatmentCards,
+    },
+    {
+      id: "reveal",
+      phase: "reveal",
+      title: isObservational ? "Your Body Record So Far" : "Your Body Story So Far",
+      subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
+    },
+  );
+
+  return steps;
+}
 
 /* ─── Mini body silhouette for reveal ─── */
 const regionPositions: Partial<Record<BodyRegion, { x: number; y: number }>> = {
