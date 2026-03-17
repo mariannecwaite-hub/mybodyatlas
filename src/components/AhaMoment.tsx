@@ -1,9 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useApp, BodyRegion, REGION_LABELS } from "@/context/AppContext";
-import { PatternInsight } from "@/hooks/usePatternEngine";
+import { AhaPatternType } from "@/data/bodyLiteracyLibrary";
+import AhaSoWhat from "@/components/AhaSoWhat";
 
 const STORAGE_KEY = "aha-dismissed-insights";
+const NOTES_STORAGE_KEY = "aha-insight-notes";
+const PASSPORT_STORAGE_KEY = "aha-passport-insights";
 
 function getDismissedIds(): string[] {
   try {
@@ -21,11 +24,50 @@ function saveDismissedId(id: string) {
   }
 }
 
+export function getInsightNotes(): Record<string, Record<string, string>> {
+  try {
+    return JSON.parse(localStorage.getItem(NOTES_STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function saveInsightNote(insightId: string, questionIndex: number, note: string) {
+  const notes = getInsightNotes();
+  if (!notes[insightId]) notes[insightId] = {};
+  notes[insightId][String(questionIndex)] = note;
+  localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(notes));
+}
+
+export function getPassportInsights(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(PASSPORT_STORAGE_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+export function addInsightToPassport(insightId: string) {
+  const ids = getPassportInsights();
+  if (!ids.includes(insightId)) {
+    ids.push(insightId);
+    localStorage.setItem(PASSPORT_STORAGE_KEY, JSON.stringify(ids));
+  }
+}
+
+export interface AhaInsight {
+  id: string;
+  text: string;
+  patternType: AhaPatternType;
+  regionA?: string;
+  regionB?: string;
+}
+
 /** Generate a deeply personal "aha" insight referencing specific events */
 function generateAhaInsight(
   events: ReturnType<typeof useApp>["visibleEvents"],
   dismissed: string[]
-): { id: string; text: string } | null {
+): AhaInsight | null {
   if (events.length < 8) return null;
 
   const years = new Set(events.map((e) => new Date(e.date).getFullYear()));
@@ -35,7 +77,6 @@ function generateAhaInsight(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
-  // Build region → events for cross-referencing
   const regionEvents: Record<string, typeof events> = {};
   events.forEach((e) => {
     e.regions.forEach((r) => {
@@ -44,9 +85,9 @@ function generateAhaInsight(
     });
   });
 
-  const candidates: { id: string; text: string }[] = [];
+  const candidates: AhaInsight[] = [];
 
-  // Strategy 1: Two events in related regions across different years
+  // Strategy 1: Biomechanical — two related regions across different years
   const pairs: [string, string][] = [
     ["ankle_foot_left", "lower_back"], ["ankle_foot_right", "lower_back"],
     ["ankle_foot_left", "knee_left"], ["ankle_foot_right", "knee_right"],
@@ -80,10 +121,13 @@ function generateAhaInsight(
     candidates.push({
       id,
       text: `Your ${labelA} took a knock in ${yearA} — "${earliest.title.toLowerCase()}". Your ${labelB} started speaking up in ${yearB} with "${later.title.toLowerCase()}". Bodies have long memories — it may be worth wondering whether they're part of the same story.`,
+      patternType: "biomechanical",
+      regionA,
+      regionB,
     });
   }
 
-  // Strategy 2: Stress event followed by physical events
+  // Strategy 2: Stress-body connection
   const stressEvents = sorted.filter((e) => e.type === "stress" || e.type === "life-event");
   const physicalEvents = sorted.filter((e) => e.type === "injury" || e.type === "symptom");
 
@@ -105,20 +149,22 @@ function generateAhaInsight(
     candidates.push({
       id,
       text: `In ${stressYear}, "${stress.title.toLowerCase()}" happened. Shortly after, "${first.title.toLowerCase()}" appeared. Some of these arrived during harder times — your body often carries what life brings. Based on what you've recorded so far.`,
+      patternType: "stress_body",
+      regionA: first.regions[0],
     });
   }
 
-  // Strategy 3: Region recurring across many years
+  // Strategy 3: Recurring region across many years
   for (const [region, evts] of Object.entries(regionEvents)) {
     if (evts.length < 3) continue;
     const regionYears = [...new Set(evts.map((e) => new Date(e.date).getFullYear()))].sort();
     if (regionYears.length < 3) continue;
 
     const label = REGION_LABELS[region as BodyRegion]?.toLowerCase() || region;
-    const firstEvt = evts.sort(
+    const firstEvt = [...evts].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
     )[0];
-    const lastEvt = evts.sort(
+    const lastEvt = [...evts].sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     )[0];
     const id = `aha-recurring-${region}`;
@@ -128,12 +174,12 @@ function generateAhaInsight(
     candidates.push({
       id,
       text: `Your ${label} story starts in ${regionYears[0]} with "${firstEvt.title.toLowerCase()}" and reaches all the way to ${regionYears[regionYears.length - 1]} — "${lastEvt.title.toLowerCase()}". Your body has been saying something here for a while. Based on what you've recorded so far.`,
+      patternType: "recurring",
+      regionA: region,
     });
   }
 
   if (candidates.length === 0) return null;
-
-  // Pick the longest (most specific) candidate
   candidates.sort((a, b) => b.text.length - a.text.length);
   return candidates[0];
 }
@@ -147,6 +193,7 @@ const AhaMoment = ({ onSave }: AhaMomentProps) => {
   const [dismissed, setDismissed] = useState(getDismissedIds);
   const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [showSoWhat, setShowSoWhat] = useState(false);
 
   const insight = useMemo(
     () => generateAhaInsight(visibleEvents, dismissed),
@@ -160,6 +207,14 @@ const AhaMoment = ({ onSave }: AhaMomentProps) => {
     }
   }, [insight, visible, closing]);
 
+  // Show so-what layer 600ms after insight appears
+  useEffect(() => {
+    if (visible && insight && !showSoWhat) {
+      const timer = setTimeout(() => setShowSoWhat(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [visible, insight, showSoWhat]);
+
   const handleDismiss = (save: boolean) => {
     if (!insight) return;
     saveDismissedId(insight.id);
@@ -169,6 +224,7 @@ const AhaMoment = ({ onSave }: AhaMomentProps) => {
     setTimeout(() => {
       setVisible(false);
       setClosing(false);
+      setShowSoWhat(false);
     }, 500);
   };
 
@@ -176,75 +232,99 @@ const AhaMoment = ({ onSave }: AhaMomentProps) => {
     <AnimatePresence>
       {visible && insight && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center px-8"
+          className="fixed inset-0 z-[100] overflow-y-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
           {/* Background */}
-          <div className="absolute inset-0 bg-background" />
+          <div className="fixed inset-0 bg-background" />
 
-          {/* Content */}
-          <motion.div
-            className="relative z-10 max-w-md w-full text-center space-y-8"
-            initial={{ opacity: 0, y: 20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.98 }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Label */}
-            <motion.p
-              className="text-[10.5px] font-medium text-muted-foreground/40 uppercase tracking-[0.2em]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-            >
-              Something worth noticing
-            </motion.p>
-
-            {/* Insight text */}
-            <motion.p
-              className="text-[22px] md:text-[26px] font-serif italic text-foreground/80 leading-[1.8]"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {insight.text}
-            </motion.p>
-
-            {/* Disclaimer */}
-            <motion.p
-              className="text-[10px] text-muted-foreground/30"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0 }}
-            >
-              Based on what you've recorded so far. This is a reflection, not a medical assessment.
-            </motion.p>
-
-            {/* Actions */}
-            <motion.div
-              className="flex flex-col items-center gap-3 pt-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.5 }}
-            >
-              <button
-                onClick={() => handleDismiss(true)}
-                className="px-6 py-3 rounded-full bg-primary/85 text-primary-foreground text-[13px] font-medium transition-all duration-300 hover:bg-primary active:scale-[0.97]"
-                style={{ boxShadow: "var(--shadow-sm)" }}
+          {/* Scrollable content */}
+          <div className="relative z-10 min-h-screen flex flex-col items-center">
+            {/* Top insight — centered on first viewport */}
+            <div className="min-h-screen flex items-center justify-center px-8 w-full">
+              <motion.div
+                className="max-w-md w-full text-center space-y-8"
+                initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               >
-                Save this to my story
-              </button>
-              <button
-                onClick={() => handleDismiss(false)}
-                className="px-6 py-2.5 text-[12px] text-muted-foreground/45 hover:text-muted-foreground/65 transition-colors duration-300"
-              >
-                I'll reflect on this later
-              </button>
-            </motion.div>
-          </motion.div>
+                {/* Label */}
+                <motion.p
+                  className="text-[10.5px] font-medium text-muted-foreground/40 uppercase tracking-[0.2em]"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                >
+                  Something worth noticing
+                </motion.p>
+
+                {/* Insight text */}
+                <motion.p
+                  className="text-[22px] md:text-[26px] font-serif italic text-foreground/80 leading-[1.8]"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {insight.text}
+                </motion.p>
+
+                {/* Disclaimer */}
+                <motion.p
+                  className="text-[10px] text-muted-foreground/30"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.0 }}
+                >
+                  Based on what you've recorded so far. This is a reflection, not a medical assessment.
+                </motion.p>
+
+                {/* Actions */}
+                <motion.div
+                  className="flex flex-col items-center gap-3 pt-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.2, duration: 0.5 }}
+                >
+                  <button
+                    onClick={() => handleDismiss(true)}
+                    className="px-6 py-3 rounded-full bg-primary/85 text-primary-foreground text-[13px] font-medium transition-all duration-300 hover:bg-primary active:scale-[0.97]"
+                  >
+                    Save this to my story
+                  </button>
+                  <button
+                    onClick={() => handleDismiss(false)}
+                    className="px-6 py-2.5 text-[12px] text-muted-foreground/45 hover:text-muted-foreground/65 transition-colors duration-300"
+                  >
+                    I'll reflect on this later
+                  </button>
+                </motion.div>
+
+                {/* Scroll hint */}
+                {showSoWhat && (
+                  <motion.p
+                    className="text-[10px] text-muted-foreground/25 pt-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    ↓ Scroll to understand more
+                  </motion.p>
+                )}
+              </motion.div>
+            </div>
+
+            {/* So What continuation */}
+            {showSoWhat && (
+              <AhaSoWhat
+                insight={insight}
+                onDismiss={handleDismiss}
+              />
+            )}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
