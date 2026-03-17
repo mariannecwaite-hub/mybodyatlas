@@ -228,9 +228,20 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
                   placeholder="Anything else you'd like to note..." rows={2} className="field-input resize-none" />
               </div>
 
-              <button onClick={handleSubmit} disabled={!title.trim()} className="btn-primary">
+              <div>
+                <label className="section-label mb-2 block">Personal notes <span className="normal-case font-normal text-muted-foreground/50">optional</span></label>
+                <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
+                  placeholder={isSafetyExperience ? "Whatever you want to record..." : "Anything else you'd like to note..."} rows={2} className="field-input resize-none" />
+              </div>
+
+              <button onClick={handleSubmit} disabled={!title.trim() && !isSafetyExperience} className="btn-primary">
                 Save event
               </button>
+              {isSafetyExperience && (
+                <p className="text-[11px] text-muted-foreground/40 text-center -mt-2 leading-relaxed">
+                  This entry is private by default. It will only appear in summaries you explicitly choose to share.
+                </p>
+              )}
             </div>
           </motion.div>
         </motion.div>
