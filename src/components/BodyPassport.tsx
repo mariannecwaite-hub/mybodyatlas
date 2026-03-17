@@ -4,6 +4,7 @@ import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppConte
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import { X, MapPin, Clock, Lightbulb, Heart, ChevronDown, ChevronUp } from "lucide-react";
+import { miniSilhouettePath } from "@/components/BodySilhouette";
 
 interface BodyPassportProps {
   open: boolean;
@@ -30,8 +31,12 @@ const typeColor: Record<EventType, string> = {
   "life-event": "var(--body-neutral)",
 };
 
-const typeEmoji: Record<EventType, string> = {
-  injury: "🩹", symptom: "💭", stress: "🌊", treatment: "🌿", "life-event": "⭐",
+const typeDotClass: Record<EventType, string> = {
+  injury: "bg-body-pain",
+  symptom: "bg-body-tension",
+  stress: "bg-body-tension",
+  treatment: "bg-body-healing",
+  "life-event": "bg-body-neutral",
 };
 
 const typeLabel: Record<EventType, string> = {
