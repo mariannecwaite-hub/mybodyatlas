@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronDown, ChevronUp } from "lucide-react";
 import { useApp, REGION_LABELS, BodyRegion } from "@/context/AppContext";
 import { ContributionSettings } from "./CollectiveConsent";
+import AtlasSymbol from "@/components/AtlasSymbol";
 
 interface CollectiveAtlasProps {
   open: boolean;
