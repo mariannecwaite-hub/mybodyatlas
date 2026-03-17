@@ -61,7 +61,7 @@ function buildChapters(events: BodyEvent[], birthYear?: number) {
   return { early, middle, recent };
 }
 
-const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
+const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps) => {
   const { visibleEvents, state, highlightInsight, currentProfile } = useApp();
   const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
   const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
