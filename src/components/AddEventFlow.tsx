@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useApp, EventType, BodyRegion, EventSeverity, REGION_LABELS } from "@/context/AppContext";
+import { useApp, EventType, BodyRegion, EventSeverity, TreatmentOutcome, REGION_LABELS } from "@/context/AppContext";
 import { X } from "lucide-react";
 
 const eventTypes: { type: EventType; label: string; icon: string }[] = [
