@@ -32,7 +32,7 @@ export const treatments: TreatmentGuideEntry[] = [
     id: "sports-medicine",
     name: "Sports Medicine",
     description: "A branch of medicine focused on physical fitness, injury prevention, and treatment of injuries related to sport and exercise.",
-    situations: ["Exercise-related injuries", "Returning to sport after injury", "Optimising physical performance", "Overuse conditions such as tendinopathy"],
+    situations: ["Exercise-related injuries", "Returning to sport after injury", "Optimising physical performance", "Overuse experiences such as tendinopathy"],
     practitioner: "Sports medicine physician or consultant (via referral or private consultation)",
     approach: "Combines clinical assessment with movement analysis. May involve imaging, injection therapies, exercise prescription and coordination with physiotherapists or surgeons.",
     category: "Movement & Rehabilitation",
