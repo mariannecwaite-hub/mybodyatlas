@@ -97,7 +97,7 @@ export const treatments: TreatmentGuideEntry[] = [
     id: "myofascial-release",
     name: "Myofascial Release",
     description: "A gentle, sustained hands-on technique that targets the fascia — the connective tissue web throughout the body — to release restrictions and ease discomfort.",
-    situations: ["Widespread tension or tightness", "Pain that doesn't respond to conventional approaches", "Post-surgical adhesions", "Chronic discomfort without clear structural cause"],
+    situations: ["Widespread tension or tightness", "Discomfort that doesn't respond to conventional approaches", "Post-surgical adhesions", "Ongoing discomfort without clear structural cause"],
     practitioner: "Therapist trained in myofascial release (often physiotherapists, osteopaths or massage therapists with additional training)",
     approach: "Slow, sustained pressure applied to areas of fascial restriction. Sessions are gentle and may involve holding positions for several minutes. Typically 45–60 minutes.",
     category: "Manual & Bodywork Therapies",
