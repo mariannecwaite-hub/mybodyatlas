@@ -64,8 +64,6 @@ const CONNECTION_CHAINS: [BodyRegion, BodyRegion][] = [
   ["lower_back", "abdomen"],
 ];
 
-import { mainSilhouettePath } from "@/components/BodySilhouette";
-
 const bodySilhouetteFront = mainSilhouettePath;
 
 const regionMap = new Map(regions.map((r) => [r.id, r]));
