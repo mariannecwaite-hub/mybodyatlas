@@ -306,7 +306,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
 
                                 {allRegions.length === 0 && (
                                   <p className="text-[12px] text-muted-foreground/40 text-center py-4">
-                                    No body regions recorded yet.
+                                    Nothing recorded yet.
                                   </p>
                                 )}
                               </div>
