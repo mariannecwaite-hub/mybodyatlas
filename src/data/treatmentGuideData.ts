@@ -50,7 +50,7 @@ export const treatments: TreatmentGuideEntry[] = [
     id: "occupational-therapy",
     name: "Occupational Therapy",
     description: "A practical approach that helps people carry out everyday activities when physical or cognitive challenges make these difficult.",
-    situations: ["Difficulty with daily tasks due to injury or condition", "Workplace ergonomic concerns", "Adapting to life after surgery or illness", "Managing fatigue or energy levels"],
+    situations: ["Difficulty with daily tasks due to injury or experience", "Workplace ergonomic concerns", "Adapting to life after surgery or illness", "Managing fatigue or energy levels"],
     practitioner: "Registered occupational therapist (via NHS, GP referral or private practice)",
     approach: "Assessment of daily routines and challenges, followed by practical strategies, environmental adaptations and sometimes assistive equipment. Sessions focus on meaningful activities.",
     category: "Movement & Rehabilitation",
