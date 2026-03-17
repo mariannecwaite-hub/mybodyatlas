@@ -142,9 +142,11 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
               </div>
 
               <div>
-                <label className="section-label mb-2 block">What happened?</label>
+                <label className="section-label mb-2 block">
+                  What happened? {isSafetyExperience && <span className="normal-case font-normal text-muted-foreground/50">optional</span>}
+                </label>
                 <input value={title} onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g., Lower back tension" className="field-input" />
+                  placeholder={isSafetyExperience ? "You can simply mark that it happened" : "e.g., Lower back tension"} className="field-input" />
               </div>
 
               <div>
