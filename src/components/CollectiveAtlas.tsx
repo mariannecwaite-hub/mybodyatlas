@@ -49,7 +49,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
       ["injury", "symptom"].includes(e.type) && e.regions.some((r) => ["neck", "lower_back", "abdomen"].includes(r))
     );
     if (stressEvents.length > 0 && physicalEvents.length > 0) {
-      return "Your stress-body pattern is one shared by many women in the Atlas. You're not alone in this.";
+      return "Your stress-body pattern is one shared by many women in the Collective. You're not alone in this.";
     }
     const lowerBodyEvents = visibleEvents.filter((e) =>
       e.regions.some((r) => ["lower_back", "hip_left", "hip_right", "knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right"].includes(r))
