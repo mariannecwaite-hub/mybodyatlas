@@ -63,7 +63,7 @@ const PractitionerSummary = ({ open, onClose }: PractitionerSummaryProps) => {
   const patterns: string[] = [];
   if (stressEvents.length > 0 && symptomEvents.length > 0) {
     patterns.push(
-      "Several stress periods appear to coincide with the onset or intensification of physical sensations. You may wish to explore this correlation."
+      "Stress periods and physical experiences appear close together in the recorded timeline. This pattern may be worth exploring."
     );
   }
   const lowerBodyRegions = ["knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right", "hip_left", "hip_right"];
