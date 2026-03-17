@@ -73,9 +73,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
   const [insightNotes, setInsightNotes] = useState<Record<string, string>>({});
   const [editingNote, setEditingNote] = useState<string | null>(null);
   const [useGroundedClosing, setUseGroundedClosing] = useState(false);
-  const [privacyDismissed, setPrivacyDismissed] = useState(() => {
-    try { return localStorage.getItem("body-story-privacy-seen") === "true"; } catch { return false; }
-  });
+  
   const threads = useBodyThreads(visibleEvents);
 
   const activeRegions = new Set(visibleEvents.flatMap((e) => e.regions));
