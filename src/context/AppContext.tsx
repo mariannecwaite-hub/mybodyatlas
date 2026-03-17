@@ -22,6 +22,8 @@ export type EventType = "injury" | "symptom" | "stress" | "treatment" | "life-ev
 
 export type EventSeverity = "mild" | "moderate" | "significant";
 
+export type TreatmentOutcome = "helped" | "no-change" | "worse" | "not-sure";
+
 export interface BodyEvent {
   id: string;
   type: EventType;
