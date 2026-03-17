@@ -33,6 +33,7 @@ const typeColor: Record<EventType, string> = {
   stress: "var(--body-tension)",
   treatment: "var(--body-healing)",
   "life-event": "var(--body-neutral)",
+  "safety-experience": "var(--body-neutral)",
 };
 
 /* ─── Pre-built suggestions per life stage ─── */

@@ -23,6 +23,7 @@ const typeHSL: Record<EventType, string> = {
   stress:       "34 28% 74%",
   treatment:    "158 20% 74%",
   "life-event": "40 6% 80%",
+  "safety-experience": "40 6% 80%",
 };
 
 const regions: RegionDef[] = [
