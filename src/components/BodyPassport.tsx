@@ -521,7 +521,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                 Your body story belongs to you
               </p>
               <p className="text-[11px] text-muted-foreground/35 leading-relaxed">
-                This passport is a reflection of your experiences across time.
+                This passport reflects what you've chosen to record so far.
                 Nothing is shared unless you choose to share it.
               </p>
             </motion.div>

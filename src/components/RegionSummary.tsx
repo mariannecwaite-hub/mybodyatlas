@@ -151,7 +151,7 @@ const RegionSummary = ({ onAddEvent }: RegionSummaryProps) => {
               })}
             </div>
             <p className="text-[10px] text-muted-foreground/30 mt-2 leading-relaxed">
-              Areas that may be biomechanically related to your {REGION_LABELS[region].toLowerCase()}.
+              These areas are often biomechanically related — based on what you've recorded so far.
             </p>
           </motion.div>
         )}

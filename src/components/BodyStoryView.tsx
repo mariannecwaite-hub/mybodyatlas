@@ -496,7 +496,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         ) : (
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12 text-center">
             <p className="text-[13px] text-muted-foreground/45">
-              {allInsights.length > 0 ? "All patterns dismissed." : "As you add more events, patterns may emerge here."}
+              {allInsights.length > 0 ? "All patterns dismissed." : "As you record more experiences, patterns may emerge here."}
             </p>
           </div>
         )}
