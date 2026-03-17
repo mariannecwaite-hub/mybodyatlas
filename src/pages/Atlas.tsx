@@ -368,6 +368,12 @@ const Atlas = () => {
       <BodyPassport open={showPassport} onClose={() => setShowPassport(false)} />
       <ReturnPrompt />
       <AhaMoment />
+      <CollectiveConsent
+        open={showCollectiveConsent}
+        onClose={() => setShowCollectiveConsent(false)}
+        onContribute={() => setShowCollectiveConsent(false)}
+      />
+      <CollectiveAtlas open={showCollectiveAtlas} onClose={() => setShowCollectiveAtlas(false)} />
     </div>
   );
 };
