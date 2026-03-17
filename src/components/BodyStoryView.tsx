@@ -280,7 +280,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                     />
                   );
                 })}
-              </svg>
+              </BodySilhouetteFigure>
             </div>
 
             {/* Animation year indicator */}
