@@ -377,10 +377,10 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                     transition={{ delay: 0.15 }}
                   >
                     <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-muted-foreground/45 mb-3">
-                      What helped last time
-                    </h3>
-                    <p className="text-[13px] text-foreground/50 leading-relaxed">
-                      You've recorded experiences in this area, but haven't logged what helped yet. Adding outcomes to your treatments means you'll have this for next time.
+                       WHAT HELPED LAST TIME
+                     </h3>
+                     <p className="text-[13px] text-foreground/50 leading-relaxed">
+                       You've recorded experiences in this area, but haven't logged what helped yet. Adding outcomes to your treatments means you'll have this for next time.
                     </p>
                   </motion.section>
                 )}

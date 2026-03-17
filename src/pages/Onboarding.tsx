@@ -821,7 +821,7 @@ const Onboarding = () => {
             )}
             <button onClick={next} className="btn-primary flex items-center justify-center gap-2">
               {current.phase === "reveal"
-                ? "Explore your atlas"
+                ? "Explore your Body Map"
                 : current.phase === "prompt"
                   ? `Continue${selectedIds.size > 0 ? "" : " — skip this"}`
                   : "Continue"}

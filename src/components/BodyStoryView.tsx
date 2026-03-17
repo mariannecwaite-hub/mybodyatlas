@@ -610,7 +610,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
         <button onClick={onCreateSummary} className="btn-primary flex items-center justify-center gap-2">
           <FileText className="w-4 h-4" />
-          Create Body Story Summary
+          Create Body Passport
         </button>
         <p className="text-[10px] text-muted-foreground/28 text-center mt-3">
           Your body story belongs to you. Nothing is shared unless you choose to share it.

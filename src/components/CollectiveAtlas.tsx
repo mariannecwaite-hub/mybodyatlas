@@ -83,7 +83,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
               <div className="pb-4">
                 {id === "what-we-do" && (
                   <p className="text-[13px] leading-[1.75]" style={{ color: "#6B6960" }}>
-                    Your patterns are stripped of all identifying details — no names, no specific dates, no written notes. Only the anonymous shape of your experiences is included: which body regions, what type of event, the rough timing, and whether treatments helped. This anonymous data is combined with patterns from other women to surface collective insights that no single record could reveal.
+                    Your patterns are stripped of all identifying details — no names, no specific dates, no written notes. Only the anonymous shape of your experiences is included: which body regions, what type of event, the rough timing, and whether treatments helped. These experiences are combined with patterns from other women to surface collective insights that no single record could reveal.
                   </p>
                 )}
                 {id === "who-access" && (

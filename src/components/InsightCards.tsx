@@ -79,7 +79,7 @@ const InsightCards = () => {
   return (
     <div className="space-y-6" role="region" aria-label="Reflections — gentle observations about patterns you've recorded">
       <div>
-        <h2 className="text-[22px] font-serif text-foreground/90 leading-tight">Patterns Worth Noticing</h2>
+        <h2 className="text-[22px] font-serif text-foreground/90 leading-tight">PATTERNS WORTH NOTICING</h2>
         {state.selectedRegion && (
           <p className="text-[11px] text-muted-foreground/40 mt-1 tracking-wide">
             About your {REGION_LABELS[state.selectedRegion].toLowerCase()}

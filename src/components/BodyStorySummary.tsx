@@ -73,7 +73,7 @@ const BodyStorySummary = ({ open, onClose }: BodyStorySummaryProps) => {
 
   const patterns: string[] = [];
   if (stressEvents.length > 0 && symptomEvents.length > 0) {
-    patterns.push("Stress periods and physical sensations appear connected in your history.");
+    patterns.push("Stress periods and physical sensations appeared around the same time in your record.");
   }
   if (ongoingCount > 2) {
     patterns.push(`You're currently navigating ${ongoingCount} ongoing threads — that takes resilience.`);

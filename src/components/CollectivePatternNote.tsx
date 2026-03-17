@@ -22,7 +22,7 @@ const CollectivePatternNote = ({ regionIds }: { regionIds: string[] }) => {
     >
       <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: "#9B8EC4" }} />
       <p className="text-[12px] italic leading-relaxed" style={{ color: "#A8A59E", fontFamily: "'DM Sans', sans-serif" }}>
-        This pattern appears across many women's records in the Atlas.
+        This pattern appears across many women's records in the Collective.
       </p>
     </motion.div>
   );
