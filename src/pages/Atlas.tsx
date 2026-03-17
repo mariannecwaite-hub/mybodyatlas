@@ -301,7 +301,10 @@ const Atlas = () => {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <BodyStoryView onCreateSummary={() => setShowBodyStorySummary(true)} />
+              <BodyStoryView
+                onCreateSummary={() => setShowBodyStorySummary(true)}
+                onOpenCollective={() => setShowCollectiveAtlas(true)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
