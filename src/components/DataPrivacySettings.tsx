@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, Trash2, FlaskConical, Shield, Lock } from "lucide-react";
+import CollectiveContributionSettings from "./CollectiveContributionSettings";
 
 interface DataPrivacySettingsProps {
   open: boolean;
