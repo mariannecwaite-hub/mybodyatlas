@@ -65,12 +65,14 @@ function buildChapters(events: BodyEvent[], birthYear?: number) {
 
 const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps) => {
   const { visibleEvents, state, highlightInsight, currentProfile } = useApp();
+  const isObservational = state.bodyRelationship === "observational";
   const [dismissedPatterns, setDismissedPatterns] = useState<string[]>([]);
   const [savedPatterns, setSavedPatterns] = useState<string[]>([]);
   const [reflection, setReflection] = useState("");
   const [highlightedStoryRegion, setHighlightedStoryRegion] = useState<string | null>(null);
   const [insightNotes, setInsightNotes] = useState<Record<string, string>>({});
   const [editingNote, setEditingNote] = useState<string | null>(null);
+  const [useGroundedClosing, setUseGroundedClosing] = useState(false);
   const [privacyDismissed, setPrivacyDismissed] = useState(() => {
     try { return localStorage.getItem("body-story-privacy-seen") === "true"; } catch { return false; }
   });
