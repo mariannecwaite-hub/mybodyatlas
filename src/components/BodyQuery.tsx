@@ -318,7 +318,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                 className="text-center py-10 space-y-4"
               >
                 <p className="text-[14px] text-foreground/60 leading-relaxed max-w-xs mx-auto">
-                  Your body is speaking. Your record doesn't hold this yet — but logging it now means you'll be able to hear the pattern when it speaks again.
+                  Your body is speaking. Your record doesn't hold this yet — but logging it now means you'll have it for next time.
                 </p>
                 <button
                   onClick={() => { handleClose(); onSelectRegionOnMap(); }}
