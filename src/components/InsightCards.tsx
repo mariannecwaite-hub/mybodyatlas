@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
-import { motion } from "framer-motion";
-import { Bookmark, X as XIcon, BookOpen } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
 
 const MAX_INSIGHTS = 2;
@@ -12,6 +12,8 @@ const InsightCards = () => {
   const [savedInsights, setSavedInsights] = useState<string[]>([]);
   const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
   const [showGuide, setShowGuide] = useState(false);
+  const [insightNotes, setInsightNotes] = useState<Record<string, string>>({});
+  const [editingNote, setEditingNote] = useState<string | null>(null);
 
   // ── Consent gate ──
   if (!state.insightsRevealed) {
@@ -85,6 +87,7 @@ const InsightCards = () => {
       <div className="space-y-4">
         {insights.map((insight, i) => {
           const isActive = state.activeInsightId === insight.id;
+          const isEditingThis = editingNote === insight.id;
           return (
             <motion.div
               key={insight.id}
@@ -129,7 +132,61 @@ const InsightCards = () => {
               )}
 
               <p className="text-[15px] font-serif text-foreground/85 mb-2">{insight.title}</p>
-              <p className="text-[13px] text-muted-foreground/60 leading-[1.8] mb-4">{insight.body}</p>
+              <p className="text-[13px] text-muted-foreground/60 leading-[1.8] mb-3">{insight.body}</p>
+
+              {/* Reflective question */}
+              {insight.reflectiveQuestion && (
+                <div className="border-t border-border/20 pt-3 mb-3" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-[12px] text-muted-foreground/45 italic leading-relaxed">
+                    {insight.reflectiveQuestion}
+                  </p>
+                  {!isEditingThis && !insightNotes[insight.id] && (
+                    <button
+                      onClick={() => setEditingNote(insight.id)}
+                      className="inline-flex items-center gap-1.5 mt-2 text-[11px] text-primary/50 hover:text-primary/70 transition-colors"
+                    >
+                      <PenLine className="w-3 h-3" />
+                      Add a note
+                    </button>
+                  )}
+                  {insightNotes[insight.id] && !isEditingThis && (
+                    <div className="mt-2 p-2.5 rounded-lg bg-secondary/40">
+                      <p className="text-[12px] text-foreground/60 leading-relaxed">{insightNotes[insight.id]}</p>
+                      <button
+                        onClick={() => setEditingNote(insight.id)}
+                        className="text-[10px] text-primary/40 hover:text-primary/60 mt-1 transition-colors"
+                      >
+                        Edit note
+                      </button>
+                    </div>
+                  )}
+                  <AnimatePresence>
+                    {isEditingThis && (
+                      <motion.div
+                        className="mt-2 space-y-2"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                      >
+                        <textarea
+                          value={insightNotes[insight.id] || ""}
+                          onChange={(e) => setInsightNotes((n) => ({ ...n, [insight.id]: e.target.value }))}
+                          placeholder="Your private reflection…"
+                          rows={2}
+                          className="field-input resize-none text-[12px]"
+                          autoFocus
+                        />
+                        <button
+                          onClick={() => setEditingNote(null)}
+                          className="text-[11px] px-3 py-1.5 rounded-full bg-primary/10 text-primary/60 font-medium"
+                        >
+                          Save note
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
 
               {/* Highlighted regions indicator */}
               {isActive && insight.relatedRegions.length > 0 && (
