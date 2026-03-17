@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useApp, REGION_LABELS } from "@/context/AppContext";
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { motion } from "framer-motion";
-import { Bookmark, X as XIcon, BookOpen, Sparkles } from "lucide-react";
+import { Bookmark, X as XIcon, BookOpen } from "lucide-react";
 import TreatmentGuide from "@/components/TreatmentGuide";
 
 const MAX_INSIGHTS = 2;
@@ -119,11 +119,12 @@ const InsightCards = () => {
               aria-label={insight.title}
               onClick={() => highlightInsight(insight.id, insight.relatedRegions, insight.relatedEventIds)}
             >
-              {/* Premium badge */}
-              {insight.premium && (
-                <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/8 border border-primary/10">
-                  <Sparkles className="w-2.5 h-2.5 text-primary/40" />
-                  <span className="text-[9px] font-medium text-primary/40 tracking-wider uppercase">Premium</span>
+              {/* Region label chip */}
+              {insight.regionLabel && (
+                <div className="absolute top-4 right-4">
+                  <span className="px-2 py-0.5 rounded-full bg-sage/15 text-[9px] font-medium text-sage-foreground/50 tracking-wider uppercase">
+                    {insight.regionLabel}
+                  </span>
                 </div>
               )}
 
