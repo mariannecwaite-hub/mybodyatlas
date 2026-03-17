@@ -45,7 +45,7 @@ const CollectiveContributionSettings = ({ className }: CollectiveContributionSet
       <div className={className}>
         <div className="flex items-center gap-2 mb-2">
           <AtlasSymbol size={16} />
-          <p className="section-label">Contribute to the Atlas</p>
+          <p className="section-label">The Collective</p>
         </div>
         <p className="text-[12px] text-muted-foreground/45 leading-relaxed">
           You haven't contributed to the Collective Atlas yet. This option will appear once you choose to add your patterns.
