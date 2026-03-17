@@ -562,6 +562,19 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         )}
       </AnimatePresence>
 
+      {/* Collective Atlas link */}
+      {onOpenCollective && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="text-center">
+          <button
+            onClick={onOpenCollective}
+            className="text-[13px] italic transition-colors duration-200"
+            style={{ color: "#9B8EC4", fontFamily: "'DM Sans', sans-serif" }}
+          >
+            See what the collective is showing →
+          </button>
+        </motion.div>
+      )}
+
       {/* Create summary CTA */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
         <button onClick={onCreateSummary} className="btn-primary flex items-center justify-center gap-2">
