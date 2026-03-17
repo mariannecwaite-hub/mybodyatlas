@@ -88,6 +88,18 @@ const treatmentCards: SuggestionCard[] = [
   { id: "tr8", title: "Strength & conditioning", description: "Structured exercise for rehabilitation or prevention.", type: "treatment", regions: ["knee_left", "hip_left", "lower_back"], defaultYear: 2022, severity: "mild" },
 ];
 
+/* ─── Sport & injury cards for observational users ─── */
+const sportInjuryCards: SuggestionCard[] = [
+  { id: "si1", title: "Sport injury — old or recurring", description: "Something from playing sport that still shows up.", type: "injury", regions: ["knee_left", "ankle_foot_left"], defaultYear: 2008, severity: "moderate" },
+  { id: "si2", title: "Training or overuse injury", description: "Repetitive strain from running, gym, or physical training.", type: "injury", regions: ["knee_right", "shoulder_right"], defaultYear: 2015, severity: "moderate" },
+  { id: "si3", title: "Accident or impact", description: "Car accident, collision, or significant impact.", type: "injury", regions: ["neck", "lower_back"], defaultYear: 2012, severity: "significant" },
+  { id: "si4", title: "Work-related physical strain", description: "Physical wear from your job — lifting, standing, repetitive tasks.", type: "injury", regions: ["lower_back", "shoulder_left", "wrist_hand_right"], defaultYear: 2016, severity: "moderate" },
+  { id: "si5", title: "Something that never fully healed", description: "An injury you worked through but that still reminds you it's there.", type: "injury", regions: ["ankle_foot_left"], defaultYear: 2010, severity: "mild", ongoing: true },
+  { id: "si6", title: "A knock or fall that seemed fine at the time", description: "Minor at the time, but maybe not as minor as you thought.", type: "injury", regions: ["wrist_hand_left", "knee_left"], defaultYear: 2006, severity: "mild" },
+  { id: "si7", title: "Surgery or procedure", description: "An operation — planned or emergency — and the recovery.", type: "treatment", regions: ["abdomen"], defaultYear: 2014, severity: "moderate" },
+  { id: "si8", title: "Physical job — cumulative wear", description: "Years of physical work that your body carries.", type: "injury", regions: ["lower_back", "knee_left", "shoulder_right"], defaultYear: 2012, severity: "moderate", ongoing: true },
+];
+
 /* ─── Step definitions ─── */
 interface OnboardingStep {
   id: string;
