@@ -640,6 +640,23 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
               })}
             </div>
 
+            {/* Dismissal context — in the user's voice */}
+            {includeDismissalContext && hasDismissalEvent && (
+              <motion.div
+                className="rounded-2xl p-5 bg-warm/8 border border-warm/15"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55, duration: 0.5 }}
+              >
+                <p className="text-[10px] text-muted-foreground/40 uppercase tracking-wider font-medium mb-3">
+                  A note on my care history
+                </p>
+                <p className="text-[14px] font-serif italic text-foreground/70 leading-[1.8]">
+                  My body history includes a period when my experiences were not taken seriously by a healthcare professional. I am sharing this record because I believe a fuller picture of my history will help make our conversation more useful. I welcome being listened to.
+                </p>
+              </motion.div>
+            )}
+
             {/* Footer */}
             <motion.div
               className="mt-6 pt-4 border-t border-border/15 text-center"
