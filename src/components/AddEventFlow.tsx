@@ -52,9 +52,14 @@ const AddEventFlow = ({ open, onClose, preselectedRegion }: AddEventFlowProps) =
 
   const handleSubmit = () => {
     if (!title.trim()) return;
-    addEvent({ type, title, description, regions, date, severity, ongoing, notes: notes || undefined, treatment: treatment || undefined });
+    addEvent({
+      type, title, description, regions, date, severity, ongoing,
+      notes: notes || undefined,
+      treatment: treatment || undefined,
+      treatmentOutcome: type === "treatment" ? treatmentOutcome : undefined,
+    });
     onClose();
-    setTitle(""); setDescription(""); setRegions([]); setNotes(""); setTreatment("");
+    setTitle(""); setDescription(""); setRegions([]); setNotes(""); setTreatment(""); setTreatmentOutcome("not-sure");
   };
 
   return (
