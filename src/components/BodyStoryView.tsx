@@ -576,7 +576,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
       >
         <p className="text-[15px] font-serif text-foreground/80 mb-1.5">You've been paying attention</p>
         <p className="text-[12px] text-muted-foreground/45 leading-[1.8]">
-          This record reflects care and self-awareness. That matters — regardless of what comes next.
+          This record reflects care and self-awareness, based on what you've chosen to share so far.
         </p>
       </motion.div>
 
