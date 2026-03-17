@@ -152,7 +152,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
                   transition={{ delay: 0.25 + i * 0.12, duration: 0.5 }}
                 >
                   <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-3" style={{ color: "#9B8EC4" }}>
-                    Collective pattern
+                    COLLECTIVE PATTERN
                   </p>
                   <p className="text-[18px] font-serif italic leading-[1.6] mb-3" style={{ color: "#2A2A28" }}>
                     {insight.text}
