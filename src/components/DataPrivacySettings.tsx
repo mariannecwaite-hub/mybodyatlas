@@ -148,7 +148,7 @@ const DataPrivacySettings = ({ open, onClose }: DataPrivacySettingsProps) => {
               </div>
             </div>
 
-            {/* Collective Atlas contribution */}
+            {/* The Collective contribution */}
             <CollectiveContributionSettings className="mt-6 pt-5 border-t border-border/20" />
 
             {/* Ethical principles summary */}
