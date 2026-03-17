@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, BodyRegion, EventType, REGION_LABELS, REGION_A11Y } from "@/context/AppContext";
+import { mainSilhouettePath } from "@/components/BodySilhouette";
 
 type BodyView = "front" | "back";
 
@@ -63,34 +64,7 @@ const CONNECTION_CHAINS: [BodyRegion, BodyRegion][] = [
   ["lower_back", "abdomen"],
 ];
 
-const bodySilhouetteFront = `
-  M100,6 C80,6 66,20 66,36 C66,52 78,64 90,66
-  L90,80 Q74,80 60,88 Q46,98 44,112
-  Q38,132 34,164 Q32,192 32,220 Q30,248 30,268
-  L40,270 Q40,248 42,220 Q44,192 48,164 Q50,136 56,114
-  L64,108 Q62,132 64,160 L64,200 Q66,228 72,244
-  C74,254 76,264 78,272
-  C80,296 81,314 82,330
-  Q78,346 78,362
-  C77,380 76,400 74,424 Q72,438 70,448 L86,448 Q92,438 92,424
-  C92,400 93,380 94,362
-  Q96,346 94,330
-  C94,314 95,296 96,272
-  C97,264 98,260 100,260
-  C102,260 103,264 104,272
-  C105,296 106,314 106,330
-  Q104,346 106,362
-  C107,380 108,400 108,424 Q108,438 114,448 L130,448 Q128,438 126,424
-  C126,400 125,380 124,362
-  Q126,346 124,330
-  C124,314 123,296 122,272
-  C124,264 126,254 128,244
-  Q134,228 136,200 L136,160 Q138,132 136,108 L144,114
-  Q150,136 152,164 Q156,192 158,220 Q160,248 160,270
-  L170,268 Q170,248 168,220 Q166,192 166,164 Q162,132 156,112
-  Q154,98 140,88 Q126,80 110,80 L110,66
-  C122,64 134,52 134,36 C134,20 120,6 100,6 Z
-`;
+const bodySilhouetteFront = mainSilhouettePath;
 
 const regionMap = new Map(regions.map((r) => [r.id, r]));
 

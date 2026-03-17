@@ -4,6 +4,7 @@ import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppConte
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import { X, MapPin, Clock, Lightbulb, Heart, ChevronDown, ChevronUp } from "lucide-react";
+import { miniSilhouettePath } from "@/components/BodySilhouette";
 
 interface BodyPassportProps {
   open: boolean;
@@ -30,8 +31,12 @@ const typeColor: Record<EventType, string> = {
   "life-event": "var(--body-neutral)",
 };
 
-const typeEmoji: Record<EventType, string> = {
-  injury: "🩹", symptom: "💭", stress: "🌊", treatment: "🌿", "life-event": "⭐",
+const typeDotClass: Record<EventType, string> = {
+  injury: "bg-body-pain",
+  symptom: "bg-body-tension",
+  stress: "bg-body-tension",
+  treatment: "bg-body-healing",
+  "life-event": "bg-body-neutral",
 };
 
 const typeLabel: Record<EventType, string> = {
@@ -236,9 +241,9 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                 {/* Mini body silhouette */}
                                 {allRegions.length > 0 && (
                                   <div className="flex justify-center">
-                                    <div className="relative w-[120px] h-[170px]">
+                                  <div className="relative w-[120px] h-[170px]">
                                       <svg viewBox="10 0 80 100" className="w-full h-full opacity-15">
-                                        <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--foreground))" />
+                                        <path d={miniSilhouettePath} fill="hsl(var(--foreground))" />
                                       </svg>
                                       {allRegions.map((regionId, i) => {
                                         const pos = regionPos[regionId];
@@ -332,7 +337,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: yi * 0.05 + ei * 0.03, duration: 0.35 }}
                                           >
-                                            <span className="text-[11px] mt-0.5 flex-shrink-0">{typeEmoji[event.type]}</span>
+                                            <div className={`w-2 h-2 rounded-full flex-shrink-0 mt-0.5 ${typeDotClass[event.type]}`} />
                                             <div className="min-w-0">
                                               <p className="text-[12px] text-foreground/70 leading-snug truncate">{event.title}</p>
                                               <div className="flex items-center gap-2 mt-0.5">
@@ -442,7 +447,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                               animate={{ opacity: 1, x: 0 }}
                                               transition={{ delay: i * 0.05, duration: 0.35 }}
                                             >
-                                              <span className="text-sm">🌿</span>
+                                              <div className="w-2 h-2 rounded-full bg-body-healing flex-shrink-0 mt-0.5" />
                                               <div className="min-w-0">
                                                 <p className="text-[12px] font-medium text-foreground/70 truncate">{t.title}</p>
                                                 <p className="text-[10px] text-muted-foreground/30 mt-0.5">
@@ -470,7 +475,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                               animate={{ opacity: 1 }}
                                               transition={{ delay: 0.1 + i * 0.04, duration: 0.35 }}
                                             >
-                                              <span className="text-[11px] opacity-40">🌿</span>
+                                              <div className="w-2 h-2 rounded-full bg-body-healing/50 flex-shrink-0 mt-0.5" />
                                               <div className="min-w-0">
                                                 <p className="text-[12px] text-foreground/55 truncate">{t.title}</p>
                                                 <p className="text-[10px] text-muted-foreground/25">

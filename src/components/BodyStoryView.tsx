@@ -4,7 +4,8 @@ import { useApp, REGION_LABELS, EventType, BodyRegion } from "@/context/AppConte
 import { usePatternEngine } from "@/hooks/usePatternEngine";
 import { useBodyThreads } from "@/hooks/useBodyThreads";
 import BodyThreads from "@/components/BodyThreads";
-import { Shield, Lock, FileText, Bookmark, X as XIcon, BookOpen } from "lucide-react";
+import { Lock, FileText, Bookmark, X as XIcon, BookOpen } from "lucide-react";
+import { miniSilhouettePath } from "@/components/BodySilhouette";
 
 const typeLabels: Record<EventType, string> = {
   injury: "Injuries",
@@ -48,6 +49,25 @@ const storyRegionPositions: Record<string, { cx: number; cy: number }> = {
   ankle_foot_left: { cx: 42, cy: 88 },
   ankle_foot_right: { cx: 58, cy: 88 },
 };
+
+/** Build a narrative sentence from type counts */
+function buildNarrativeSummary(typeCounts: Record<string, number>): string {
+  const parts: string[] = [];
+  const entries = Object.entries(typeCounts).sort(([, a], [, b]) => b - a);
+
+  entries.forEach(([type, count]) => {
+    if (type === "symptom") parts.push(`${count} sensation${count > 1 ? "s" : ""} noticed`);
+    else if (type === "injury") parts.push(`${count} injur${count > 1 ? "ies" : "y"}`);
+    else if (type === "treatment") parts.push(`${count} treatment${count > 1 ? "s" : ""} explored`);
+    else if (type === "stress") parts.push(`${count} stress period${count > 1 ? "s" : ""}`);
+    else if (type === "life-event") parts.push(`${count} life transition${count > 1 ? "s" : ""}`);
+  });
+
+  if (parts.length === 0) return "";
+  if (parts.length === 1) return `Mostly ${parts[0]}.`;
+  const last = parts.pop();
+  return `${parts.join(", ")}, and ${last}.`;
+}
 
 const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
   const { visibleEvents, state, highlightInsight } = useApp();
@@ -94,7 +114,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     return phases;
   }, [visibleEvents]);
 
-  // ── Run timeline animation on mount ──
   const showMagicMoment = visibleEvents.length >= MAGIC_MOMENT_THRESHOLD;
 
   useEffect(() => {
@@ -116,7 +135,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     return () => clearInterval(interval);
   }, [showMagicMoment, timelinePhases.length, animationComplete]);
 
-  // Regions revealed so far in animation
   const revealedRegions = useMemo(() => {
     if (animationComplete) return activeRegions;
     const revealed = new Set<BodyRegion>();
@@ -172,56 +190,50 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
     warm: "bg-warm/15 border-warm/18",
   };
 
+  const narrativeSummary = buildNarrativeSummary(typeCounts);
+
   return (
     <div className="pt-8 pb-12 space-y-8" role="region" aria-label="Your Body Story So Far">
-      {/* Header with hero insight */}
+      {/* Header */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
         <h2 className="text-[30px] font-serif text-foreground/90 leading-tight text-center">Your Body Story So Far</h2>
-
-        {/* Hero insight — the most important element */}
-        {visibleInsights.length > 0 && (
-          <motion.div
-            className="text-center py-8 px-2 max-w-md mx-auto space-y-5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-          >
-            {visibleInsights.slice(0, 2).map((insight, i) => (
-              <motion.p
-                key={insight.id}
-                className="text-[17px] font-serif text-foreground/65 leading-[1.9] italic"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 + i * 0.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              >
-                &ldquo;{insight.body}&rdquo;
-              </motion.p>
-            ))}
-          </motion.div>
-        )}
-
-        {/* Privacy pill — small, dismissible */}
-        <AnimatePresence>
-          {!privacyDismissed && (
-            <motion.div
-              className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sage/8 border border-sage/12 w-fit mx-auto mt-2"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ delay: 1.5, duration: 0.4 }}
-            >
-              <Lock className="w-3 h-3 text-sage-foreground/35" />
-              <span className="text-[10px] text-muted-foreground/45">Your body story is private</span>
-              <button
-                onClick={() => { setPrivacyDismissed(true); try { localStorage.setItem("body-story-privacy-seen", "true"); } catch {} }}
-                className="ml-1 p-0.5 rounded-full hover:bg-secondary/40 transition-colors"
-              >
-                <XIcon className="w-2.5 h-2.5 text-muted-foreground/25" />
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </motion.div>
+
+      {/* Hero insight — the most important element, directly after title */}
+      {visibleInsights.length > 0 && (
+        <motion.div
+          className="text-center py-6 px-4 max-w-md mx-auto space-y-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+        >
+          {visibleInsights.slice(0, 2).map((insight, i) => (
+            <motion.p
+              key={insight.id}
+              className="text-[19px] font-serif text-foreground/70 leading-[1.9] italic"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 + i * 0.7, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              &ldquo;{insight.body}&rdquo;
+            </motion.p>
+          ))}
+        </motion.div>
+      )}
+
+      {/* Narrative summary — replaces tabular type counts */}
+      {narrativeSummary && (
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+          <p className="text-[13px] text-muted-foreground/50 leading-relaxed max-w-sm mx-auto">
+            {narrativeSummary}
+          </p>
+        </motion.div>
+      )}
 
       {/* ── Magic Moment with Timeline Animation ── */}
       {showMagicMoment && (
@@ -238,8 +250,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
             {/* Animated body silhouette */}
             <div className="flex justify-center mb-4">
               <svg viewBox="10 0 80 100" className="w-24 h-36" aria-label="Body overview — regions illuminate as your story unfolds">
-                <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
-                {/* Animated region dots */}
+                <path d={miniSilhouettePath} fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
                 {Object.entries(storyRegionPositions).map(([region, pos]) => {
                   if (!revealedRegions.has(region as BodyRegion)) return null;
                   const isNew = currentAnimPhase?.regions.includes(region as BodyRegion) && !animationComplete;
@@ -295,7 +306,6 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
                     Spanning {span} · {threads.length > 0 ? `${threads.length} connecting threads` : "patterns emerging"}
                   </p>
 
-                  {/* Narrative insight */}
                   {visibleInsights.length > 0 && (
                     <motion.div
                       className="mt-4 pt-4 border-t border-lavender/15"
@@ -327,7 +337,7 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
         </motion.section>
       )}
 
-      {/* 1. Body Map Overview */}
+      {/* 1. Body Map Overview with tappable region chips */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>
         <p className="section-label mb-3">Body map overview</p>
         {topRegions.length > 0 ? (
@@ -385,17 +395,15 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
               ))}
             </div>
           )}
-          <div className="mt-4 pt-3 border-t border-warm/15 space-y-1.5">
-            {Object.entries(typeCounts).map(([type, count]) => (
-              <div key={type} className="flex items-center justify-between py-1">
-                <div className="flex items-center gap-2">
-                  <div className={`w-1.5 h-1.5 rounded-full ${typeDotColors[type as EventType]}`} />
-                  <span className="text-[12px] text-foreground/60">{typeLabels[type as EventType]}</span>
-                </div>
-                <span className="text-[11px] text-muted-foreground/30">{count}</span>
-              </div>
-            ))}
-          </div>
+
+          {/* Narrative summary replaces the tabular breakdown */}
+          {narrativeSummary && (
+            <div className="mt-4 pt-3 border-t border-warm/15">
+              <p className="text-[12px] text-foreground/55 leading-relaxed italic font-serif">
+                {narrativeSummary}
+              </p>
+            </div>
+          )}
         </div>
       </motion.section>
 
@@ -523,6 +531,28 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
           className="field-input resize-none"
         />
       </motion.section>
+
+      {/* Privacy notice — small, at the bottom, dismissible */}
+      <AnimatePresence>
+        {!privacyDismissed && (
+          <motion.div
+            className="flex items-center gap-2 px-3 py-2 rounded-full bg-sage/8 border border-sage/12 w-fit mx-auto"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+          >
+            <Lock className="w-3 h-3 text-sage-foreground/35" />
+            <span className="text-[10px] text-muted-foreground/45">Your body story is private</span>
+            <button
+              onClick={() => { setPrivacyDismissed(true); try { localStorage.setItem("body-story-privacy-seen", "true"); } catch {} }}
+              className="ml-1 p-0.5 rounded-full hover:bg-secondary/40 transition-colors"
+            >
+              <XIcon className="w-2.5 h-2.5 text-muted-foreground/25" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Calm reflection message */}
       <motion.div

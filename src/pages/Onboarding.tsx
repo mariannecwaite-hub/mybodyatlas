@@ -2,12 +2,12 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useApp, BodyRegion, EventType, BodyEvent } from "@/context/AppContext";
-import { Shield, Eye, BookOpen, Heart, Check, ChevronRight, Undo2 } from "lucide-react";
+import { Shield, Check, ChevronRight, Undo2 } from "lucide-react";
+import { miniSilhouettePath } from "@/components/BodySilhouette";
 
 /* ─── Suggestion card type ─── */
 interface SuggestionCard {
   id: string;
-  emoji: string;
   title: string;
   description: string;
   type: EventType;
@@ -17,55 +17,70 @@ interface SuggestionCard {
   ongoing?: boolean;
 }
 
+/* ─── Event type dot colors (CSS var references) ─── */
+const typeDotClass: Record<EventType, string> = {
+  injury: "bg-body-pain",
+  symptom: "bg-body-tension",
+  stress: "bg-body-tension",
+  treatment: "bg-body-healing",
+  "life-event": "bg-body-neutral",
+};
+
+const typeColor: Record<EventType, string> = {
+  injury: "var(--body-pain)",
+  symptom: "var(--body-tension)",
+  stress: "var(--body-tension)",
+  treatment: "var(--body-healing)",
+  "life-event": "var(--body-neutral)",
+};
+
 /* ─── Pre-built suggestions per life stage ─── */
 const childhoodCards: SuggestionCard[] = [
-  
-  { id: "c2", emoji: "🤕", title: "Ankle or knee injury", description: "A sprain, twist or impact from sport or play.", type: "injury", regions: ["ankle_foot_left", "knee_left"], defaultYear: 2004, severity: "moderate" },
-  { id: "c3", emoji: "🏥", title: "Childhood surgery", description: "Tonsils, appendix, grommets or another procedure.", type: "treatment", regions: ["abdomen"], defaultYear: 2000, severity: "moderate" },
-  { id: "c4", emoji: "🤧", title: "Recurring illness", description: "Frequent ear infections, asthma, allergies or similar.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2001, severity: "mild" },
-  { id: "c5", emoji: "🪨", title: "A fall or impact", description: "A memorable fall — from a bike, tree, trampoline or stairs.", type: "injury", regions: ["head_jaw", "wrist_hand_right"], defaultYear: 2003, severity: "mild" },
-  { id: "c6", emoji: "😰", title: "Childhood stress", description: "A period that felt overwhelming — school, family, moving.", type: "stress", regions: ["chest", "abdomen"], defaultYear: 2005, severity: "mild" },
-  { id: "c7", emoji: "👶", title: "Birth story", description: "Anything notable about your birth — early arrival, complications, or a difficult delivery.", type: "life-event", regions: ["head_jaw", "neck", "abdomen"], defaultYear: 1998, severity: "mild" },
+  { id: "c2", title: "Ankle or knee injury", description: "A sprain, twist or impact from sport or play.", type: "injury", regions: ["ankle_foot_left", "knee_left"], defaultYear: 2004, severity: "moderate" },
+  { id: "c3", title: "Childhood surgery", description: "Tonsils, appendix, grommets or another procedure.", type: "treatment", regions: ["abdomen"], defaultYear: 2000, severity: "moderate" },
+  { id: "c4", title: "Recurring illness", description: "Frequent ear infections, asthma, allergies or similar.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2001, severity: "mild" },
+  { id: "c5", title: "A fall or impact", description: "A memorable fall — from a bike, tree, trampoline or stairs.", type: "injury", regions: ["head_jaw", "wrist_hand_right"], defaultYear: 2003, severity: "mild" },
+  { id: "c6", title: "Childhood stress", description: "A period that felt overwhelming — school, family, moving.", type: "stress", regions: ["chest", "abdomen"], defaultYear: 2005, severity: "mild" },
+  { id: "c7", title: "Birth story", description: "Anything notable about your birth — early arrival, complications, or a difficult delivery.", type: "life-event", regions: ["head_jaw", "neck", "abdomen"], defaultYear: 1998, severity: "mild" },
 ];
 
 const adultCards: SuggestionCard[] = [
-  { id: "a1", emoji: "💭", title: "Back discomfort", description: "Lower or upper back tension, aching or stiffness.", type: "symptom", regions: ["lower_back", "upper_back"], defaultYear: 2018, severity: "moderate", ongoing: true },
-  { id: "a2", emoji: "🔄", title: "Neck & shoulder tension", description: "Tightness across the shoulders and neck — often stress-related.", type: "symptom", regions: ["neck", "shoulder_left", "shoulder_right"], defaultYear: 2019, severity: "moderate" },
-  { id: "a3", emoji: "🦵", title: "Knee issue", description: "Clicking, aching or instability in one or both knees.", type: "symptom", regions: ["knee_left"], defaultYear: 2020, severity: "mild" },
-  { id: "a4", emoji: "🤕", title: "Headaches or migraines", description: "Recurring headaches — tension, cluster or migraine.", type: "symptom", regions: ["head_jaw"], defaultYear: 2019, severity: "moderate" },
-  { id: "a5", emoji: "✋", title: "Wrist or hand discomfort", description: "RSI, carpal tunnel, or strain from repetitive use.", type: "symptom", regions: ["wrist_hand_right", "wrist_hand_left"], defaultYear: 2021, severity: "mild" },
-  { id: "a6", emoji: "🦶", title: "Foot or ankle issue", description: "Plantar fasciitis, recurring sprains, or arch discomfort.", type: "symptom", regions: ["ankle_foot_left", "ankle_foot_right"], defaultYear: 2020, severity: "mild" },
-  { id: "a7", emoji: "🫁", title: "Breathing or chest tightness", description: "Feeling restricted, shallow breathing or chest discomfort.", type: "symptom", regions: ["chest"], defaultYear: 2021, severity: "mild" },
-  { id: "a8", emoji: "🌡️", title: "Skin changes", description: "Eczema, psoriasis, rashes or other skin patterns.", type: "symptom", regions: ["wrist_hand_left", "head_jaw"], defaultYear: 2022, severity: "mild", ongoing: true },
+  { id: "a1", title: "Back discomfort", description: "Lower or upper back tension, aching or stiffness.", type: "symptom", regions: ["lower_back", "upper_back"], defaultYear: 2018, severity: "moderate", ongoing: true },
+  { id: "a2", title: "Neck & shoulder tension", description: "Tightness across the shoulders and neck — often stress-related.", type: "symptom", regions: ["neck", "shoulder_left", "shoulder_right"], defaultYear: 2019, severity: "moderate" },
+  { id: "a3", title: "Knee issue", description: "Clicking, aching or instability in one or both knees.", type: "symptom", regions: ["knee_left"], defaultYear: 2020, severity: "mild" },
+  { id: "a4", title: "Headaches or migraines", description: "Recurring headaches — tension, cluster or migraine.", type: "symptom", regions: ["head_jaw"], defaultYear: 2019, severity: "moderate" },
+  { id: "a5", title: "Wrist or hand discomfort", description: "RSI, carpal tunnel, or strain from repetitive use.", type: "symptom", regions: ["wrist_hand_right", "wrist_hand_left"], defaultYear: 2021, severity: "mild" },
+  { id: "a6", title: "Foot or ankle issue", description: "Plantar fasciitis, recurring sprains, or arch discomfort.", type: "symptom", regions: ["ankle_foot_left", "ankle_foot_right"], defaultYear: 2020, severity: "mild" },
+  { id: "a7", title: "Breathing or chest tightness", description: "Feeling restricted, shallow breathing or chest discomfort.", type: "symptom", regions: ["chest"], defaultYear: 2021, severity: "mild" },
+  { id: "a8", title: "Skin changes", description: "Eczema, psoriasis, rashes or other skin patterns.", type: "symptom", regions: ["wrist_hand_left", "head_jaw"], defaultYear: 2022, severity: "mild", ongoing: true },
 ];
 
 const transitionCards: SuggestionCard[] = [
-  { id: "t1", emoji: "🤰", title: "Pregnancy or postpartum", description: "The physical journey of carrying, delivering and recovering.", type: "life-event", regions: ["abdomen", "lower_back"], defaultYear: 2020, severity: "moderate" },
-  { id: "t2", emoji: "🔥", title: "Burnout or exhaustion", description: "A period of sustained overwhelm affecting your body.", type: "stress", regions: ["neck", "chest", "head_jaw"], defaultYear: 2021, severity: "significant" },
-  { id: "t3", emoji: "🏠", title: "Major relocation", description: "Moving cities or countries — disrupted routines and stress.", type: "life-event", regions: ["neck", "chest"], defaultYear: 2019, severity: "moderate" },
-  { id: "t4", emoji: "💔", title: "Loss or grief", description: "Losing someone close and the physical weight of grief.", type: "life-event", regions: ["chest", "abdomen"], defaultYear: 2018, severity: "significant" },
-  { id: "t5", emoji: "💼", title: "Career change or pressure", description: "A demanding new role, job loss, or professional shift.", type: "stress", regions: ["neck", "shoulder_right", "lower_back"], defaultYear: 2020, severity: "moderate" },
-  { id: "t6", emoji: "👶", title: "Becoming a parent", description: "The physical and emotional shift of caring for a new life.", type: "life-event", regions: ["lower_back", "wrist_hand_left", "shoulder_left"], defaultYear: 2021, severity: "moderate" },
-  { id: "t7", emoji: "🌊", title: "Hormonal changes", description: "Menopause, puberty, thyroid changes or hormonal shifts.", type: "life-event", regions: ["abdomen", "head_jaw"], defaultYear: 2022, severity: "moderate" },
-  { id: "t8", emoji: "🧠", title: "Mental health period", description: "Anxiety, depression or a period of emotional difficulty.", type: "stress", regions: ["chest", "head_jaw", "abdomen"], defaultYear: 2020, severity: "moderate" },
+  { id: "t1", title: "Pregnancy or postpartum", description: "The physical journey of carrying, delivering and recovering.", type: "life-event", regions: ["abdomen", "lower_back"], defaultYear: 2020, severity: "moderate" },
+  { id: "t2", title: "Burnout or exhaustion", description: "A period of sustained overwhelm affecting your body.", type: "stress", regions: ["neck", "chest", "head_jaw"], defaultYear: 2021, severity: "significant" },
+  { id: "t3", title: "Major relocation", description: "Moving cities or countries — disrupted routines and stress.", type: "life-event", regions: ["neck", "chest"], defaultYear: 2019, severity: "moderate" },
+  { id: "t4", title: "Loss or grief", description: "Losing someone close and the physical weight of grief.", type: "life-event", regions: ["chest", "abdomen"], defaultYear: 2018, severity: "significant" },
+  { id: "t5", title: "Career change or pressure", description: "A demanding new role, job loss, or professional shift.", type: "stress", regions: ["neck", "shoulder_right", "lower_back"], defaultYear: 2020, severity: "moderate" },
+  { id: "t6", title: "Becoming a parent", description: "The physical and emotional shift of caring for a new life.", type: "life-event", regions: ["lower_back", "wrist_hand_left", "shoulder_left"], defaultYear: 2021, severity: "moderate" },
+  { id: "t7", title: "Hormonal changes", description: "Menopause, puberty, thyroid changes or hormonal shifts.", type: "life-event", regions: ["abdomen", "head_jaw"], defaultYear: 2022, severity: "moderate" },
+  { id: "t8", title: "Mental health period", description: "Anxiety, depression or a period of emotional difficulty.", type: "stress", regions: ["chest", "head_jaw", "abdomen"], defaultYear: 2020, severity: "moderate" },
 ];
 
 const treatmentCards: SuggestionCard[] = [
-  { id: "tr1", emoji: "🏋️", title: "Physiotherapy", description: "Structured rehabilitation with a physiotherapist.", type: "treatment", regions: ["knee_left", "lower_back"], defaultYear: 2020, severity: "mild" },
-  { id: "tr2", emoji: "🦴", title: "Osteopathy or chiropractic", description: "Manual therapy for alignment and movement.", type: "treatment", regions: ["lower_back", "upper_back", "neck"], defaultYear: 2019, severity: "mild" },
-  { id: "tr3", emoji: "💊", title: "Ongoing medication", description: "Regular medication for a chronic or recurring condition.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
-  { id: "tr4", emoji: "💆", title: "Massage therapy", description: "Regular or occasional massage for tension or recovery.", type: "treatment", regions: ["upper_back", "neck", "shoulder_left"], defaultYear: 2021, severity: "mild" },
-  { id: "tr5", emoji: "🧘", title: "Yoga or Pilates", description: "Movement practice for strength, flexibility or recovery.", type: "treatment", regions: ["lower_back", "abdomen"], defaultYear: 2022, severity: "mild", ongoing: true },
-  { id: "tr6", emoji: "🪡", title: "Acupuncture", description: "Traditional or dry needling for pain or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
-  { id: "tr7", emoji: "🧠", title: "Psychotherapy or counselling", description: "Therapy for emotional wellbeing and stress management.", type: "treatment", regions: [], defaultYear: 2020, severity: "mild" },
-  { id: "tr8", emoji: "🏃", title: "Strength & conditioning", description: "Structured exercise for rehabilitation or prevention.", type: "treatment", regions: ["knee_left", "hip_left", "lower_back"], defaultYear: 2022, severity: "mild" },
+  { id: "tr1", title: "Physiotherapy", description: "Structured rehabilitation with a physiotherapist.", type: "treatment", regions: ["knee_left", "lower_back"], defaultYear: 2020, severity: "mild" },
+  { id: "tr2", title: "Osteopathy or chiropractic", description: "Manual therapy for alignment and movement.", type: "treatment", regions: ["lower_back", "upper_back", "neck"], defaultYear: 2019, severity: "mild" },
+  { id: "tr3", title: "Ongoing medication", description: "Regular medication for a chronic or recurring condition.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
+  { id: "tr4", title: "Massage therapy", description: "Regular or occasional massage for tension or recovery.", type: "treatment", regions: ["upper_back", "neck", "shoulder_left"], defaultYear: 2021, severity: "mild" },
+  { id: "tr5", title: "Yoga or Pilates", description: "Movement practice for strength, flexibility or recovery.", type: "treatment", regions: ["lower_back", "abdomen"], defaultYear: 2022, severity: "mild", ongoing: true },
+  { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for pain or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
+  { id: "tr7", title: "Psychotherapy or counselling", description: "Therapy for emotional wellbeing and stress management.", type: "treatment", regions: [], defaultYear: 2020, severity: "mild" },
+  { id: "tr8", title: "Strength & conditioning", description: "Structured exercise for rehabilitation or prevention.", type: "treatment", regions: ["knee_left", "hip_left", "lower_back"], defaultYear: 2022, severity: "mild" },
 ];
 
 /* ─── Step definitions ─── */
 interface OnboardingStep {
   id: string;
   phase: "intro" | "prompt" | "reveal";
-  emoji?: string;
   title: string;
   subtitle: string;
   cards?: SuggestionCard[];
@@ -89,7 +104,6 @@ const onboardingSteps: OnboardingStep[] = [
   {
     id: "childhood",
     phase: "prompt",
-    emoji: "👶",
     title: "Childhood body memories",
     subtitle: "Think back to your earliest body experiences — injuries, illnesses, or things that stood out. Tap any that feel familiar.",
     cards: childhoodCards,
@@ -97,7 +111,6 @@ const onboardingSteps: OnboardingStep[] = [
   {
     id: "adult",
     phase: "prompt",
-    emoji: "🧍",
     title: "Your body now",
     subtitle: "What has your body been telling you in recent years? Aches, tensions, changes you've noticed.",
     cards: adultCards,
@@ -105,7 +118,6 @@ const onboardingSteps: OnboardingStep[] = [
   {
     id: "transitions",
     phase: "prompt",
-    emoji: "🌊",
     title: "Life transitions",
     subtitle: "Major life changes often leave a mark on the body. Tap any that you've been through.",
     cards: transitionCards,
@@ -113,7 +125,6 @@ const onboardingSteps: OnboardingStep[] = [
   {
     id: "treatments",
     phase: "prompt",
-    emoji: "🌿",
     title: "What you've explored",
     subtitle: "Treatments, therapies or practices you've tried — even briefly.",
     cards: treatmentCards,
@@ -121,7 +132,6 @@ const onboardingSteps: OnboardingStep[] = [
   {
     id: "reveal",
     phase: "reveal",
-    emoji: "✨",
     title: "Your Body Story So Far",
     subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
   },
@@ -145,14 +155,6 @@ const regionPositions: Partial<Record<BodyRegion, { x: number; y: number }>> = {
   knee_right: { x: 58, y: 72 },
   ankle_foot_left: { x: 42, y: 90 },
   ankle_foot_right: { x: 58, y: 90 },
-};
-
-const typeColor: Record<EventType, string> = {
-  injury: "var(--body-pain)",
-  symptom: "var(--body-tension)",
-  stress: "var(--body-tension)",
-  treatment: "var(--body-healing)",
-  "life-event": "var(--body-neutral)",
 };
 
 /* ─── Component ─── */
@@ -187,7 +189,6 @@ const Onboarding = () => {
   }, []);
 
   const finishOnboarding = () => {
-    // Convert all selected cards into events
     const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards];
     allCards.forEach((card) => {
       if (selectedIds.has(card.id)) {
@@ -225,7 +226,6 @@ const Onboarding = () => {
     navigate("/atlas");
   };
 
-  // Collect all selected events for reveal
   const allCards = [...childhoodCards, ...adultCards, ...transitionCards, ...treatmentCards];
   const selectedEvents = allCards.filter((c) => selectedIds.has(c.id));
   const affectedRegions = new Set(selectedEvents.flatMap((e) => e.regions));
@@ -270,19 +270,8 @@ const Onboarding = () => {
             exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Header */}
+            {/* Header — no emojis, clean typography */}
             <div className="text-center pt-6 pb-6">
-              {current.emoji && !current.principle && (
-                <motion.div
-                  className="text-4xl mb-4"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {current.emoji}
-                </motion.div>
-              )}
-
               {current.principle && (
                 <motion.div
                   className="mx-auto w-14 h-14 rounded-full bg-sage/40 flex items-center justify-center mb-4"
@@ -300,13 +289,13 @@ const Onboarding = () => {
                 </span>
               )}
 
-              <h2 className="text-foreground text-[24px] leading-tight mb-2">{current.title}</h2>
+              <h2 className="text-foreground text-[24px] leading-tight mb-2 font-serif">{current.title}</h2>
               <p className="text-muted-foreground/60 text-[14px] leading-relaxed max-w-sm mx-auto">
                 {current.subtitle}
               </p>
             </div>
 
-            {/* ── Prompt cards ── */}
+            {/* ── Prompt cards — with colored dots instead of emojis ── */}
             {current.phase === "prompt" && current.cards && (
               <motion.div
                 className="flex-1 overflow-y-auto pb-4 -mx-1 px-1"
@@ -351,7 +340,9 @@ const Onboarding = () => {
                           )}
                         </AnimatePresence>
 
-                        <span className="text-lg block mb-1.5">{card.emoji}</span>
+                        {/* Colored dot for event type */}
+                        <div className={`w-3 h-3 rounded-full ${typeDotClass[card.type]} mb-2`} />
+
                         <p className="text-[13px] font-medium text-foreground/80 leading-snug mb-1 pr-6">
                           {card.title}
                         </p>
@@ -359,7 +350,7 @@ const Onboarding = () => {
                           {card.description}
                         </p>
 
-                        {/* Year adjuster - only show when selected */}
+                        {/* Year adjuster */}
                         <AnimatePresence>
                           {isSelected && (
                             <motion.div
@@ -406,7 +397,7 @@ const Onboarding = () => {
                     transition={{ delay: 0.3, duration: 0.6 }}
                   >
                     <svg viewBox="10 0 80 100" className="w-28 h-40">
-                      <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
+                      <path d={miniSilhouettePath} fill="hsl(var(--body-fill))" stroke="hsl(var(--body-stroke))" strokeWidth="0.5" />
                       <circle cx="50" cy="45" r="4" fill="hsl(var(--body-tension) / 0.7)" className="animate-soft-pulse" />
                     </svg>
                   </motion.div>
@@ -437,11 +428,9 @@ const Onboarding = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      {/* Body outline */}
                       <svg viewBox="10 0 80 100" className="w-full h-full opacity-20">
-                        <path d="M50,4 C45,4 42,8 42,13 C42,18 45,21 48,22 L48,26 C44,27 38,32 35,38 L28,36 C25,36 22,39 20,44 L19,50 L24,50 L27,45 C28,42 30,40 33,40 C31,46 31,54 33,60 L35,68 L37,74 C37,80 36,86 36,92 L44,92 C44,86 44,80 44,74 L46,68 L48,62 L50,58 L52,62 L54,68 L56,74 C56,80 56,86 56,92 L64,92 C64,86 63,80 63,74 L65,68 L67,60 C69,54 69,46 67,40 C70,40 72,42 73,45 L76,50 L81,50 L80,44 C78,39 75,36 72,36 L65,38 C62,32 56,27 52,26 L52,22 C55,21 58,18 58,13 C58,8 55,4 50,4 Z" fill="hsl(var(--foreground))" />
+                        <path d={miniSilhouettePath} fill="hsl(var(--foreground))" />
                       </svg>
-                      {/* Region dots */}
                       {Array.from(affectedRegions).map((regionId, i) => {
                         const pos = regionPositions[regionId];
                         if (!pos) return null;
@@ -493,7 +482,7 @@ const Onboarding = () => {
                       </div>
                     </motion.div>
 
-                    {/* Event list preview */}
+                    {/* Event list preview — colored dots instead of emojis */}
                     <motion.div
                       className="w-full max-w-sm space-y-1.5 max-h-[200px] overflow-y-auto"
                       initial={{ opacity: 0 }}
@@ -508,7 +497,7 @@ const Onboarding = () => {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 1 + i * 0.06, duration: 0.4 }}
                         >
-                          <span className="text-sm">{event.emoji}</span>
+                          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${typeDotClass[event.type]}`} />
                           <div className="flex-1 min-w-0">
                             <p className="text-[12px] font-medium text-foreground/70 truncate">{event.title}</p>
                             <p className="text-[10px] text-muted-foreground/35">{customYears[event.id] ?? event.defaultYear}</p>
