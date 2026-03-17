@@ -110,13 +110,13 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
   const symptomEvents = visibleEvents.filter((e) => e.type === "symptom");
 
   if (lowerBodyEvents.length >= 2) {
-    patternObservations.push("Several lower-body experiences appear across time. Earlier events may be worth exploring alongside current ones.");
+    patternObservations.push("Several lower-body experiences appear across time in your record. You may wish to explore whether earlier events are connected to current ones.");
   }
   if (upperBodyEvents.length >= 2 && stressEvents.length > 0) {
-    patternObservations.push("Periods of stress appear to overlap with upper body tension — neck, shoulders and back.");
+    patternObservations.push("Periods of stress and upper body experiences — neck, shoulders and back — appear close together in your timeline. This pattern might be worth noticing.");
   }
   if (stressEvents.length > 0 && symptomEvents.length > 0) {
-    patternObservations.push("Stress periods and physical sensations appear connected in your history.");
+    patternObservations.push("Stress periods and physical experiences appear close together in what you've recorded so far.");
   }
   if (ongoingCount >= 3) {
     patternObservations.push(`You're currently navigating ${ongoingCount} ongoing experiences. This context may be valuable to share with a practitioner.`);
