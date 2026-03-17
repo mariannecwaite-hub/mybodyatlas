@@ -53,7 +53,10 @@ const CollectiveContributionSettings = ({ className }: CollectiveContributionSet
 
   return (
     <div className={className}>
-      <p className="section-label mb-3">Collective Atlas contribution</p>
+      <div className="flex items-center gap-2 mb-3">
+        <AtlasSymbol size={16} />
+        <p className="section-label">Contribute to the Atlas</p>
+      </div>
       <div className="space-y-3">
         <SettingToggle label="Body region patterns" checked={settings.regionPatterns} onChange={(v) => updateSetting("regionPatterns", v)} />
         <SettingToggle label="Life transitions and timing" checked={settings.lifeTransitions} onChange={(v) => updateSetting("lifeTransitions", v)} />
