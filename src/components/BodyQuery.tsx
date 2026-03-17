@@ -290,7 +290,9 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              Your body has said something like this before. Let's look back together.
+              {isObservational
+                ? "You've had something like this before. Here's what your record shows."
+                : "Your body has said something like this before. Let's look back together."}
             </motion.p>
           )}
         </AnimatePresence>
