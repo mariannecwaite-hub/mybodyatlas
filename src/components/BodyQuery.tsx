@@ -206,7 +206,8 @@ interface BodyQueryProps {
 }
 
 const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
-  const { visibleEvents } = useApp();
+  const { visibleEvents, state } = useApp();
+  const isObservational = state.bodyRelationship === "observational";
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [results, setResults] = useState<QueryResults | null>(null);
