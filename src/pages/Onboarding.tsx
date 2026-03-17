@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useApp, BodyRegion, EventType, BodyEvent, BodyRelationship } from "@/context/AppContext";
 import { Shield, Check, ChevronRight, Undo2 } from "lucide-react";
-import { Shield, Check, ChevronRight, Undo2 } from "lucide-react";
 import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 /* ─── Suggestion card type ─── */
