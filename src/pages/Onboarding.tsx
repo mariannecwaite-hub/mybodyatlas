@@ -303,6 +303,7 @@ const Onboarding = () => {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
             {/* Header — no emojis, clean typography */}
+            {current.id !== "acknowledgement" && (
             <div className="text-center pt-6 pb-6">
               {current.principle && (
                 <motion.div
@@ -330,7 +331,13 @@ const Onboarding = () => {
                   For people who've felt their health history has never quite been understood.
                 </p>
               )}
+              {current.id === "womens-health" && (
+                <p className="text-muted-foreground/50 text-[13px] leading-relaxed mt-3 max-w-xs mx-auto italic" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                  Women's health experiences are among the most underrecorded. All of these are worth having in your body story.
+                </p>
+              )}
             </div>
+            )}
 
             {/* ── Prompt cards — with colored dots instead of emojis ── */}
             {current.phase === "prompt" && current.cards && (
