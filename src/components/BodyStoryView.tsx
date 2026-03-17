@@ -305,13 +305,13 @@ const BodyStoryView = ({ onCreateSummary }: BodyStoryViewProps) => {
 
       {/* Closing line */}
       <motion.div
-        className="text-center py-6"
+        className="text-center py-10"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.6 }}
       >
-        <p className="text-[20px] font-serif italic text-foreground/70 leading-[1.8] max-w-sm mx-auto">
-          This is what you've mapped so far. Your story is still being written.
+        <p className="text-[20px] font-serif italic leading-[1.8] max-w-sm mx-auto" style={{ color: "#2A2A28" }}>
+          None of this is malfunction. Your body has been doing exactly what bodies do — responding, adapting, remembering. The question is never what is wrong with your body. It is what your body has been trying to say.
         </p>
       </motion.div>
 

@@ -336,14 +336,19 @@ const BodyMap = ({ onRegionSelect }: BodyMapProps) => {
         </BodySilhouetteFigure>
       </div>
 
+      {/* Framing line */}
+      <p className="text-[11px] text-center mt-4" style={{ color: "#A8A59E", fontFamily: "'DM Sans', sans-serif" }}>
+        Every mark on this map is something your body remembered.
+      </p>
+
       {/* Active layer indicator */}
       {state.activeLayer !== "all" && (
         <motion.p
-          className="text-[10px] text-primary/50 mt-3 tracking-wide"
+          className="text-[10px] text-primary/50 mt-2 tracking-wide"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          Viewing: {state.activeLayer === "treatment" ? "what helped" : state.activeLayer === "life-event" ? "life transitions" : state.activeLayer + "s"}
+          Viewing: {state.activeLayer === "treatment" ? "what helped" : state.activeLayer === "life-event" ? "life transitions" : state.activeLayer === "safety-experience" ? "experiences" : state.activeLayer + "s"}
         </motion.p>
       )}
 

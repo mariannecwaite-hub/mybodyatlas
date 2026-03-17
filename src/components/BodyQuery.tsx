@@ -335,7 +335,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                 className="text-center py-10 space-y-4"
               >
                 <p className="text-[14px] text-foreground/60 leading-relaxed max-w-sm mx-auto">
-                  Nothing recorded here yet. If you log this episode and what you try, you'll have it for next time.
+                  Your body has been here before. You haven't recorded what helped yet — adding that now means your record will have it next time.
                 </p>
                 <button
                   onClick={() => { onOpenAddEvent(results.matchedRegions[0]); handleClose(); }}
