@@ -423,7 +423,7 @@ const BodyPassport = ({ open, onClose }: BodyPassportProps) => {
                                 )}
 
                                 <p className="text-[10px] text-muted-foreground/25 text-center pt-1">
-                                  Observations only — not medical advice
+                                  Based on what you've recorded so far. This is a reflection, not a medical assessment.
                                 </p>
                               </div>
                             )}
