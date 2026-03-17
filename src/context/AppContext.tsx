@@ -34,6 +34,7 @@ export interface BodyEvent {
   severity: EventSeverity;
   notes?: string;
   treatment?: string;
+  treatmentOutcome?: TreatmentOutcome;
   ongoing: boolean;
   archived?: boolean;
 }
