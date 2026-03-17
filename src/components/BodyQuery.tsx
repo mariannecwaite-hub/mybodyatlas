@@ -318,7 +318,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                 className="text-center py-10 space-y-4"
               >
                 <p className="text-[14px] text-foreground/60 leading-relaxed max-w-xs mx-auto">
-                  Your body is speaking. Your record doesn't hold this yet — but logging it now means you'll be able to hear the pattern when it speaks again.
+                  Your body is speaking. Your record doesn't hold this yet — but logging it now means you'll have it for next time.
                 </p>
                 <button
                   onClick={() => { handleClose(); onSelectRegionOnMap(); }}
@@ -360,7 +360,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                     transition={{ delay: 0.15 }}
                   >
                     <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-muted-foreground/45 mb-4">
-                      What helped last time
+                       WHAT HELPED LAST TIME
                     </h3>
                     <div className="space-y-3">
                       {results.helped.map((e) => (
@@ -377,10 +377,10 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                     transition={{ delay: 0.15 }}
                   >
                     <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-muted-foreground/45 mb-3">
-                      What helped last time
-                    </h3>
-                    <p className="text-[13px] text-foreground/50 leading-relaxed">
-                      You've recorded experiences in this area, but haven't logged what helped yet. Adding outcomes to your treatments means you'll have this for next time.
+                       WHAT HELPED LAST TIME
+                     </h3>
+                     <p className="text-[13px] text-foreground/50 leading-relaxed">
+                       You've recorded experiences in this area, but haven't logged what helped yet. Adding outcomes to your treatments means you'll have this for next time.
                     </p>
                   </motion.section>
                 )}
@@ -432,7 +432,7 @@ const BodyQuery = ({ onOpenAddEvent, onSelectRegionOnMap }: BodyQueryProps) => {
                   transition={{ delay: 0.35 }}
                 >
                   <h3 className="text-[10px] font-medium tracking-[0.15em] uppercase text-muted-foreground/45 mb-3">
-                    What your record shows about this area
+                    WHAT YOUR RECORD SHOWS
                   </h3>
                   <p className="text-[14px] text-foreground/60 leading-[1.75]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                     {buildContextSummary(results.allMatched, results.matchedRegions)}

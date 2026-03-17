@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 const eventTypes: { type: EventType; label: string; icon: string }[] = [
   { type: "injury", label: "Injury", icon: "🩹" },
-  { type: "symptom", label: "Sensation", icon: "💭" },
+  { type: "symptom", label: "Sensation", icon: "" },
   { type: "stress", label: "Stress", icon: "🌊" },
   { type: "treatment", label: "Treatment", icon: "🌿" },
   { type: "life-event", label: "Life event", icon: "⭐" },

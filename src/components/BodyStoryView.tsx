@@ -6,7 +6,7 @@ import { useBodyThreads } from "@/hooks/useBodyThreads";
 import BodyThreads from "@/components/BodyThreads";
 import UnsafeExperienceInsight from "@/components/UnsafeExperienceInsight";
 import DismissalInsight from "@/components/DismissalInsight";
-import { Lock, FileText, Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
+import { FileText, Bookmark, X as XIcon, BookOpen, PenLine } from "lucide-react";
 import { BodySilhouetteFigure } from "@/components/BodySilhouette";
 
 const typeDotColors: Record<EventType, string> = {
@@ -73,9 +73,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
   const [insightNotes, setInsightNotes] = useState<Record<string, string>>({});
   const [editingNote, setEditingNote] = useState<string | null>(null);
   const [useGroundedClosing, setUseGroundedClosing] = useState(false);
-  const [privacyDismissed, setPrivacyDismissed] = useState(() => {
-    try { return localStorage.getItem("body-story-privacy-seen") === "true"; } catch { return false; }
-  });
+  
   const threads = useBodyThreads(visibleEvents);
 
   const activeRegions = new Set(visibleEvents.flatMap((e) => e.regions));
@@ -343,7 +341,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
 
       {/* Body Map Overview */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }}>
-        <p className="section-label mb-3">Body map overview</p>
+        <p className="section-label mb-3">YOUR BODY RECORD</p>
         {topRegions.length > 0 ? (
           <div className="rounded-2xl p-5 bg-card border border-border/20" style={{ boxShadow: "var(--shadow-xs)" }}>
             <div className="flex flex-wrap gap-2 mb-4">
@@ -379,7 +377,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
 
       {/* Patterns Worth Noticing — with reflective questions */}
       <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.5 }}>
-        <p className="section-label mb-3">Patterns worth noticing</p>
+        <p className="section-label mb-3">PATTERNS WORTH NOTICING</p>
         {visibleInsights.length > 0 ? (
           <div className="space-y-3">
             {visibleInsights.map((insight, idx) => {
@@ -533,7 +531,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
       {/* Treatments explored */}
       {treatments.length > 0 && (
         <motion.section initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
-          <p className="section-label mb-3">Treatments explored</p>
+          <p className="section-label mb-3">TREATMENTS EXPLORED</p>
           <div className="rounded-2xl p-5 bg-sage/8 border border-sage/12">
             {(() => {
               const withOutcome = treatments.filter((t) => t.treatmentOutcome && t.treatmentOutcome !== "not-sure");
@@ -587,35 +585,15 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
         <textarea
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
-          placeholder="What do you notice looking back at your body story?"
+          placeholder="What do you notice looking back at your record?"
           rows={3}
           className="field-input resize-none"
         />
       </motion.section>
 
-      {/* Privacy notice */}
-      <AnimatePresence>
-        {!privacyDismissed && (
-          <motion.div
-            className="flex items-center gap-2 px-3 py-2 rounded-full bg-sage/8 border border-sage/12 w-fit mx-auto"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ delay: 0.5, duration: 0.4 }}
-          >
-            <Lock className="w-3 h-3 text-sage-foreground/35" />
-            <span className="text-[10px] text-muted-foreground/45">Your body story is private</span>
-            <button
-              onClick={() => { setPrivacyDismissed(true); try { localStorage.setItem("body-story-privacy-seen", "true"); } catch {} }}
-              className="ml-1 p-0.5 rounded-full hover:bg-secondary/40 transition-colors"
-            >
-              <XIcon className="w-2.5 h-2.5 text-muted-foreground/25" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      
 
-      {/* Collective Atlas link */}
+      {/* Collective link */}
       {onOpenCollective && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="text-center">
           <button
@@ -623,7 +601,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
             className="text-[13px] italic transition-colors duration-200"
             style={{ color: "#9B8EC4", fontFamily: "'DM Sans', sans-serif" }}
           >
-            See what the collective is showing →
+            See what the Collective is showing →
           </button>
         </motion.div>
       )}
@@ -632,7 +610,7 @@ const BodyStoryView = ({ onCreateSummary, onOpenCollective }: BodyStoryViewProps
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
         <button onClick={onCreateSummary} className="btn-primary flex items-center justify-center gap-2">
           <FileText className="w-4 h-4" />
-          Create Body Story Summary
+          Create Body Passport
         </button>
         <p className="text-[10px] text-muted-foreground/28 text-center mt-3">
           Your body story belongs to you. Nothing is shared unless you choose to share it.

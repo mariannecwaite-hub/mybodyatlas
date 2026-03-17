@@ -45,7 +45,7 @@ const BodyRecord = () => {
     },
     {
       icon: Lightbulb,
-      label: "Patterns found",
+      label: "Patterns noticed",
       value: meaningfulInsights.length,
       sub: "worth noticing",
       tone: "bg-lavender/12 border-lavender/18",
@@ -63,7 +63,7 @@ const BodyRecord = () => {
     >
       {/* Header */}
       <div className="mb-4">
-        <p className="section-label">Your Body Record</p>
+        <p className="section-label">YOUR BODY RECORD</p>
         <p className="text-[11px] text-muted-foreground/35 mt-1 leading-relaxed">
           A living archive of your body experiences · {span}
         </p>

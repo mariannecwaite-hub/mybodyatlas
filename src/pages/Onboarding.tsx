@@ -80,10 +80,10 @@ const transitionCards: SuggestionCard[] = [
 const treatmentCards: SuggestionCard[] = [
   { id: "tr1", title: "Physiotherapy", description: "Structured rehabilitation with a physiotherapist.", type: "treatment", regions: ["knee_left", "lower_back"], defaultYear: 2020, severity: "mild" },
   { id: "tr2", title: "Osteopathy or chiropractic", description: "Manual therapy for alignment and movement.", type: "treatment", regions: ["lower_back", "upper_back", "neck"], defaultYear: 2019, severity: "mild" },
-  { id: "tr3", title: "Ongoing medication", description: "Regular medication for a chronic or recurring condition.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
+  { id: "tr3", title: "Ongoing medication", description: "Regular medication for a recurring area of attention.", type: "treatment", regions: [], defaultYear: 2021, severity: "mild", ongoing: true },
   { id: "tr4", title: "Massage therapy", description: "Regular or occasional massage for tension or recovery.", type: "treatment", regions: ["upper_back", "neck", "shoulder_left"], defaultYear: 2021, severity: "mild" },
   { id: "tr5", title: "Yoga or Pilates", description: "Movement practice for strength, flexibility or recovery.", type: "treatment", regions: ["lower_back", "abdomen"], defaultYear: 2022, severity: "mild", ongoing: true },
-  { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for pain or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
+  { id: "tr6", title: "Acupuncture", description: "Traditional or dry needling for discomfort or tension.", type: "treatment", regions: ["lower_back", "neck"], defaultYear: 2021, severity: "mild" },
   { id: "tr7", title: "Psychotherapy or counselling", description: "Therapy for emotional wellbeing and stress management.", type: "treatment", regions: [], defaultYear: 2020, severity: "mild" },
   { id: "tr8", title: "Strength & conditioning", description: "Structured exercise for rehabilitation or prevention.", type: "treatment", regions: ["knee_left", "hip_left", "lower_back"], defaultYear: 2022, severity: "mild" },
 ];
@@ -122,7 +122,7 @@ const womensHealthCards: SuggestionCard[] = [
   { id: "wh8", title: "PCOS or hormonal conditions", description: "Hormonal patterns that affect many systems at once.", type: "symptom", regions: ["abdomen"], defaultYear: 2017, severity: "moderate", ongoing: true },
   { id: "wh9", title: "Thyroid changes", description: "Overactive, underactive, or fluctuating — and what your body felt.", type: "symptom", regions: ["neck"], defaultYear: 2019, severity: "moderate" },
   { id: "wh10", title: "Being dismissed or disbelieved by a healthcare professional", description: "An experience that changed how you sought care.", type: "life-event", regions: [], defaultYear: 2018, severity: "significant" },
-  { id: "wh11", title: "A diagnosis that took years to receive", description: "The weight of not knowing — and finally being heard.", type: "life-event", regions: [], defaultYear: 2020, severity: "significant" },
+  { id: "wh11", title: "A pattern that took years to be recognised", description: "The weight of not knowing — and finally being heard.", type: "life-event", regions: [], defaultYear: 2020, severity: "significant" },
   { id: "wh12", title: "Chronic fatigue or unexplained exhaustion", description: "Tiredness that rest doesn't resolve.", type: "symptom", regions: ["chest", "head_jaw"], defaultYear: 2021, severity: "moderate", ongoing: true },
   { id: "wh13", title: "Fibromyalgia or widespread discomfort", description: "When your whole body speaks at once.", type: "symptom", regions: ["neck", "shoulder_left", "shoulder_right", "lower_back"], defaultYear: 2019, severity: "significant", ongoing: true },
   { id: "wh14", title: "Hypermobility", description: "Flexibility that comes with its own set of experiences.", type: "symptom", regions: ["knee_left", "wrist_hand_left", "shoulder_left"], defaultYear: 2015, severity: "mild", ongoing: true },
@@ -210,7 +210,7 @@ function buildOnboardingSteps(isObservational: boolean): OnboardingStep[] {
       id: "reveal",
       phase: "reveal",
       title: isObservational ? "Your Body Record So Far" : "Your Body Story So Far",
-      subtitle: "Here's what you've mapped. This is just the beginning — you can always add, edit or remove events later.",
+      subtitle: "Here's what you've mapped so far. Your body story is just beginning.",
     },
   );
 
@@ -523,14 +523,15 @@ const Onboarding = () => {
               <p className="text-muted-foreground/60 text-[14px] leading-relaxed max-w-sm mx-auto">
                 {current.subtitle}
               </p>
-              {current.id === "intro" && (
-                <p className="text-muted-foreground/40 text-[12px] leading-relaxed mt-3 max-w-xs mx-auto">
-                  For people who've felt their health history has never quite been understood.
-                </p>
-              )}
+              
               {current.id === "womens-health" && (
                 <p className="text-muted-foreground/50 text-[13px] leading-relaxed mt-3 max-w-xs mx-auto italic" style={{ fontFamily: "'DM Sans', sans-serif" }}>
                   Women's health experiences are among the most underrecorded. All of these are worth having in your body story.
+                </p>
+              )}
+              {current.id === "intro" && (
+                <p className="text-muted-foreground/40 text-[12px] leading-relaxed mt-3 max-w-xs mx-auto">
+                  For people who've felt their health history has never quite been understood.
                 </p>
               )}
               {current.id === "sport-injury" && (
@@ -796,7 +797,7 @@ const Onboarding = () => {
                     <div className="text-center space-y-3">
                       <p className="text-[14px] font-serif text-foreground/70">No events mapped yet</p>
                       <p className="text-[12px] text-muted-foreground/40">
-                        That's perfectly fine — you can add events anytime from the atlas.
+                        That's perfectly fine — you can add events anytime from the Body Map.
                       </p>
                     </div>
                   </motion.div>
@@ -820,7 +821,7 @@ const Onboarding = () => {
             )}
             <button onClick={next} className="btn-primary flex items-center justify-center gap-2">
               {current.phase === "reveal"
-                ? "Explore your atlas"
+                ? "Explore your Body Map"
                 : current.phase === "prompt"
                   ? `Continue${selectedIds.size > 0 ? "" : " — skip this"}`
                   : "Continue"}

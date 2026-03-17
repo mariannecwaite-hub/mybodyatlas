@@ -25,7 +25,7 @@ const COLLECTIVE_INSIGHTS = [
   },
   {
     id: "ci3",
-    text: "Lower-body experiences are the most common thread across the Atlas — often beginning earlier in life than the user first recognises.",
+    text: "Lower-body experiences are the most common thread across the Collective — often beginning earlier in life than the person first recognises.",
     supporting: "Hip, knee, and lower back experiences account for the largest share of logged events.",
     count: 4203,
   },
@@ -49,13 +49,13 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
       ["injury", "symptom"].includes(e.type) && e.regions.some((r) => ["neck", "lower_back", "abdomen"].includes(r))
     );
     if (stressEvents.length > 0 && physicalEvents.length > 0) {
-      return "Your stress-body pattern is one shared by many women in the Atlas. You're not alone in this.";
+      return "Your stress-body pattern is one shared by many women in the Collective. You're not alone in this.";
     }
     const lowerBodyEvents = visibleEvents.filter((e) =>
       e.regions.some((r) => ["lower_back", "hip_left", "hip_right", "knee_left", "knee_right", "ankle_foot_left", "ankle_foot_right"].includes(r))
     );
     if (lowerBodyEvents.length >= 2) {
-      return "Your lower-body experiences are part of a pattern that many women share. This area of the body tells a story across the Atlas.";
+      return "Your lower-body experiences are part of a pattern that many women share. This area of the body tells a story across the Collective.";
     }
     return "Your record is part of a growing picture. As more women contribute, the collective understanding deepens.";
   }, [isContributing, visibleEvents]);
@@ -83,7 +83,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
               <div className="pb-4">
                 {id === "what-we-do" && (
                   <p className="text-[13px] leading-[1.75]" style={{ color: "#6B6960" }}>
-                    Your patterns are stripped of all identifying details — no names, no specific dates, no written notes. Only the anonymous shape of your experiences is included: which body regions, what type of event, the rough timing, and whether treatments helped. This anonymous data is combined with patterns from other women to surface collective insights that no single record could reveal.
+                    Your patterns are stripped of all identifying details — no names, no specific dates, no written notes. Only the anonymous shape of your experiences is included: which body regions, what type of event, the rough timing, and whether treatments helped. These experiences are combined with patterns from other women to surface collective insights that no single record could reveal.
                   </p>
                 )}
                 {id === "who-access" && (
@@ -132,7 +132,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
                 What we're learning together
               </h2>
               <p className="text-[15px] italic mt-3 leading-relaxed" style={{ color: "#6B6960", fontFamily: "'DM Sans', sans-serif" }}>
-                Anonymous patterns from women who've contributed to the Atlas
+                Anonymous patterns from women who've chosen to share
               </p>
             </motion.div>
 
@@ -152,7 +152,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
                   transition={{ delay: 0.25 + i * 0.12, duration: 0.5 }}
                 >
                   <p className="text-[10px] font-medium uppercase tracking-[0.2em] mb-3" style={{ color: "#9B8EC4" }}>
-                    Collective pattern
+                    COLLECTIVE PATTERN
                   </p>
                   <p className="text-[18px] font-serif italic leading-[1.6] mb-3" style={{ color: "#2A2A28" }}>
                     {insight.text}
@@ -185,7 +185,7 @@ const CollectiveAtlas = ({ open, onClose }: CollectiveAtlasProps) => {
                 </div>
               ) : (
                 <p className="text-[13px] italic text-center leading-relaxed" style={{ color: "#A8A59E" }}>
-                  Contribute your patterns to see how your experience relates to the collective →
+                  Contribute your patterns to see how your experience relates to the Collective →
                 </p>
               )}
             </motion.div>

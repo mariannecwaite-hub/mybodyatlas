@@ -114,7 +114,7 @@ const CollectiveConsent = ({ open, onClose, onContribute }: CollectiveConsentPro
                 }}
               >
                 <AtlasSymbol size={16} />
-                Contribute to the Atlas
+                Contribute to the Collective
               </button>
               <button
                 onClick={handleDismiss}
@@ -127,7 +127,7 @@ const CollectiveConsent = ({ open, onClose, onContribute }: CollectiveConsentPro
 
             {/* Footer */}
             <p className="mt-12 text-[11px]" style={{ color: "#A8A59E" }}>
-              You can change these settings at any time in your profile.
+              Every contribution adds to a map that has never existed before.
             </p>
           </motion.div>
         </motion.div>

@@ -1,5 +1,5 @@
 /**
- * The Collective Atlas symbol — three organic dots in sage green.
+ * The Collective symbol — three organic dots in sage green.
  * Used at 16px inline, 24px in card headers, 32px on consent screen.
  */
 const AtlasSymbol = ({ size = 16, className = "" }: { size?: number; className?: string }) => {
